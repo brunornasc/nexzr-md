@@ -12,14 +12,15 @@ void Game_init() {
   SPR_init();
 
   currentFrame = 0;
+  I18N_setLanguage(LANG_EN);
+  game_options.difficulty = NORMAL;
+  game_options.md_mode = false;
+  game_options.language = LANG_EN;
 
   Characters_init();
   Menu_init();
   currentLevel = 0;
 
-  game_options.language = ENGLISH;
-  game_options.difficulty = NORMAL;
-  game_options.md_mode = false;
 }
 
 void Game_update() {

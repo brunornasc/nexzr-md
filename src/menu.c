@@ -1,5 +1,6 @@
 #include "menu.h"
 #include "game.h"
+#include "i18n.h"
 
 typedef enum {
   GAME_START,
@@ -34,13 +35,15 @@ void drawMenuSecondary();
 void handleSecondaryMenu(u16 joy, u16 changed, u16 state);
 
 void Menu_init() {
+
   	drawMainMenu();
  	JOY_setEventHandler(joyEvent);
 }
 
 void drawMainMenu() {
+    Characters_prepareToPrint();
   	drawMainBackground();
-	print_options();
+	redrawMainMenu();
 }
 
 void drawMainBackground() {
@@ -56,19 +59,13 @@ void drawMainBackground() {
 
 void drawSecondaryBackground() {
   	PAL_setPalette(PAL0, menuscreen.palette->data, DMA);
-	VDP_drawImageEx(BG_B,
+	VDP_drawImageEx(BG_A,
                   &menuscreen,
                   TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USER_INDEX),
                   GAME_WINDOW_START_POSITION_LEFT,
                   GAME_WINDOW_START_POSITION_TOP,
                   FALSE,
                   TRUE);
-}
-
-void print_options() {
-  	Characters_print("GAME START", 15, 13, FONT_ACTIVE);
- 	Characters_print("CARNIVAL MODE", 13, 15, FONT_INACTIVE);
- 	Characters_print("OPTIONS", 17, 17, FONT_INACTIVE);
 }
 
 void joyEvent(u16 joy, u16 changed, u16 state) {
@@ -95,7 +92,6 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
 		  menu_current = SECONDARY;
     	  option_selected = LANGUAGE;
 		  VDP_clearPlane(BG_B, TRUE);
-    	  drawSecondaryBackground();
     	  drawMenuSecondary();
 
 		  return;
@@ -107,9 +103,9 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
 }
 
 void redrawMainMenu() {
-	Characters_print("GAME START", 15, 13, option_selected == GAME_START ? FONT_ACTIVE : FONT_INACTIVE);
+	Characters_print(TXT_START, game_options.language == LANG_EN ? 15 : 17, 13, option_selected == GAME_START ? FONT_ACTIVE : FONT_INACTIVE);
 	Characters_print("CARNIVAL MODE", 13, 15, option_selected == CARNIVAL_MODE ? FONT_ACTIVE : FONT_INACTIVE);
-	Characters_print("OPTIONS", 17, 17, option_selected == OPTIONS ? FONT_ACTIVE : FONT_INACTIVE);
+	Characters_print(TXT_OPTIONS, 17, 17, option_selected == OPTIONS ? FONT_ACTIVE : FONT_INACTIVE);
 }
 
 void handleSecondaryMenu(u16 joy, u16 changed, u16 state) {
@@ -131,10 +127,13 @@ void handleSecondaryMenu(u16 joy, u16 changed, u16 state) {
 		  return;
   		}
   		else if (option_selected == LANGUAGE) {
-    		game_options.language++;
-   			if (game_options.language > 2)
-     			game_options.language = 0;
-
+    		game_options.language = game_options.language > 1 ? 0 : game_options.language + 1;
+			I18N_setLanguage(game_options.language);
+   			VDP_clearPlane(BG_B, TRUE);
+  		}
+  		else if (option_selected == MD_MODE) {
+    		game_options.md_mode = !game_options.md_mode;
+   			VDP_clearPlane(BG_B, TRUE);
   		}
  	}
 
@@ -143,30 +142,14 @@ void handleSecondaryMenu(u16 joy, u16 changed, u16 state) {
 }
 
 void drawMenuSecondary() {
-  	Characters_print("LANGUAGE", 5, 3, option_selected == LANGUAGE ? FONT_ACTIVE : FONT_INACTIVE);
+
+  	Characters_print(TXT_LANGUAGE, 5, 3, option_selected == LANGUAGE ? FONT_ACTIVE : FONT_INACTIVE);
 	Characters_print("MD MODE", 5, 6, option_selected == MD_MODE ? FONT_ACTIVE : FONT_INACTIVE);
-	Characters_print("DIFFICULTY", 5, 9, option_selected == DIFFICULTY ? FONT_ACTIVE : FONT_INACTIVE);
- 	Characters_print("CREDITS", 5, 12, option_selected == CREDITS ? FONT_ACTIVE : FONT_INACTIVE);
- 	Characters_print("BACK", 5, 18, option_selected == BACK ? FONT_ACTIVE : FONT_INACTIVE);
+	Characters_print(TXT_DIFFICULTY, 5, 9, option_selected == DIFFICULTY ? FONT_ACTIVE : FONT_INACTIVE);
+ 	Characters_print(TXT_CREDITS, 5, 12, option_selected == CREDITS ? FONT_ACTIVE : FONT_INACTIVE);
+ 	Characters_print(TXT_BACK, 5, 18, option_selected == BACK ? FONT_ACTIVE : FONT_INACTIVE);
 
- 	const char* language_option;
-
- 	switch (game_options.language) {
-   		case ENGLISH: {
-    		language_option = "ENGLISH";
-   			break;
-   		}
-  		case BRAZILIAN: {
-    		language_option = "PORTUGUES BRASIL";
-   			break;
-   		}
-  		case SPANISH: {
-    		language_option = "ESPANHOL";
-   			break;
-   		}
- 	}
-
- 	Characters_print(language_option, 20, 3, option_selected == LANGUAGE ? FONT_ACTIVE : FONT_INACTIVE);
-	Characters_print("OFF", 20, 6, option_selected == MD_MODE ? FONT_ACTIVE : FONT_INACTIVE);
+ 	Characters_print(TXT_CURRENT_LANGUAGE, 20, 3, option_selected == LANGUAGE ? FONT_ACTIVE : FONT_INACTIVE);
+	Characters_print(game_options.md_mode ? TXT_ON : TXT_OFF, 20, 6, option_selected == MD_MODE ? FONT_ACTIVE : FONT_INACTIVE);
 	Characters_print("NORMAL", 20, 9, option_selected == DIFFICULTY ? FONT_ACTIVE : FONT_INACTIVE);
 }

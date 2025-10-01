@@ -7,17 +7,12 @@
 #include "entitymanager.h"
 #include "callback.h"
 #include "resources.h"
+#include "i18n.h"
 
 #define GAME_WINDOW_START_POSITION_TOP 0
 #define GAME_WINDOW_START_POSITION_LEFT 0
 #define GAME_WINDOW_WIDTH 320
 #define GAME_WINDOW_HEIGHT 240
-
-typedef enum {
-  ENGLISH,
-  BRAZILIAN,
-  SPANISH
-} languages;
 
 typedef enum {
   EASY,
