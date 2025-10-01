@@ -1,2 +1,5 @@
-SPRITE slasher "sprites/slasher/slasher.png" 4 4 FAST 5
 IMAGE titlescreen "sprites/misc/titlescreen/titlescreen.png" BEST ALL
+TILESET characters "sprites/misc/characters.png" BEST
+IMAGE characters_pallete "sprites/misc/characters_pallete.png" BEST
+
+SPRITE slasher "sprites/slasher/slasher.png" 4 4 FAST 5

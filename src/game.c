@@ -1,5 +1,6 @@
 #include "game.h"
 #include "menu.h"
+#include "characters.h"
 
 void initialize_screen() {
   VDP_setScreenWidth320();
@@ -9,6 +10,7 @@ void initialize_screen() {
 void Game_init() {
   initialize_screen();
   SPR_init();
+  Characters_init();
   Menu_init();
 }
 

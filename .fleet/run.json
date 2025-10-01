@@ -1,0 +1,9 @@
+{
+	"configurations": [
+		{
+			"type": "command",
+			"name": "Build",
+			"program": "bash $PROJECT_DIR$/build.sh"
+		}
+	]
+}
