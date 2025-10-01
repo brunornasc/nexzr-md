@@ -6,5 +6,6 @@
 #include "characters.h"
 
 void Menu_init();
+void Menu_inputHandler(void* context);
 
 #endif
