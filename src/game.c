@@ -16,6 +16,10 @@ void Game_init() {
   Characters_init();
   Menu_init();
   currentLevel = 0;
+
+  game_options.language = ENGLISH;
+  game_options.difficulty = NORMAL;
+  game_options.md_mode = false;
 }
 
 void Game_update() {
