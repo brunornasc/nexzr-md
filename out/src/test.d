@@ -1,4 +1,4 @@
-out/src/menu.o: src/menu.c src/menu.h /sgdk/inc/genesis.h \
+out/src/test.o: src/test.c src/test.h /sgdk/inc/genesis.h \
  /sgdk/inc/types.h /sgdk/inc/config.h /sgdk/inc/asm.h /sgdk/inc/sys.h \
  /sgdk/inc/sram.h /sgdk/inc/mapper.h /sgdk/inc/memory.h \
  /sgdk/inc/memory_base.h /sgdk/inc/tools.h /sgdk/inc/bmp.h \
@@ -16,6 +16,6 @@ out/src/menu.o: src/menu.c src/menu.h /sgdk/inc/genesis.h \
  /sgdk/inc/task.h /sgdk/inc/task_cst.h /sgdk/inc/ext/flash-save/flash.h \
  /sgdk/inc/types.h /sgdk/inc/ext/flash-save/saveman.h \
  /sgdk/inc/ext/console.h /sgdk/inc/config.h /sgdk/inc/string.h \
- /sgdk/inc/maths.h /sgdk/inc/dma.h res/resources.h src/characters.h \
- src/game.h src/player.h src/entitymanager.h src/callback.h src/i18n.h \
- src/test.h
+ /sgdk/inc/maths.h /sgdk/inc/dma.h src/game.h src/player.h src/menu.h \
+ res/resources.h src/characters.h src/entitymanager.h src/callback.h \
+ src/i18n.h

@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "game.h"
 #include "i18n.h"
+#include "test.h"
 
 typedef enum {
   GAME_START,
@@ -28,16 +29,15 @@ void drawMainMenu();
 void drawMainBackground();
 void print_options();
 void handleMainMenu(u16 joy, u16 changed, u16 state);
-void joyEvent(u16 joy, u16 changed, u16 state);
+void joyMenuHandler(u16 joy, u16 changed, u16 state);
 void redrawMainMenu();
 void drawSecondaryBackground();
 void drawMenuSecondary();
 void handleSecondaryMenu(u16 joy, u16 changed, u16 state);
 
 void Menu_init() {
-
-  	drawMainMenu();
- 	JOY_setEventHandler(joyEvent);
+    drawMainMenu();
+ 	Game_setJoyHandler(&joyMenuHandler);
 }
 
 void drawMainMenu() {
@@ -68,7 +68,7 @@ void drawSecondaryBackground() {
                   TRUE);
 }
 
-void joyEvent(u16 joy, u16 changed, u16 state) {
+void joyMenuHandler(u16 joy, u16 changed, u16 state) {
   if (menu_current == MAIN) {
  	handleMainMenu(joy, changed, state);
 
@@ -79,7 +79,6 @@ void joyEvent(u16 joy, u16 changed, u16 state) {
 }
 
 void handleMainMenu(u16 joy, u16 changed, u16 state) {
-
   if (joy == JOY_1) {
   	if (changed & state & BUTTON_DOWN) {
     	if (option_selected < OPTIONS) option_selected++;
@@ -95,6 +94,10 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
     	  drawMenuSecondary();
 
 		  return;
+  		}
+  		else if (option_selected == GAME_START) {    		
+   			initialize_test();
+   			return;
   		}
  	}
 
