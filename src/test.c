@@ -5,6 +5,8 @@
 
 #define STAR_COUNT 20
 #define MAX_STAR_HEIGHT 4   // número máximo de blocos (linhas) por estrela
+#define WARP_DURATION 180
+#define DEACELERATION_FRAMES_ANIM 10
 
 typedef struct {
     Sprite* spr[MAX_STAR_HEIGHT];
@@ -12,9 +14,15 @@ typedef struct {
     u8 size;       // altura em blocos 1..MAX_STAR_HEIGHT
     u8 speed;
     u8 colorFrame;
+    bool done;
+    u8 decelCounter;
 } Star;
 
 static Star stars[STAR_COUNT];
+static u8 warpTimer = 0;
+static bool isWarping = true;
+static bool isDeacelerating = false;
+static u8 deAceleratedStarsCount = 0;
 
 void update_test(void* context);
 
@@ -26,20 +34,13 @@ void initialize_test() {
     PAL_setPalette(PAL0, star_warp.palette->data, DMA);
 
     for (int i = 0; i < STAR_COUNT; i++) {
-        // tamanho aleatório de 1 a MAX_STAR_HEIGHT
         u8 size = (random() % MAX_STAR_HEIGHT) + 1;
-
-        // velocidade proporcional (maiores = mais rápidos)
         u8 speed = 3 + size * 2 + (random() % 2);
-
-        // cor aleatória (0,1,2 = frames diferentes)
         u8 colorFrame = random() % 3;
 
-        // posição inicial
         int x = random() % 320;
         int y = random() % 224;
 
-        // cria cada parte da estrela (empilhando blocos de 8 px)
         for (int j = 0; j < size; j++) {
             stars[i].spr[j] = SPR_addSprite(&star_warp, x, y + j * 8, TILE_ATTR(PAL0, FALSE, FALSE, FALSE));
             SPR_setFrame(stars[i].spr[j], colorFrame);
@@ -50,40 +51,70 @@ void initialize_test() {
         stars[i].size = size;
         stars[i].speed = speed;
         stars[i].colorFrame = colorFrame;
+        stars[i].done = false;
+        stars[i].decelCounter = DEACELERATION_FRAMES_ANIM;
     }
 
     Entity_add(NULL, update_test);
 }
 
-// update global
 void update_test(void* context) {
+
     for (int i = 0; i < STAR_COUNT; i++) {
         Star* s = &stars[i];
 
+        // atualiza posição com a velocidade
         s->y += s->speed;
+        // se passar do tamanho da tela atualiza y pro topo
+        if (s->y > GAME_WINDOW_HEIGHT) {
+            s->y = GAME_WINDOW_START_POSITION_TOP;
+            s->x = random() % GAME_WINDOW_WIDTH;
+        }
 
-        // se passar da tela, reaparece no topo
-        if (s->y > 224) {
-            s->y = -8;
-            s->x = random() % 320;
-            s->size = (random() % MAX_STAR_HEIGHT) + 1;
-            s->speed = 3 + s->size * 2 + (random() % 2);
-            s->colorFrame = random() % 3;
+        int y = s->y;
 
-            // recria os sprites conforme o novo tamanho
-            for (int j = 0; j < s->size; j++) {
-                if (!s->spr[j]) {
-                    s->spr[j] = SPR_addSprite(&star_warp, s->x, s->y + j * 8, TILE_ATTR(PAL0, FALSE, FALSE, FALSE));
+        for (int j = 0; j < s->size; j++) {
+            if (s->spr[j]) {
+                SPR_setPosition(s->spr[j], s->x, y);
+            }
+            // coloca os sprites um atras do outro
+            y -= 8;
+        }
+
+        // fazer a animacao diminuindo e diminuir a velocidade e deixar
+        if (isDeacelerating) {
+            if (s->decelCounter > 0) s->decelCounter--;
+
+            if (s->decelCounter == 0) {
+                if (s->size > 1) {
+                    SPR_releaseSprite(s->spr[s->size - 1]);
+                    s->spr[s->size - 1] = NULL;
+                    s->size--;
+                    s->speed = 2 + s->size;
+
+                } else if (!s->done) {
+                    SPR_setAnimAndFrame(s->spr[0], 1, s->colorFrame);
+                    s->speed = (random() % 2) + 1;
+                    s->done = true;
+                    deAceleratedStarsCount++;
                 }
-                SPR_setFrame(s->spr[j], s->colorFrame);
+
+                s->decelCounter = DEACELERATION_FRAMES_ANIM; // reinicia o contador da própria estrela
             }
         }
 
-        // atualiza posição
-        int y = s->y;
-        for (int j = 0; j < s->size; j++) {
-            SPR_setPosition(s->spr[j], s->x, y);
-            y += 8;
+        // fim da animação
+        if (deAceleratedStarsCount >= STAR_COUNT) {
+            isDeacelerating = false;
+        }
+    }
+
+    if (isWarping) {
+        warpTimer++;
+
+        if (warpTimer > WARP_DURATION){
+            isDeacelerating = true;
+            isWarping = false;
         }
     }
 }
