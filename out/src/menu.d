@@ -18,4 +18,4 @@ out/src/menu.o: src/menu.c src/menu.h /sgdk/inc/genesis.h \
  /sgdk/inc/ext/console.h /sgdk/inc/config.h /sgdk/inc/string.h \
  /sgdk/inc/maths.h /sgdk/inc/dma.h res/resources.h src/characters.h \
  src/game.h src/player.h src/entitymanager.h src/callback.h src/i18n.h \
- src/test.h
+ src/level_1.h

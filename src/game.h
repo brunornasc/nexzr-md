@@ -29,20 +29,22 @@ typedef struct {
 
 typedef enum {
   MENU,
+  LEVEL_1
 } levels;
 
 static game_options_struct game_options;
 
 //u32 globalCounter;
-static u32 currentFrame;
-static u8 currentLevel;
-static bool game_paused = false;
+extern u32 currentFrame;
+extern u8 currentLevel;
+extern bool game_paused;
 
-static Player player;
+extern Player player;
 
 void Game_init();
 void Game_update();
 void Game_setJoyHandler(void (*handler)(u16 joy, u16 changed, u16 state));
 void Game_resetScreen();
+bool Game_isPaused();
 
 #endif

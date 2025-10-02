@@ -1,67 +1,154 @@
 #include "background.h"
+#include "game.h"
+#include "resources.h"
+#include "entitymanager.h"
 
-#define MAX_STARS 50
+#define STAR_COUNT 20
+#define MAX_STAR_HEIGHT 5
+#define WARP_DURATION 180
+#define DEACELERATION_FRAMES_ANIM 7
 
 typedef struct {
-    int x;
-    int y;
-    int speed;
-    int color; // 0 = branco, 1 = azul
+    Sprite* spr[MAX_STAR_HEIGHT];
+    int x, y;
+    u8 size;
+    u8 speed;
+    u8 colorFrame;
+    bool done;
+    u8 decelCounter;
 } Star;
 
-static Star stars[MAX_STARS];
+static Star stars[STAR_COUNT];
+static u8 warpTimer = 0;
+static bool isWarping = true;
+static bool isDeacelerating = false;
+static u8 deAceleratedStarsCount = 0;
+static Entity* backgroundTask;
 
-// Índices de tiles
-static u16 emptyTileIndex;
-static u16 starWhiteTileIndex;
-static u16 starBlueTileIndex;
-
+void update_background(void* context);
+/*
+ * O background, os caracteres e o slasher tem a mesma paleta entao
+ * eu fico com 3 livres pra outra coisa
+ *
+ */
+// inicializa aleatoriamente
 void Background_init() {
-    // Tile vazio
-    u32 emptyTile[8] = {0};
+    Game_resetScreen();
+    currentFrame = 0;
 
-    // Tile com 1 pixel branco (linha 3, coluna 4)
-    u32 whiteTile[8] = {0};
-    whiteTile[3] = 0x00000100; // cada 4 bits = 1 pixel → aqui cor 1
+    PAL_setPalette(SLASHER_PALLETE, slasher.palette->data, DMA);
 
-    // Tile com 1 pixel azul (linha 3, coluna 4)
-    u32 blueTile[8] = {0};
-    blueTile[3] = 0x00000200; // mesma posição, mas cor 2
+    for (int i = 0; i < STAR_COUNT; i++) {
+        u8 size = (random() % MAX_STAR_HEIGHT) + 1;
+        u8 speed = 3 + size * 2 + (random() % 2);
+        u8 colorFrame = random() % 3;
 
-    // Carregar tiles na VRAM
-    emptyTileIndex     = TILE_USER_INDEX;
-    starWhiteTileIndex = emptyTileIndex + 1;
-    starBlueTileIndex  = emptyTileIndex + 2;
+        int x = random() % 320;
+        int y = random() % 224;
 
-    VDP_loadTileData(emptyTile, emptyTileIndex, 1, DMA);
-    VDP_loadTileData(whiteTile, starWhiteTileIndex, 1, DMA);
-    VDP_loadTileData(blueTile, starBlueTileIndex, 1, DMA);
-
-    // Inicializar estrelas
-    for (int i = 0; i < MAX_STARS; i++) {
-        stars[i].x = random() % 40; // 40 tiles de largura
-        stars[i].y = random() % 28; // 28 tiles de altura
-        stars[i].speed = 1 + (random() % 3);
-        stars[i].color = random() % 2;
-    }
-}
-
-void Background_update(void* context) {
-    for (int i = 0; i < MAX_STARS; i++) {
-        // Limpa posição antiga
-        VDP_setTileMapXY(BG_A, emptyTileIndex, stars[i].x, stars[i].y);
-
-        // Move estrela
-        stars[i].y += stars[i].speed;
-        if (stars[i].y >= 28) {
-            stars[i].y = 0;
-            stars[i].x = random() % 40;
-            stars[i].speed = 1 + (random() % 3);
-            stars[i].color = random() % 2;
+        for (int j = 0; j < size; j++) {
+            stars[i].spr[j] = SPR_addSprite(&star_warp, x, y + j * 8, TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
+            SPR_setFrame(stars[i].spr[j], colorFrame);
         }
 
-        // Desenha na nova posição
-        u16 tile = (stars[i].color == 0) ? starWhiteTileIndex : starBlueTileIndex;
-        VDP_setTileMapXY(BG_A, tile, stars[i].x, stars[i].y);
+        stars[i].x = x;
+        stars[i].y = y;
+        stars[i].size = size;
+        stars[i].speed = speed;
+        stars[i].colorFrame = colorFrame;
+        stars[i].done = false;
+        stars[i].decelCounter = DEACELERATION_FRAMES_ANIM;
+    }
+
+    backgroundTask = Entity_add(NULL, update_background);
+
+}
+
+void Background_stop() {
+    backgroundTask->active = false;
+}
+
+void Background_resume() {
+    backgroundTask->active = true;
+}
+
+bool Background_isRunning() {
+    return backgroundTask->active;
+}
+
+void update_background(void* context) {
+    if (game_paused) return;
+
+    // desacelera depois do warp pra deixar mais parecido com o original
+    if (currentFrame % 3 != 0 && !isDeacelerating && !isWarping) return;
+
+    for (int i = 0; i < STAR_COUNT; i++) {
+        Star* s = &stars[i];
+
+        // atualiza posição com a velocidade
+        s->y += s->speed;
+        // se passar do tamanho da tela atualiza y pro topo
+        if (s->y > GAME_WINDOW_HEIGHT) {
+            s->y = GAME_WINDOW_START_POSITION_TOP;
+            s->x = random() % GAME_WINDOW_WIDTH;
+        }
+
+        int y = s->y;
+
+        for (int j = 0; j < s->size; j++) {
+            if (s->spr[j]) {
+                SPR_setPosition(s->spr[j], s->x, y);
+            }
+            // coloca os sprites um atras do outro
+            y -= 8;
+        }
+
+        // fazer a animacao diminuindo e diminuir a velocidade e deixar
+
+        /*
+         * Aqui eu libero o ultimo sprite e adiciono no counter das estrelas desaceleradas
+         * exite tbm uma flag pra dizer q a animacao no objeto terminou
+         *
+         * poderia tambem ser feito de outra forma:
+         * se eu pegasse o y dos sprites e chegasse cada vez mais perto do primeiro ate eles se sobreporem
+         * acredito que ficaria melhor visualmente, ate se ao inves do tile ter 8px ter 4px e eu dobrar o numero
+         * de sprites, seria fixe e como eh so pra esse inicio de fase nao teria problema. Talvez faça isso no futuro
+         * quem sabe
+         *
+         */
+        if (isDeacelerating) {
+            if (s->decelCounter > 0) s->decelCounter--;
+
+            if (s->decelCounter == 0) {
+                if (s->size > 1) {
+                    SPR_releaseSprite(s->spr[s->size - 1]);
+                    s->spr[s->size - 1] = NULL;
+                    s->size--;
+                    s->speed = 2 + s->size;
+
+                } else if (!s->done) {
+                    SPR_setAnimAndFrame(s->spr[0], 1, s->colorFrame);
+                    s->speed = (random() % 2) + 1;
+                    s->done = true;
+                    deAceleratedStarsCount++;
+                }
+
+                s->decelCounter = DEACELERATION_FRAMES_ANIM; // reinicia o contador da própria estrela
+            }
+        }
+
+        // fim da animação
+        if (deAceleratedStarsCount >= STAR_COUNT) {
+            isDeacelerating = false;
+        }
+    }
+
+    if (isWarping) {
+        warpTimer++;
+
+        if (warpTimer > WARP_DURATION){
+            isDeacelerating = true;
+            isWarping = false;
+        }
     }
 }

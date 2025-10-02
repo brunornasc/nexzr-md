@@ -9,18 +9,22 @@
 #define MOVE_HOLD_FRAME2 3
 
 void PLAYER_init(Player* p) {
-    p->x = 0;
-    p->y = 0;
+    p->x = (GAME_WINDOW_WIDTH / 2) - 16;
+    p->y = (GAME_WINDOW_HEIGHT) - 64;
     p->moveFrame = 0;
     p->frameCounter = 0;
 
-    p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
+    p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
     SPR_setAnim(p->sprite, SLASHER_IDLE);
+    SPR_setAlwaysOnTop(p->sprite);
 
     Entity_add(p, PLAYER_handleInput);
 }
 
+
 void PLAYER_handleInput(void* context) {
+    if (Game_isPaused()) return;
+
     Player* p = (Player*) context;
     u16 value = JOY_readJoypad(JOY_1);
 
@@ -59,9 +63,4 @@ void PLAYER_handleInput(void* context) {
     if (value & BUTTON_DOWN)  p->y++;
 
     SPR_setPosition(p->sprite, p->x, p->y);
-}
-
-void PLAYER_update(void* context) {
-    Player* p = (Player*) context;
-
 }

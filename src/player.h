@@ -12,6 +12,5 @@ typedef struct {
 
 void PLAYER_init(Player* p);
 void PLAYER_handleInput(void* context);
-void PLAYER_update(void* context);
 
 #endif

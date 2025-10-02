@@ -16,4 +16,6 @@ out/src/background.o: src/background.c src/background.h \
  /sgdk/inc/task.h /sgdk/inc/task_cst.h /sgdk/inc/ext/flash-save/flash.h \
  /sgdk/inc/types.h /sgdk/inc/ext/flash-save/saveman.h \
  /sgdk/inc/ext/console.h /sgdk/inc/config.h /sgdk/inc/string.h \
- /sgdk/inc/maths.h /sgdk/inc/dma.h
+ /sgdk/inc/maths.h /sgdk/inc/dma.h src/game.h src/player.h src/menu.h \
+ res/resources.h src/characters.h src/entitymanager.h src/callback.h \
+ src/i18n.h

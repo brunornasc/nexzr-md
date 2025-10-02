@@ -44,7 +44,7 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
 
         // Desenha o tile na tela
         VDP_setTileMapXY(BG_B,
-            TILE_ATTR_FULL(SLASHER_PALLETE, 0, 0, 0, TILE_FONT_INDEX + tileIndex),
+            TILE_ATTR_FULL(SLASHER_PALLETE, TRUE, FALSE, FALSE, TILE_FONT_INDEX + tileIndex),
             x + i, y);
 
         i++;

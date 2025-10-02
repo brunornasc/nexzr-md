@@ -1,7 +1,7 @@
 #include "menu.h"
 #include "game.h"
 #include "i18n.h"
-#include "test.h"
+#include "level_1.h"
 
 typedef enum {
   GAME_START,
@@ -96,7 +96,7 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
 		  return;
   		}
   		else if (option_selected == GAME_START) {
-   			initialize_test();
+   			Level1_init();
    			return;
   		}
  	}

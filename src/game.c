@@ -2,6 +2,11 @@
 #include "menu.h"
 #include "characters.h"
 
+u32 currentFrame;
+u8 currentLevel;
+bool game_paused;
+Player player;
+
 void _globalJoyEventHandler(u16 joy, u16 changed, u16 state);
 void initialize_screen();
 
@@ -53,4 +58,8 @@ void Game_resetScreen() {
 	PAL_setPalette(PAL1, palette_black, DMA);
   PAL_setPalette(PAL2, palette_black, DMA);
 	PAL_setPalette(PAL3, palette_black, DMA);
+}
+
+bool Game_isPaused() {
+  return game_paused;
 }
