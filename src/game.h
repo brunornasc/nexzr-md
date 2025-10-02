@@ -13,6 +13,7 @@
 #define GAME_WINDOW_START_POSITION_LEFT 0
 #define GAME_WINDOW_WIDTH 320
 #define GAME_WINDOW_HEIGHT 240
+#define SLASHER_PALLETE PAL0
 
 typedef enum {
   EASY,
@@ -26,11 +27,16 @@ typedef struct {
   u8 difficulty;
 } game_options_struct;
 
+typedef enum {
+  MENU,
+} levels;
+
 static game_options_struct game_options;
 
 //u32 globalCounter;
 static u32 currentFrame;
 static u8 currentLevel;
+static bool game_paused = false;
 
 static Player player;
 

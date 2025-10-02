@@ -1,4 +1,5 @@
 #include "player.h"
+#include "game.h"
 #include "entitymanager.h"
 #include "resources.h"
 
@@ -13,11 +14,10 @@ void PLAYER_init(Player* p) {
     p->moveFrame = 0;
     p->frameCounter = 0;
 
-    p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(PAL2, FALSE, FALSE, FALSE));
+    p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
     SPR_setAnim(p->sprite, SLASHER_IDLE);
 
     Entity_add(p, PLAYER_handleInput);
-    Entity_add(p, PLAYER_update);
 }
 
 void PLAYER_handleInput(void* context) {
@@ -57,9 +57,11 @@ void PLAYER_handleInput(void* context) {
 
     if (value & BUTTON_UP)    p->y--;
     if (value & BUTTON_DOWN)  p->y++;
+
+    SPR_setPosition(p->sprite, p->x, p->y);
 }
 
 void PLAYER_update(void* context) {
     Player* p = (Player*) context;
-    SPR_setPosition(p->sprite, p->x, p->y);
+
 }

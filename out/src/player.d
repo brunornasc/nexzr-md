@@ -16,5 +16,5 @@ out/src/player.o: src/player.c src/player.h /sgdk/inc/genesis.h \
  /sgdk/inc/task.h /sgdk/inc/task_cst.h /sgdk/inc/ext/flash-save/flash.h \
  /sgdk/inc/types.h /sgdk/inc/ext/flash-save/saveman.h \
  /sgdk/inc/ext/console.h /sgdk/inc/config.h /sgdk/inc/string.h \
- /sgdk/inc/maths.h /sgdk/inc/dma.h src/entitymanager.h src/callback.h \
- res/resources.h
+ /sgdk/inc/maths.h /sgdk/inc/dma.h src/game.h src/menu.h res/resources.h \
+ src/characters.h src/entitymanager.h src/callback.h src/i18n.h

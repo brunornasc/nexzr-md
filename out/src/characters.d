@@ -1,6 +1,6 @@
-out/src/characters.o: src/characters.c src/characters.h \
- /sgdk/inc/genesis.h /sgdk/inc/types.h /sgdk/inc/config.h /sgdk/inc/asm.h \
- /sgdk/inc/sys.h /sgdk/inc/sram.h /sgdk/inc/mapper.h /sgdk/inc/memory.h \
+out/src/characters.o: src/characters.c /sgdk/inc/genesis.h \
+ /sgdk/inc/types.h /sgdk/inc/config.h /sgdk/inc/asm.h /sgdk/inc/sys.h \
+ /sgdk/inc/sram.h /sgdk/inc/mapper.h /sgdk/inc/memory.h \
  /sgdk/inc/memory_base.h /sgdk/inc/tools.h /sgdk/inc/bmp.h \
  /sgdk/inc/maths.h /sgdk/inc/vdp.h /sgdk/inc/pal.h /sgdk/inc/dma.h \
  /sgdk/inc/vdp_tile.h /sgdk/inc/vdp_bg.h /sgdk/inc/map.h /sgdk/inc/pool.h \
@@ -16,4 +16,6 @@ out/src/characters.o: src/characters.c src/characters.h \
  /sgdk/inc/task.h /sgdk/inc/task_cst.h /sgdk/inc/ext/flash-save/flash.h \
  /sgdk/inc/types.h /sgdk/inc/ext/flash-save/saveman.h \
  /sgdk/inc/ext/console.h /sgdk/inc/config.h /sgdk/inc/string.h \
- /sgdk/inc/maths.h /sgdk/inc/dma.h res/resources.h
+ /sgdk/inc/maths.h /sgdk/inc/dma.h src/characters.h res/resources.h \
+ src/game.h src/player.h src/menu.h src/entitymanager.h src/callback.h \
+ src/i18n.h

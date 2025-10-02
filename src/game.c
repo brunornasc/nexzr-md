@@ -3,12 +3,9 @@
 #include "characters.h"
 
 void _globalJoyEventHandler(u16 joy, u16 changed, u16 state);
-void (*currentInputHandler)(u16 joy, u16 changed, u16 state) = NULL;
+void initialize_screen();
 
-void initialize_screen() {
-  VDP_setScreenWidth320();
-  VDP_setScreenHeight240();
-}
+void (*currentInputHandler)(u16 joy, u16 changed, u16 state) = NULL;
 
 void Game_init() {
   initialize_screen();
@@ -23,8 +20,12 @@ void Game_init() {
 
   Characters_init();
   Menu_init();
-  currentLevel = 0;
+  currentLevel = MENU;
+}
 
+void initialize_screen() {
+  VDP_setScreenWidth320();
+  VDP_setScreenHeight240();
 }
 
 void Game_update() {

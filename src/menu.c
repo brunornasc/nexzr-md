@@ -47,10 +47,10 @@ void drawMainMenu() {
 }
 
 void drawMainBackground() {
-  	PAL_setPalette(PAL0, titlescreen.palette->data, DMA);
+  	PAL_setPalette(PAL1, titlescreen.palette->data, DMA);
 	VDP_drawImageEx(BG_B,
                   &titlescreen,
-                  TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USER_INDEX),
+                  TILE_ATTR_FULL(PAL1, FALSE, FALSE, FALSE, TILE_USER_INDEX),
                   GAME_WINDOW_START_POSITION_LEFT,
                   GAME_WINDOW_START_POSITION_TOP,
                   FALSE,
@@ -95,7 +95,7 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
 
 		  return;
   		}
-  		else if (option_selected == GAME_START) {    		
+  		else if (option_selected == GAME_START) {
    			initialize_test();
    			return;
   		}
@@ -107,7 +107,7 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
 
 void redrawMainMenu() {
 	Characters_print(TXT_START, game_options.language == LANG_EN ? 15 : 17, 13, option_selected == GAME_START ? FONT_ACTIVE : FONT_INACTIVE);
-	Characters_print("CARNIVAL MODE", 13, 15, option_selected == CARNIVAL_MODE ? FONT_ACTIVE : FONT_INACTIVE);
+	Characters_print("CARNIVAL MODE!", 13, 15, option_selected == CARNIVAL_MODE ? FONT_ACTIVE : FONT_INACTIVE);
 	Characters_print(TXT_OPTIONS, 17, 17, option_selected == OPTIONS ? FONT_ACTIVE : FONT_INACTIVE);
 }
 

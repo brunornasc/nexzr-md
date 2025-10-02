@@ -4,14 +4,14 @@
 #include "entitymanager.h"
 
 #define STAR_COUNT 20
-#define MAX_STAR_HEIGHT 4   // número máximo de blocos (linhas) por estrela
+#define MAX_STAR_HEIGHT 5
 #define WARP_DURATION 180
-#define DEACELERATION_FRAMES_ANIM 10
+#define DEACELERATION_FRAMES_ANIM 7
 
 typedef struct {
     Sprite* spr[MAX_STAR_HEIGHT];
     int x, y;
-    u8 size;       // altura em blocos 1..MAX_STAR_HEIGHT
+    u8 size;
     u8 speed;
     u8 colorFrame;
     bool done;
@@ -23,15 +23,19 @@ static u8 warpTimer = 0;
 static bool isWarping = true;
 static bool isDeacelerating = false;
 static u8 deAceleratedStarsCount = 0;
+static Entity* backgroundTask;
 
 void update_test(void* context);
+void test_joyEventHandler(u16 joy, u16 changed, u16 state);
 
 // inicializa aleatoriamente
 void initialize_test() {
     Game_resetScreen();
     currentFrame = 0;
 
-    PAL_setPalette(PAL0, star_warp.palette->data, DMA);
+    Characters_prepareToPrint();
+
+    PAL_setPalette(SLASHER_PALLETE, star_warp.palette->data, DMA); // mudar depois
 
     for (int i = 0; i < STAR_COUNT; i++) {
         u8 size = (random() % MAX_STAR_HEIGHT) + 1;
@@ -55,10 +59,41 @@ void initialize_test() {
         stars[i].decelCounter = DEACELERATION_FRAMES_ANIM;
     }
 
-    Entity_add(NULL, update_test);
+    backgroundTask = Entity_add(NULL, update_test);
+    Game_setJoyHandler(test_joyEventHandler);
+}
+
+void Background_stop() {
+    backgroundTask->active = false;
+}
+
+void Background_resume() {
+    backgroundTask->active = true;
+}
+
+bool Background_isRunning() {
+    return backgroundTask->active;
+}
+
+void test_joyEventHandler(u16 joy, u16 changed, u16 state) {
+    if (joy == JOY_1) {
+        if (changed & state & BUTTON_START) {
+            game_paused = !game_paused;
+
+            if (game_paused) {
+                Characters_print("PAUSED", 17, 13, FONT_ACTIVE);
+
+            } else {
+                VDP_clearPlane(BG_B, TRUE);
+
+            }
+        }
+    }
 }
 
 void update_test(void* context) {
+    if (game_paused) return;
+    if (currentFrame % 3 != 0 && !isDeacelerating) return; // faço atualização a cada 3 frames melhora performance
 
     for (int i = 0; i < STAR_COUNT; i++) {
         Star* s = &stars[i];
