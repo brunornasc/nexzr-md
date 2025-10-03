@@ -10,6 +10,7 @@ void Level1_init() {
   Background_init();
   PLAYER_init(&player);
   Game_setJoyHandler(level1_joyEventHandler);
+  Characters_prepareToPrint();
 
   currentLevel = LEVEL_1;
   game_paused = false;

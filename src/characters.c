@@ -15,7 +15,6 @@ void Characters_prepareToPrint() {
 }
 
 void Characters_print(const char* str, u16 x, u16 y, FontState state) {
-    Characters_prepareToPrint();
     u16 i = 0;
 
     while (str[i] != '\0') {

@@ -98,6 +98,7 @@ void update_background(void* context) {
         for (int j = 0; j < s->size; j++) {
             if (s->spr[j]) {
                 SPR_setPosition(s->spr[j], s->x, y);
+                SPR_setZ(s->spr[j], SPR_MAX_DEPTH); //infelizmente eu tenho sempre q setar o depth senao vai pra frente da nave
             }
             // coloca os sprites um atras do outro
             y -= 8;

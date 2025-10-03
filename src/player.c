@@ -16,9 +16,8 @@ void PLAYER_init(Player* p) {
     p->moveFrame = 0;
     p->frameCounter = 0;
 
-    p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
+    p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
     SPR_setAnim(p->sprite, SLASHER_IDLE);
-    SPR_setAlwaysOnTop(p->sprite); // msmo que SPR_setDepth
 
     Entity_add(p, PLAYER_handleInput);
 }
