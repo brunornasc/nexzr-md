@@ -41,11 +41,20 @@ void Menu_init() {
 }
 
 void drawMainMenu() {
-    Characters_prepareToPrint();
-  	drawMainBackground();
+  	Game_resetScreen();
+
+  	VDP_drawImage(BG_B, &titlescreen, 0, 0);
+ 	PAL_setPalette(PAL0, palette_black, DMA);
+ 	PAL_fadeIn(0, 63, titlescreen.palette->data, 120, FALSE);
+
+	while (PAL_isDoingFade())
+		SYS_doVBlankProcess();
+
+ 	drawMainBackground();
+ 	Characters_prepareToPrint();
 	redrawMainMenu();
 }
-
+// To deixando no BG_B pra botar o paralax das estrelas caindo no fundo como no original
 void drawMainBackground() {
   	PAL_setPalette(PAL1, titlescreen.palette->data, DMA);
 	VDP_drawImageEx(BG_B,
@@ -123,10 +132,8 @@ void handleSecondaryMenu(u16 joy, u16 changed, u16 state) {
    		if (option_selected == BACK) {
 		  menu_current = MAIN;
     	  option_selected = GAME_START;
-		  VDP_clearPlane(BG_B, TRUE);
-    	  drawMainBackground();
-    	  drawMainMenu();
 
+    	  drawMainMenu();
 		  return;
   		}
   		else if (option_selected == LANGUAGE) {
