@@ -11,10 +11,11 @@ void Characters_init() {
 }
 
 void Characters_prepareToPrint() {
-    PAL_setPalette(SLASHER_PALLETE, slasher.palette->data, DMA);
+    PAL_setPalette(CHARACTER_PALLETE, slasher.palette->data, DMA);
 }
 
 void Characters_print(const char* str, u16 x, u16 y, FontState state) {
+    Characters_prepareToPrint();
     u16 i = 0;
 
     while (str[i] != '\0') {
@@ -44,7 +45,7 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
 
         // Desenha o tile na tela
         VDP_setTileMapXY(BG_B,
-            TILE_ATTR_FULL(SLASHER_PALLETE, TRUE, FALSE, FALSE, TILE_FONT_INDEX + tileIndex),
+            TILE_ATTR_FULL(CHARACTER_PALLETE, TRUE, FALSE, FALSE, TILE_FONT_INDEX + tileIndex),
             x + i, y);
 
         i++;

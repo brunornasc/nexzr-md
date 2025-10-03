@@ -43,23 +43,24 @@ void Menu_init() {
 void drawMainMenu() {
   	Game_resetScreen();
 
-  	VDP_drawImage(BG_B, &titlescreen, 0, 0);
- 	PAL_setPalette(PAL0, palette_black, DMA);
- 	PAL_fadeIn(0, 63, titlescreen.palette->data, 120, FALSE);
+// tem q ter essa ordem desenha a imagem na paleta preta e comeca o fate depois carreg aa palheta
+ 	drawMainBackground();
+ 	// funciona na PAL0
+ 	PAL_fadeIn(0, 63, titlescreen.palette->data, 20, FALSE);
+ 	PAL_setPalette(PAL0, titlescreen.palette->data, DMA);
 
 	while (PAL_isDoingFade())
 		SYS_doVBlankProcess();
 
- 	drawMainBackground();
  	Characters_prepareToPrint();
 	redrawMainMenu();
 }
 // To deixando no BG_B pra botar o paralax das estrelas caindo no fundo como no original
 void drawMainBackground() {
-  	PAL_setPalette(PAL1, titlescreen.palette->data, DMA);
+//  	PAL_setPalette(BACKGROUND_PALLETE, titlescreen.palette->data, DMA);
 	VDP_drawImageEx(BG_B,
                   &titlescreen,
-                  TILE_ATTR_FULL(PAL1, FALSE, FALSE, FALSE, TILE_USER_INDEX),
+                  TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USER_INDEX),
                   GAME_WINDOW_START_POSITION_LEFT,
                   GAME_WINDOW_START_POSITION_TOP,
                   FALSE,
@@ -67,10 +68,10 @@ void drawMainBackground() {
 }
 
 void drawSecondaryBackground() {
-  	PAL_setPalette(PAL0, menuscreen.palette->data, DMA);
+  	PAL_setPalette(BACKGROUND_PALLETE, menuscreen.palette->data, DMA);
 	VDP_drawImageEx(BG_A,
                   &menuscreen,
-                  TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USER_INDEX),
+                  TILE_ATTR_FULL(BACKGROUND_PALLETE, FALSE, FALSE, FALSE, TILE_USER_INDEX),
                   GAME_WINDOW_START_POSITION_LEFT,
                   GAME_WINDOW_START_POSITION_TOP,
                   FALSE,
@@ -105,6 +106,11 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
 		  return;
   		}
   		else if (option_selected == GAME_START) {
+    		PAL_fadeOut(0, 63, 40, FALSE);
+
+		   while (PAL_isDoingFade())
+				SYS_doVBlankProcess();
+
    			Level1_init();
    			return;
   		}
