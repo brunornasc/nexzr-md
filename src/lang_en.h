@@ -15,4 +15,6 @@
 #define LANG_EN_TXT_ON "ON"
 #define LANG_EN_TXT_OFF "OFF"
 
+#define LANG_EN_TXT_PAUSED "PAUSED"
+
 #endif

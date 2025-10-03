@@ -8,6 +8,8 @@
 #define MOVE_HOLD_FRAME1 2
 #define MOVE_HOLD_FRAME2 3
 
+#define SLASHER_VELOCITY 2
+
 void PLAYER_init(Player* p) {
     p->x = (GAME_WINDOW_WIDTH / 2) - 16;
     p->y = (GAME_WINDOW_HEIGHT) - 64;
@@ -16,7 +18,7 @@ void PLAYER_init(Player* p) {
 
     p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
     SPR_setAnim(p->sprite, SLASHER_IDLE);
-    SPR_setAlwaysOnTop(p->sprite);
+    SPR_setAlwaysOnTop(p->sprite); // msmo que SPR_setDepth
 
     Entity_add(p, PLAYER_handleInput);
 }
@@ -29,8 +31,10 @@ void PLAYER_handleInput(void* context) {
     u16 value = JOY_readJoypad(JOY_1);
 
     if (value & BUTTON_RIGHT) {
-        p->x++;
+        p->x += SLASHER_VELOCITY;
+
         SPR_setHFlip(p->sprite, FALSE);
+
         if (p->sprite->animInd != SLASHER_MOVING)
             SPR_setAnim(p->sprite, SLASHER_MOVING);
 
@@ -42,7 +46,8 @@ void PLAYER_handleInput(void* context) {
         }
     }
     else if (value & BUTTON_LEFT) {
-        p->x--;
+        p->x -= SLASHER_VELOCITY;
+
         SPR_setHFlip(p->sprite, TRUE);
         if (p->sprite->animInd != SLASHER_MOVING)
             SPR_setAnim(p->sprite, SLASHER_MOVING);
@@ -59,8 +64,10 @@ void PLAYER_handleInput(void* context) {
         SPR_setAnim(p->sprite, SLASHER_IDLE);
     }
 
-    if (value & BUTTON_UP)    p->y--;
-    if (value & BUTTON_DOWN)  p->y++;
+    if (value & BUTTON_UP)    p->y -= SLASHER_VELOCITY;
+    if (value & BUTTON_DOWN)  p->y += SLASHER_VELOCITY;
+
+    //TODO constraints de area ou vai deixar sair da tela?
 
     SPR_setPosition(p->sprite, p->x, p->y);
 }

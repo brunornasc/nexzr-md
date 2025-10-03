@@ -15,4 +15,6 @@
 #define LANG_PT_TXT_ON "LIGADO"
 #define LANG_PT_TXT_OFF "DESLIGADO"
 
+#define LANG_PT_TXT_PAUSED "PAUSADO"
+
 #endif

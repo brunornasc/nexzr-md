@@ -23,4 +23,6 @@ extern const char* TXT_BACK;
 extern const char* TXT_ON;
 extern const char* TXT_OFF;
 
+extern const char* TXT_PAUSED;
+
 #endif

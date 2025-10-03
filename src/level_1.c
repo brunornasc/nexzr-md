@@ -2,6 +2,7 @@
 #include "background.h"
 #include "game.h"
 #include "player.h"
+#include "i18n.h"
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
 
@@ -20,7 +21,7 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
             game_paused = !game_paused;
 
             if (Game_isPaused()) {
-                Characters_print("PAUSED", 17, 13, FONT_ACTIVE);
+                Characters_print(TXT_PAUSED, 17, 13, FONT_ACTIVE);
                 Background_stop();
 
             } else {

@@ -15,4 +15,6 @@
 #define LANG_ES_TXT_ON "ENCENDIDO"
 #define LANG_ES_TXT_OFF "NO ENCENDIDO"
 
+#define LANG_ES_TXT_PAUSED "PAUSADO"
+
 #endif

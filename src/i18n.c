@@ -15,6 +15,7 @@ const char* TXT_CURRENT_LANGUAGE;
 
 const char* TXT_ON;
 const char* TXT_OFF;
+const char* TXT_PAUSED;
 
 void I18N_setLanguage(Language lang) {
     switch (lang) {
@@ -29,6 +30,7 @@ void I18N_setLanguage(Language lang) {
             TXT_CURRENT_LANGUAGE = LANG_PT_TXT_CURRENT_LANG;
             TXT_ON = LANG_PT_TXT_ON;
             TXT_OFF = LANG_PT_TXT_OFF;
+            TXT_PAUSED = LANG_PT_TXT_PAUSED;
             break;
         case LANG_EN:
             TXT_START   = LANG_EN_TXT_START;
@@ -41,6 +43,7 @@ void I18N_setLanguage(Language lang) {
             TXT_CURRENT_LANGUAGE = LANG_EN_TXT_CURRENT_LANG;
             TXT_ON = LANG_EN_TXT_ON;
             TXT_OFF = LANG_EN_TXT_OFF;
+            TXT_PAUSED = LANG_EN_TXT_PAUSED;
             break;
         case LANG_ES:
             TXT_START   = LANG_ES_TXT_START;
@@ -53,6 +56,7 @@ void I18N_setLanguage(Language lang) {
             TXT_CURRENT_LANGUAGE = LANG_ES_TXT_CURRENT_LANG;
             TXT_ON = LANG_ES_TXT_ON;
             TXT_OFF = LANG_ES_TXT_OFF;
+            TXT_PAUSED = LANG_ES_TXT_PAUSED;
             break;
     }
 }

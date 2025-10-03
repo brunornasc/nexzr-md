@@ -30,7 +30,7 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
             tileIndex = 26 + (c - '0');  // supondo que 0-9 vêm logo após A-Z
         }
         else if (c == '!') {
-            tileIndex = 45;
+            tileIndex = state == FONT_ACTIVE ? 45 : 89;
         }
         else {
             // caractere não suportado → pula
@@ -39,7 +39,7 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
             continue;
         }
 
-        if (state == FONT_INACTIVE)
+        if (state == FONT_INACTIVE && c != '!')
             tileIndex += CHARS_ACTIVE_OFFSET;
 
         // Desenha o tile na tela
