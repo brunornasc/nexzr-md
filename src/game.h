@@ -16,6 +16,7 @@
 #define SLASHER_PALLETE 1
 #define CHARACTER_PALLETE 1
 #define BACKGROUND_PALLETE 0
+#define MAX_LIVES 9
 
 typedef enum {
   EASY,
@@ -49,5 +50,10 @@ void Game_setJoyHandler(void (*handler)(u16 joy, u16 changed, u16 state));
 void Game_resetScreen();
 bool Game_isPaused();
 void Game_pause();
+void Game_over();
+void Game_loseLive();
+void Game_addLive();
+u8 Game_getLivesCount();
+void Game_setLives(u8 count);
 
 #endif

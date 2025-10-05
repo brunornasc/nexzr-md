@@ -16,6 +16,8 @@ typedef struct {
     u8 colorFrame;
     bool done;
     u8 decelCounter;
+    u8 blinkCounter;
+    bool visible;
 } Star;
 
 static Star stars[STAR_COUNT];
@@ -58,6 +60,8 @@ void Background_init() {
         stars[i].colorFrame = colorFrame;
         stars[i].done = false;
         stars[i].decelCounter = DEACELERATION_FRAMES_ANIM;
+        stars[i].blinkCounter = 200; // mudar
+        stars[i].visible = true;
     }
 
     backgroundTask = Entity_add(NULL, update_background);
@@ -94,13 +98,26 @@ void update_background(void* context) {
 
         int y = s->y;
 
-        for (int j = 0; j < s->size; j++) {
-            if (s->spr[j]) {
-                SPR_setPosition(s->spr[j], s->x, y);
-                SPR_setZ(s->spr[j], SPR_MAX_DEPTH); //infelizmente eu tenho sempre q setar o depth senao vai pra frente da nave
+        s->blinkCounter--;
+
+        if (s->blinkCounter < (s->speed + 2)) {
+            SPR_setVisibility(s->spr[0], HIDDEN);
+            s->blinkCounter = random() % 20 + 1;
+            s->visible = false;
+
+        } else {
+            if (!s->visible) {
+                SPR_setVisibility(s->spr[0], VISIBLE);
+                s->visible = true;
             }
-            // coloca os sprites um atras do outro
-            y -= 8;
+            for (int j = 0; j < s->size; j++) {
+//                if (s->spr[j]) {
+                    SPR_setPosition(s->spr[j], s->x, y);
+                    SPR_setZ(s->spr[j], SPR_MAX_DEPTH); //infelizmente eu tenho sempre q setar o depth senao vai pra frente da nave
+//                }
+                // coloca os sprites um atras do outro
+                y -= 8;
+            }
         }
 
         // fazer a animacao diminuindo e diminuir a velocidade e deixar

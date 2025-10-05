@@ -47,7 +47,7 @@ void drawMainMenu() {
  	drawMainBackground();
  	// funciona na PAL0
  	PAL_fadeIn(0, 63, titlescreen.palette->data, 20, FALSE);
- 	PAL_setPalette(PAL0, titlescreen.palette->data, DMA);
+ 	PAL_setPalette(BACKGROUND_PALLETE, titlescreen.palette->data, DMA);
 
 	while (PAL_isDoingFade())
 		SYS_doVBlankProcess();
@@ -60,17 +60,6 @@ void drawMainBackground() {
 //  	PAL_setPalette(BACKGROUND_PALLETE, titlescreen.palette->data, DMA);
 	VDP_drawImageEx(BG_B,
                   &titlescreen,
-                  TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, TILE_USER_INDEX),
-                  GAME_WINDOW_START_POSITION_LEFT,
-                  GAME_WINDOW_START_POSITION_TOP,
-                  FALSE,
-                  TRUE);
-}
-
-void drawSecondaryBackground() {
-  	PAL_setPalette(BACKGROUND_PALLETE, menuscreen.palette->data, DMA);
-	VDP_drawImageEx(BG_A,
-                  &menuscreen,
                   TILE_ATTR_FULL(BACKGROUND_PALLETE, FALSE, FALSE, FALSE, TILE_USER_INDEX),
                   GAME_WINDOW_START_POSITION_LEFT,
                   GAME_WINDOW_START_POSITION_TOP,

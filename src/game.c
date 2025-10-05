@@ -1,14 +1,17 @@
 #include "game.h"
 #include "menu.h"
 #include "characters.h"
+#include "hud.h"
 
 u32 currentFrame;
 u8 currentLevel;
 bool game_paused;
 Player player;
+u8 game_lives;
 
 void _globalJoyEventHandler(u16 joy, u16 changed, u16 state);
 void initialize_screen();
+void show_lives();
 
 void (*currentInputHandler)(u16 joy, u16 changed, u16 state) = NULL;
 
@@ -28,6 +31,7 @@ void Game_init() {
   currentLevel = MENU;
 
   game_paused = false;
+  game_lives = 4;
 }
 
 void initialize_screen() {
@@ -69,4 +73,42 @@ bool Game_isPaused() {
 
 void Game_pause() {
   game_paused = !game_paused;
+}
+
+void Game_over() {
+  
+}
+
+void Game_loseLive() {
+  game_lives--;
+  show_lives();
+
+  if (game_lives <= 0)
+    Game_over();
+}
+
+void Game_addLive() {
+  if (game_lives >= MAX_LIVES)
+    return;
+
+  game_lives++;
+  show_lives();
+}
+
+void show_lives() {
+  if (currentLevel == MENU)
+    return;
+
+  HUD_setLives(game_lives);
+}
+
+u8 Game_getLivesCount() {
+  return game_lives;
+}
+
+void Game_setLives(u8 count) {
+  if (count > MAX_LIVES)
+    return;
+
+  game_lives = count;
 }

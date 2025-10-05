@@ -16,7 +16,9 @@ void Level1_init() {
   currentLevel = LEVEL_1;
 
   // hud test
-  HUD_setScore(100);
+  HUD_init();
+  HUD_setScore(10000);
+  HUD_setLives(4);
 }
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
@@ -27,5 +29,3 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
         }
     }
 }
-
-// TODO hud
