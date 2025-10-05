@@ -27,7 +27,7 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
         }
         // Dígitos 0-9
         else if (c >= '0' && c <= '9') {
-            tileIndex = 26 + (c - '0');  // supondo que 0-9 vêm logo após A-Z
+            tileIndex = 28 + (c - '0');  // supondo que 0-9 vêm logo após A-Z
         }
         else if (c == '!') {
             tileIndex = state == FONT_ACTIVE ? 45 : 89;
@@ -50,4 +50,13 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
         i++;
     }
 
+}
+
+void Characters_clearXY(u16 x, u16 y, u16 width) {
+    u16 i;
+    for (i = 0; i < width; i++) {
+        VDP_setTileMapXY(BG_B,
+            TILE_ATTR_FULL(CHARACTER_PALLETE, FALSE, FALSE, FALSE, 0),
+            x + i, y);
+    }
 }

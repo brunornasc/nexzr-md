@@ -18,4 +18,4 @@ out/src/level_1.o: src/level_1.c src/level_1.h /sgdk/inc/genesis.h \
  /sgdk/inc/ext/console.h /sgdk/inc/config.h /sgdk/inc/string.h \
  /sgdk/inc/maths.h /sgdk/inc/dma.h src/background.h src/game.h \
  src/player.h src/menu.h res/resources.h src/characters.h \
- src/entitymanager.h src/callback.h src/i18n.h
+ src/entitymanager.h src/callback.h src/i18n.h src/hud.h

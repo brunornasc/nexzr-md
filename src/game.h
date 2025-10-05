@@ -48,5 +48,6 @@ void Game_update();
 void Game_setJoyHandler(void (*handler)(u16 joy, u16 changed, u16 state));
 void Game_resetScreen();
 bool Game_isPaused();
+void Game_pause();
 
 #endif

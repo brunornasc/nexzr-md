@@ -61,7 +61,6 @@ void Background_init() {
     }
 
     backgroundTask = Entity_add(NULL, update_background);
-
 }
 
 void Background_stop() {
@@ -77,7 +76,7 @@ bool Background_isRunning() {
 }
 
 void update_background(void* context) {
-    if (game_paused) return;
+    if (Game_isPaused()) return;
 
     // desacelera depois do warp pra deixar mais parecido com o original
     if (currentFrame % 3 != 0 && !isDeacelerating && !isWarping) return;

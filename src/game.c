@@ -26,6 +26,8 @@ void Game_init() {
   Characters_init();
   Menu_init();
   currentLevel = MENU;
+
+  game_paused = false;
 }
 
 void initialize_screen() {
@@ -63,4 +65,8 @@ void Game_resetScreen() {
 
 bool Game_isPaused() {
   return game_paused;
+}
+
+void Game_pause() {
+  game_paused = !game_paused;
 }

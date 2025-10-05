@@ -1,9 +1,11 @@
 #include "entitymanager.h"
 
 Entity entities[MAX_ENTITIES];
-unsigned entityCount = 0;
+u8 entityCount = 0;
 
 Entity* Entity_add(void* ctx, Func func) {
+    if (entityCount >= (MAX_ENTITIES)) return NULL;
+
     entities[entityCount].context = ctx;
     entities[entityCount].func = func;
     entities[entityCount].active = true;
@@ -13,8 +15,9 @@ Entity* Entity_add(void* ctx, Func func) {
 }
 
 void Entity_removeEntity(unsigned  index) {
-    if (index >= entityCount) return;
+    if (index >= entityCount && entityCount <= 0) return;
 
+    entities[index].active = false;
     entities[index] = entities[entityCount - 1];
     entityCount--;
 }

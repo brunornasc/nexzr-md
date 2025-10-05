@@ -3,6 +3,7 @@
 #include "game.h"
 #include "player.h"
 #include "i18n.h"
+#include "hud.h"
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
 
@@ -13,24 +14,18 @@ void Level1_init() {
   Characters_prepareToPrint();
 
   currentLevel = LEVEL_1;
-  game_paused = false;
+
+  // hud test
+  HUD_setScore(100);
 }
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
     if (joy == JOY_1) {
         if (changed & state & BUTTON_START) {
-            game_paused = !game_paused;
-
-            if (Game_isPaused()) {
-                Characters_print(TXT_PAUSED, 17, 13, FONT_ACTIVE);
-                Background_stop();
-
-            } else {
-                VDP_clearPlane(BG_B, TRUE);
-                Background_resume();
-
-            }
-
+            Game_pause();
+            HUD_showPaused();
         }
     }
 }
+
+// TODO hud
