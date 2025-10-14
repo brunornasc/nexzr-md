@@ -1,5 +1,6 @@
 IMAGE titlescreen "sprites/misc/titlescreen/titlescreen.png" BEST ALL
-#IMAGE menuscreen "sprites/misc/titlescreen/titlescreen_og.png" BEST ALL
+IMAGE intro "sprites/misc/intro.png" BEST ALL
+IMAGE naxat "sprites/misc/naxat.png" BEST ALL
 TILESET characters "sprites/misc/characters.png" BEST
 SPRITE hud_slasher "sprites/slasher/minislasher.png" 2 2 BEST 0
 

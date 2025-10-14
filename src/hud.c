@@ -8,6 +8,8 @@ void Characters_clear(u16 x, u16 y, u16 width);
 
 void HUD_init() {
   HUD_slasher = SPR_addSprite(&hud_slasher, GAME_WINDOW_WIDTH - 32, GAME_WINDOW_HEIGHT - 32, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
+  HUD_setScore(0);
+  HUD_setLives(Game_getLivesCount());
 }
 
 void HUD_clear() {
@@ -36,7 +38,7 @@ void HUD_showPaused() {
 		Characters_print(TXT_PAUSED, 17, 13, FONT_ACTIVE);
 
 	} else {		
-  		Characters_clearXY(17, 13, 10);
+  	Characters_clearXY(17, 13, 10);
 
 	}
 }

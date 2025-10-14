@@ -17,6 +17,7 @@
 #define CHARACTER_PALLETE 1
 #define BACKGROUND_PALLETE 0
 #define MAX_LIVES 9
+#define FRAMES_PER_SECOND 60
 
 typedef enum {
   EASY,
@@ -55,5 +56,6 @@ void Game_loseLive();
 void Game_addLive();
 u8 Game_getLivesCount();
 void Game_setLives(u8 count);
+void Game_resetCurrentFrame();
 
 #endif

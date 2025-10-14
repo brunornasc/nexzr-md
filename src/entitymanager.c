@@ -9,12 +9,14 @@ Entity* Entity_add(void* ctx, Func func) {
     entities[entityCount].context = ctx;
     entities[entityCount].func = func;
     entities[entityCount].active = true;
+    entities[entityCount].index = entityCount;
+
     entityCount++;
 
     return &entities[entityCount - 1];
 }
 
-void Entity_removeEntity(unsigned  index) {
+void Entity_removeEntity(unsigned index) {
     if (index >= entityCount && entityCount <= 0) return;
 
     entities[index].active = false;

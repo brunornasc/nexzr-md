@@ -5,7 +5,7 @@
 
 #define STAR_COUNT 20
 #define MAX_STAR_HEIGHT 5
-#define WARP_DURATION 180
+#define WARP_DURATION 230
 #define DEACELERATION_FRAMES_ANIM 7
 
 typedef struct {
@@ -60,7 +60,7 @@ void Background_init() {
         stars[i].colorFrame = colorFrame;
         stars[i].done = false;
         stars[i].decelCounter = DEACELERATION_FRAMES_ANIM;
-        stars[i].blinkCounter = 200; // mudar
+        stars[i].blinkCounter = WARP_DURATION + 20;
         stars[i].visible = true;
     }
 
@@ -96,7 +96,7 @@ void update_background(void* context) {
             s->x = random() % GAME_WINDOW_WIDTH;
         }
 
-        int y = s->y;
+
 
         s->blinkCounter--;
 
@@ -110,6 +110,9 @@ void update_background(void* context) {
                 SPR_setVisibility(s->spr[0], VISIBLE);
                 s->visible = true;
             }
+
+            int y = s->y;
+
             for (int j = 0; j < s->size; j++) {
 //                if (s->spr[j]) {
                     SPR_setPosition(s->spr[j], s->x, y);

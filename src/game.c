@@ -2,6 +2,7 @@
 #include "menu.h"
 #include "characters.h"
 #include "hud.h"
+#include "intro.h"
 
 u32 currentFrame;
 u8 currentLevel;
@@ -27,7 +28,8 @@ void Game_init() {
   game_options.language = LANG_EN;
 
   Characters_init();
-  Menu_init();
+
+  Intro_init(&Menu_init);
   currentLevel = MENU;
 
   game_paused = false;
@@ -111,4 +113,8 @@ void Game_setLives(u8 count) {
     return;
 
   game_lives = count;
+}
+
+void Game_resetCurrentFrame() {
+  currentFrame = 0;
 }

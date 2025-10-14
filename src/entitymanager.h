@@ -10,6 +10,7 @@ typedef struct {
     void* context;
     Func func;
     bool active;
+    u8 index;
 } Entity;
 
 Entity* Entity_add(void* ctx, Func func);

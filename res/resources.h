@@ -2,6 +2,8 @@
 #define _RES_RESOURCES_H_
 
 extern const Image titlescreen;
+extern const Image intro;
+extern const Image naxat;
 extern const TileSet characters;
 extern const SpriteDefinition hud_slasher;
 extern const SpriteDefinition slasher;

@@ -4,8 +4,14 @@
 #include "player.h"
 #include "i18n.h"
 #include "hud.h"
+#include "entitymanager.h"
+
+Entity* level1Entity;
+unsigned long level1_frame = 0;
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
+void level1_start(void* context);
+void level1_dispose();
 
 void Level1_init() {
   Background_init();
@@ -15,10 +21,8 @@ void Level1_init() {
 
   currentLevel = LEVEL_1;
 
-  // hud test
   HUD_init();
-  HUD_setScore(10000);
-  HUD_setLives(4);
+  level1Entity = Entity_add(NULL, level1_start);
 }
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
@@ -28,4 +32,13 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
             HUD_showPaused();
         }
     }
+}
+
+void level1_start(void* context) {
+
+  level1_frame++;
+}
+
+void level1_dispose() {
+  Entity_removeEntity(level1Entity->index);
 }
