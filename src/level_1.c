@@ -10,7 +10,7 @@ Entity* level1Entity;
 unsigned long level1_frame = 0;
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
-void level1_start(void* context);
+void level1_update(void* context);
 void level1_dispose();
 
 void Level1_init() {
@@ -22,7 +22,7 @@ void Level1_init() {
   currentLevel = LEVEL_1;
 
   HUD_init();
-  level1Entity = Entity_add(NULL, level1_start);
+  level1Entity = Entity_add(NULL, level1_update);
 }
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
@@ -34,7 +34,7 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
     }
 }
 
-void level1_start(void* context) {
+void level1_update(void* context) {
 
   level1_frame++;
 }

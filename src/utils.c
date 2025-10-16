@@ -9,7 +9,7 @@ void Utils_wait(u8 seconds) {
     SYS_doVBlankProcess();
 }
 
-void Utils_loadAndfadeIn(Image img, u8 seconds) {
+void Utils_loadAndFadeIn(Image img, u8 seconds) {
   unsigned t = seconds * FRAMES_PER_SECOND;
 
   VDP_drawImageEx(BG_A,
