@@ -84,3 +84,7 @@ void constraint_animation(Player* p) {
         SPR_setFrame(p->sprite, p->moveFrame);
     }
 }
+
+void PLAYER_gotHit(u8 damage) {
+    // Implement player damage handling here
+}

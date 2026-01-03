@@ -3,6 +3,8 @@
 
 #include <genesis.h>
 
+#define MAX_ENEMIES 10
+
 typedef enum {
     ENEMY_TYPE_1,
     ENEMY_TYPE_2,
@@ -24,7 +26,14 @@ typedef struct {
     bool active;
     bool inverted;
     Sprite* sprite;
+    u8 health;
 } Enemy;
+
+extern Enemy enemies[MAX_ENEMIES];
+
+void ENEMY_gotHit(Enemy* enemy, u8 damage);
+void ENEMY_deactivate(Enemy* enemy);
+void ENEMY_initializeAll();
 
 
 #endif

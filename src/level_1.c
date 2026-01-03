@@ -7,11 +7,10 @@
 #include "entitymanager.h"
 #include "enemies.h"
 #include "bullet.h"
+#include "collision.h"
 
 Entity* level1Entity;
 unsigned long level1_frame = 0;
-
-Enemy enemies[1];
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
 void level1_update(void* context);
@@ -44,8 +43,7 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
 void level1_update(void* context) {
   enemies[0].y++;
   SPR_setPosition(enemies[0].sprite, enemies[0].x, enemies[0].y);
-  Bullet_updateAll();
-
+  BULLET_updateAll();
   level1_frame++;
 }
 
@@ -63,6 +61,7 @@ void level1_enemyTest() {
   enemies[0].type = ENEMY_TYPE_1;
   enemies[0].active = true;
   enemies[0].inverted = false;
+  enemies[0].health = 3;
 
   PAL_setPalette(ENEMY_PALLETE, enemy_0006.palette->data, DMA);
   enemies[0].sprite = SPR_addSprite(&enemy_0006, enemies[0].x, enemies[0].y, TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE));
