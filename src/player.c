@@ -2,6 +2,7 @@
 #include "game.h"
 #include "entitymanager.h"
 #include "resources.h"
+#include "bullet.h"
 
 #define SLASHER_IDLE   0
 #define SLASHER_MOVING 1
@@ -63,6 +64,10 @@ void PLAYER_handleInput(void* context) {
     if (value & BUTTON_DOWN) {
         if (p->y < (GAME_WINDOW_HEIGHT - 48))
             p->y += SLASHER_VELOCITY;
+    }
+
+    if (value & BUTTON_A) {
+        BULLET_slasherShoot(p->x + 8, p->y);
     }
 
     SPR_setPosition(p->sprite, p->x, p->y);

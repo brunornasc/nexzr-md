@@ -4,6 +4,7 @@
 #include "hud.h"
 #include "intro.h"
 
+game_options_struct game_options;
 u32 currentFrame;
 u8 currentLevel;
 bool game_paused;

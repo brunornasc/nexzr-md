@@ -2,6 +2,7 @@
 #include "game.h"
 #include "i18n.h"
 #include "level_1.h"
+#include "bullet.h"
 
 typedef enum {
   GAME_START,
@@ -95,11 +96,12 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
 		  return;
   		}
   		else if (option_selected == GAME_START) {
-    		PAL_fadeOut(0, 63, 40, FALSE);
+    		(0, 63, 40, FALSE);
 
-		   while (PAL_isDoingFade())
+		    while (PAL_isDoingFade())
 				SYS_doVBlankProcess();
 
+			BULLET_setup_pool();
    			Level1_init();
    			return;
   		}

@@ -15,9 +15,14 @@
 #define GAME_WINDOW_HEIGHT 240
 #define SLASHER_PALLETE 1
 #define CHARACTER_PALLETE 1
+#define ENEMY_PALLETE 2
 #define BACKGROUND_PALLETE 0
 #define MAX_LIVES 9
 #define FRAMES_PER_SECOND 60
+#define MAX_BULLETS_ON_SCREEN 20
+#define SLASHER_BULLET_PALLETE 1
+#define MAX_ENEMIES_ON_SCREEN 10
+#define MAX_SLASHER_BULLETS 9
 
 typedef enum {
   EASY,
@@ -36,7 +41,7 @@ typedef enum {
   LEVEL_1
 } levels;
 
-static game_options_struct game_options;
+extern game_options_struct game_options;
 
 //u32 globalCounter;
 extern u32 currentFrame;
