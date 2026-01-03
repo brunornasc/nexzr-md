@@ -8,6 +8,7 @@
 #include "enemies.h"
 #include "bullet.h"
 #include "collision.h"
+#include "resources.h"
 
 Entity* level1Entity;
 unsigned long level1_frame = 0;
@@ -15,7 +16,7 @@ unsigned long level1_frame = 0;
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
 void level1_update(void* context);
 void level1_dispose();
-void level1_enemyTest();
+void level1_script();
 
 void Level1_init() {
   Background_init();
@@ -26,8 +27,7 @@ void Level1_init() {
   currentLevel = LEVEL_1;
 
   HUD_init();
-
-  level1_enemyTest();
+  ENEMY_initializeAll();
   level1Entity = Entity_add(NULL, level1_update);
 }
 
@@ -41,8 +41,9 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
 }
 
 void level1_update(void* context) {
-  enemies[0].y++;
-  SPR_setPosition(enemies[0].sprite, enemies[0].x, enemies[0].y);
+  if (Game_isPaused()) return;
+
+  level1_script();
   BULLET_updateAll();
   level1_frame++;
 }
@@ -51,20 +52,24 @@ void level1_dispose() {
   Entity_removeEntity(level1Entity->index);
 }
 
-void level1_enemyTest() {
-  enemies[0].x = 0;
-  enemies[0].y = 0;
-  enemies[0].width = 16;
-  enemies[0].height = 16;
-  enemies[0].speed = 1;
-  enemies[0].spriteIndex = 0;
-  enemies[0].type = ENEMY_TYPE_1;
-  enemies[0].active = true;
-  enemies[0].inverted = false;
-  enemies[0].health = 3;
+void level1_script() {
+  if (level1_frame == 120) {
+    Enemy e;
+    e.x = 0;
+    e.y = 0;
+    e.width = 16;
+    e.height = 16;
+    e.y_speed = 1;
+    e.x_speed = 0;
+    e.spriteIndex = 0;
+    e.type = ENEMY_TYPE_1;
+    e.active = true;
+    e.inverted = false;
+    e.health = 10;
+    e.sprite = &enemy_0002;
 
-  PAL_setPalette(ENEMY_PALLETE, enemy_0006.palette->data, DMA);
-  enemies[0].sprite = SPR_addSprite(&enemy_0006, enemies[0].x, enemies[0].y, TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE));
+    ENEMY_create(&e);
+  }
 
-  SPR_setAnim(enemies[0].sprite, 0);
+  ENEMY_update();
 }

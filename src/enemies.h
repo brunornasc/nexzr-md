@@ -20,13 +20,15 @@ typedef struct {
     s16 y;
     s16 width;
     s16 height;
-    s16 speed;
+    s16 x_speed, y_speed;
     u8 spriteIndex;
     EnemyType type;
     bool active;
     bool inverted;
-    Sprite* sprite;
+    SpriteDefinition* sprite;
     u8 health;
+    Sprite *bulletSprite;
+    u8 index;
 } Enemy;
 
 extern Enemy enemies[MAX_ENEMIES];
@@ -34,6 +36,8 @@ extern Enemy enemies[MAX_ENEMIES];
 void ENEMY_gotHit(Enemy* enemy, u8 damage);
 void ENEMY_deactivate(Enemy* enemy);
 void ENEMY_initializeAll();
+void ENEMY_create(Enemy *enemy);
+void ENEMY_update();
 
 
 #endif

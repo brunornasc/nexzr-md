@@ -7,7 +7,7 @@
 #include "bullet.h"
 #include "game.h"
 
-void COLLISION_checkBulletCollisionWithSlasher(Bullet* bullet);
-void COLLISION_checkBulletCollisionWithEnemy(Bullet* bullet);
+int COLLISION_checkBulletCollisionWithSlasher(Bullet* bullet);
+int COLLISION_checkBulletCollisionWithEnemy(Bullet* bullet);
 
 #endif

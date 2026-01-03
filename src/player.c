@@ -88,3 +88,12 @@ void constraint_animation(Player* p) {
 void PLAYER_gotHit(u8 damage) {
     // Implement player damage handling here
 }
+
+void PLAYER_dispose(Player* p) {
+    if (p->sprite) {
+        SPR_releaseSprite(p->sprite);
+        p->sprite = NULL;
+    }
+
+    Entity_removeByContext(p);
+}

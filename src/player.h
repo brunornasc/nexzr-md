@@ -12,5 +12,7 @@ typedef struct {
 
 void PLAYER_init(Player* p);
 void PLAYER_handleInput(void* context);
+void PLAYER_gotHit(u8 damage);
+void PLAYER_dispose(Player* p);
 
 #endif
