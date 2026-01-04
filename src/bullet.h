@@ -19,5 +19,5 @@ typedef struct {
 void BULLET_setup_pool();
 void BULLET_updateAll();
 void BULLET_slasherShoot(s16 posX, s16 posY);
-void BULLET_enemyShoot(s16 posX, s16 posY, s16 velX, s16 velY);
+void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 velX, s16 velY);
 #endif

@@ -27,7 +27,7 @@ typedef struct {
     bool inverted;
     SpriteDefinition* sprite;
     u8 health;
-    Sprite *bulletSprite;
+    SpriteDefinition *bulletSprite;
     u8 index;
 } Enemy;
 
@@ -36,8 +36,9 @@ extern Enemy enemies[MAX_ENEMIES];
 void ENEMY_gotHit(Enemy* enemy, u8 damage);
 void ENEMY_deactivate(Enemy* enemy);
 void ENEMY_initializeAll();
-void ENEMY_create(Enemy *enemy);
+Enemy* ENEMY_create(Enemy *enemy);
 void ENEMY_update();
+void ENEMY_shoot(Enemy* enemy, SpriteDefinition* bulletSprite, s16 velX, s16 velY);
 
 
 #endif

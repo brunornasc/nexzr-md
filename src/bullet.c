@@ -34,7 +34,6 @@ void BULLET_slasherShoot(s16 posX, s16 posY) {
     u8 idx = slasher_free_indices[slasher_top--];
     Bullet* b = &slasher_bullets[idx];
     
-    // ajustar
     b->x = posX; 
     b->y = posY;
     b->velX = 0; 
@@ -47,16 +46,21 @@ void BULLET_slasherShoot(s16 posX, s16 posY) {
     slasher_shoot_timer = SLASHER_SHOOT_COOLDOWN;
 }
 
-void BULLET_enemyShoot(s16 posX, s16 posY, s16 velX, s16 velY) {
+void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 velX, s16 velY) {
     if (enemy_top < 0) return;
 
     u8 idx = enemy_free_indices[enemy_top--];
     Bullet* b = &enemy_bullets[idx];
 
-    b->x = posX; b->y = posY;
-    b->velX = velX; b->velY = velY;
+    b->x = posX; 
+    b->y = posY;
+    b->velX = velX; 
+    b->velY = velY;
     b->active = TRUE;
-    // b->sprite = SPR_addSprite(&enemy_bullet_resource, posX, posY, TILE_ATTR(ENEMY_PALLETE, 0, 0, 0));
+    b->width = 8;
+    b->height = 8;
+
+    b->sprite = SPR_addSprite(bulletSprite, posX, posY, TILE_ATTR(ENEMY_BULLET_PALLETE, 0, 0, 0));
 }
 
 static void deactivate_bullet(Bullet* b, u8* stack, s8* top, u8 index) {

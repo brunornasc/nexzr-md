@@ -12,6 +12,7 @@
 
 Entity* level1Entity;
 unsigned long level1_frame = 0;
+Enemy *enemy1;
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
 void level1_update(void* context);
@@ -55,21 +56,24 @@ void level1_dispose() {
 void level1_script() {
   if (level1_frame == 120) {
     Enemy e;
-    e.x = 0;
+    e.x = 100;
     e.y = 0;
     e.width = 16;
     e.height = 16;
-    e.y_speed = 1;
+    e.y_speed = 3;
     e.x_speed = 0;
     e.spriteIndex = 0;
-    e.type = ENEMY_TYPE_1;
+    e.type = ENEMY_TYPE_3;
     e.active = true;
     e.inverted = false;
     e.health = 10;
-    e.sprite = &enemy_0002;
+    e.sprite = &enemy_0003;
+    e.bulletSprite = &enemy_bullet_001;
 
-    ENEMY_create(&e);
+    enemy1 = ENEMY_create(&e);
+    ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
   }
 
-  ENEMY_update();
+  if (level1_frame % 3 == 0)
+    ENEMY_update();
 }
