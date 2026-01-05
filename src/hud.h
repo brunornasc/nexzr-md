@@ -8,5 +8,6 @@ void HUD_clear();
 void HUD_setScore(unsigned int score);
 void HUD_setLives(u8 lives);
 void HUD_showPaused();
-
+void HUD_showStage(u8 stage);
+void HUD_dismissStage();
 #endif

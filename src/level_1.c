@@ -54,6 +54,14 @@ void level1_dispose() {
 }
 
 void level1_script() {
+  if (level1_frame == 1) {
+    HUD_showStage(1);
+  }
+
+  if (level1_frame == 100) {
+    HUD_dismissStage();
+  }
+
   if (level1_frame == 120) {
     Enemy e;
     e.x = 100;

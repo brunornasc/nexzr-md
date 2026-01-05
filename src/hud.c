@@ -3,6 +3,9 @@
 #include "resources.h"
 
 Sprite* HUD_slasher;
+Sprite* HUD_stageNum;
+Sprite* HUD_stageText[5];
+Sprite* teste;
 
 void Characters_clear(u16 x, u16 y, u16 width);
 
@@ -43,3 +46,34 @@ void HUD_showPaused() {
 	}
 }
 
+void HUD_showStage(u8 idx) {
+    u16 centerX = GAME_WINDOW_WIDTH / 2;
+    u16 centerY = GAME_WINDOW_HEIGHT / 4;
+    
+    u16 charWidth = 16; 
+    u16 totalWidth = (charWidth * 5) + charWidth;
+    u16 startX = centerX - (totalWidth / 2);
+
+    for (int i = 0; i < 5; i++) {
+        HUD_stageText[i] = SPR_addSprite(&level_stage, 
+                                         startX + (i * charWidth), 
+                                         centerY, 
+                                         TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
+        
+        SPR_setFrame(HUD_stageText[i], i);
+        SPR_setZ(HUD_stageText[i], SPR_MIN_DEPTH);
+    }
+
+    u16 numX = startX + (5 * charWidth) + 4;
+    
+    HUD_stageNum = SPR_addSprite(&level_numbers, numX, centerY, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
+    SPR_setFrame(HUD_stageNum, idx - 1);
+    SPR_setZ(HUD_stageNum, SPR_MIN_DEPTH);
+}
+
+void HUD_dismissStage() {
+    for (int i = 0; i < 5; i++) {
+        SPR_releaseSprite(HUD_stageText[i]);
+    }
+    SPR_releaseSprite(HUD_stageNum);
+}
