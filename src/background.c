@@ -45,7 +45,7 @@ void Background_init() {
         u8 speed = 3 + size * 2 + (random() % 2);
         u8 colorFrame = random() % 3;
 
-        int x = random() % 320;
+        int x = random() % GAME_WINDOW_WIDTH;
         int y = random() % 224;
 
         for (int j = 0; j < size; j++) {
