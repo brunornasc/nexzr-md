@@ -1,3 +1,4 @@
+# SPRITE name path width height compression frames
 IMAGE titlescreen "sprites/misc/titlescreen/titlescreen.png" BEST ALL
 IMAGE intro "sprites/misc/intro.png" BEST ALL
 IMAGE naxat "sprites/misc/naxat.png" BEST ALL
@@ -7,6 +8,13 @@ TILESET characters "sprites/misc/characters.png" BEST
 SPRITE hud_slasher "sprites/slasher/minislasher.png" 2 2 BEST 0
 
 SPRITE slasher "sprites/slasher/slasher.png" 4 4 FAST 5
+SPRITE slasher_big_0 "sprites/slasher/slasher_big_0.png" 12 21 BEST 0
+#SPRITE slasher_big_1 "sprites/slasher/slasher_big_1.png" 13 22 BEST 0
+SPRITE slasher_big_2 "sprites/slasher/slasher_big_2.png" 12 19 BEST 0
+SPRITE slasher_big_3 "sprites/slasher/slasher_big_3.png" 11 15 BEST 0
+SPRITE slasher_big_4 "sprites/slasher/slasher_big_4.png" 10 12 BEST 0
+SPRITE slasher_big_5 "sprites/slasher/slasher_big_5.png" 6 8 BEST 0
+
 SPRITE slasher_weapon_0001 "sprites/slasher/weapons/weapon_0001.png" 2 2 FAST 0
 
 SPRITE star_warp "sprites/misc/star_warp.png" 1 1 BEST 0

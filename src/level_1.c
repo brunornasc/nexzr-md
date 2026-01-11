@@ -9,6 +9,7 @@
 #include "bullet.h"
 #include "collision.h"
 #include "resources.h"
+#include "sounds.h"
 
 Entity* level1Entity;
 unsigned long level1_frame = 0;
@@ -30,6 +31,8 @@ void Level1_init() {
   HUD_init();
   ENEMY_initializeAll();
   level1Entity = Entity_add(NULL, level1_update);
+  XGM_startPlay(track2);
+  
 }
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
@@ -83,5 +86,5 @@ void level1_script() {
   }
 
   if (level1_frame % 3 == 0)
-    ENEMY_update();
+    ENEMY_update();  
 }
