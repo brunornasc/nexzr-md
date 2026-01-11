@@ -9,7 +9,7 @@ SPRITE hud_slasher "sprites/slasher/minislasher.png" 2 2 BEST 0
 
 SPRITE slasher "sprites/slasher/slasher.png" 4 4 FAST 5
 SPRITE slasher_big_0 "sprites/slasher/slasher_big_0.png" 12 21 BEST 0
-#SPRITE slasher_big_1 "sprites/slasher/slasher_big_1.png" 13 22 BEST 0
+#SPRITE slasher_big_1 "sprites/slasher/slasher_big_1.png" 13 22 BEST 0 16x2
 SPRITE slasher_big_2 "sprites/slasher/slasher_big_2.png" 12 19 BEST 0
 SPRITE slasher_big_3 "sprites/slasher/slasher_big_3.png" 11 15 BEST 0
 SPRITE slasher_big_4 "sprites/slasher/slasher_big_4.png" 10 12 BEST 0
@@ -28,5 +28,7 @@ SPRITE enemy_0006 "sprites/enemies/enemy_0006.png" 2 2 FAST 4
 SPRITE enemy_0007 "sprites/enemies/enemy_0007.png" 2 2 FAST 2
 
 SPRITE enemy_bullet_001 "sprites/enemies/weapons/bullet_0001.png" 1 1 FAST 4
+
+SPRITE stage1_explosions "sprites/misc/stage1_explosions.png" 2 2 FAST 8
 
 IMAGE custom_font "fonts/font_default.png" BEST

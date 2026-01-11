@@ -1,7 +1,6 @@
 #include "game.h"
 
 int main() {
-
     Game_init();
 
     while(true)
