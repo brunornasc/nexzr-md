@@ -5,7 +5,7 @@
 
 #define STAR_COUNT 20
 #define MAX_STAR_HEIGHT 5
-#define WARP_DURATION 230
+
 #define DEACELERATION_FRAMES_ANIM 7
 
 typedef struct {

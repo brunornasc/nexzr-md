@@ -12,12 +12,11 @@
 #include "sounds.h"
 
 #define MAX_EXPLOSIONS 3
-#define EXPLOSION_ANIMATION_FRAMES 20 //1 segundo
+#define EXPLOSION_ANIMATION_FRAMES 20 //1 % 3 segundo
 #define EXPLOSION_COOLDOWN  (30)
 #define EXPLOSION_SIZE     16
 #define EXPLOSION_MAX_X  (GAME_WINDOW_WIDTH  > EXPLOSION_SIZE ? GAME_WINDOW_WIDTH  - EXPLOSION_SIZE : 1)
 #define EXPLOSION_MAX_Y  (GAME_WINDOW_HEIGHT > EXPLOSION_SIZE ? GAME_WINDOW_HEIGHT - EXPLOSION_SIZE : 1)
-
 
 typedef struct {
   s16 x;
@@ -47,8 +46,7 @@ void Level1_init() {
   currentLevel = LEVEL_1;
 
   HUD_init();
-  ENEMY_initializeAll();
-  LEVEL1_initExplosions();
+  ENEMY_initializeAll();  
   
   level1Entity = Entity_add(NULL, level1_update);  
   XGM_startPlay(track2);
@@ -93,7 +91,11 @@ void level1_script() {
     HUD_dismissStage();
   }
 
-  if (level1_frame == 120) {
+  if (level1_frame == WARP_DURATION) {
+    LEVEL1_initExplosions();
+  }
+
+  if (level1_frame == 1200) {
     Enemy e;
     e.x = 100;
     e.y = 0;
@@ -113,13 +115,15 @@ void level1_script() {
     ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
   }
 
-  if (level1_frame % 3 == 0){
+  if (level1_frame % 3 == 0 && level1_frame > WARP_DURATION){
     ENEMY_update(); 
     LEVEL1_updateExplosions();
  }
 }
 
-void LEVEL1_initExplosions() {
+void LEVEL1_initExplosions() {  
+  PAL_setPalette(ENEMY_PALLETE, enemy_0003.palette->data, DMA);
+
   for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
       Explosion* e = &explosions[i];
 
@@ -129,8 +133,8 @@ void LEVEL1_initExplosions() {
 
       e->sprite = SPR_addSprite(
           &stage1_explosions,
-          0,
-          0,
+          e->x,
+          e->y,
           TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
       );
 
@@ -160,6 +164,7 @@ void LEVEL1_updateExplosions() {
           // Inicia a animação automática do SGDK
           SPR_setAnim(e->sprite, 0);
           SPR_setHFlip(e->sprite, e->x % 2);          
+          SPR_setVFlip(e->sprite, e->y % 2); 
           SPR_setVisibility(e->sprite, VISIBLE);
           SPR_setAlwaysAtBottom(e->sprite);
 
@@ -168,11 +173,6 @@ void LEVEL1_updateExplosions() {
           continue;
       }
 
-      // -------- VIDA DA ANIMAÇÃO (Estado Positivo) --------
-      // Aqui contamos quantos "ticks" de jogo a animação vai durar.
-      // Se a sua animação tem 8 frames e o SGDK muda o frame a cada 4 frames de jogo,
-      // o tempo total seria 8 * 4 = 32. 
-      // Para simplificar, usaremos o EXPLOSION_ANIMATION_FRAMES como limite de tempo.
       if (e->frameIndex > 0) {
           e->frameIndex++;
 
