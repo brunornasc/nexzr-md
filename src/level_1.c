@@ -11,6 +11,22 @@
 #include "resources.h"
 #include "sounds.h"
 
+#define MAX_EXPLOSIONS 3
+#define EXPLOSION_ANIMATION_FRAMES 20 //1 segundo
+#define EXPLOSION_COOLDOWN  (30)
+#define EXPLOSION_SIZE     16
+#define EXPLOSION_MAX_X  (GAME_WINDOW_WIDTH  > EXPLOSION_SIZE ? GAME_WINDOW_WIDTH  - EXPLOSION_SIZE : 1)
+#define EXPLOSION_MAX_Y  (GAME_WINDOW_HEIGHT > EXPLOSION_SIZE ? GAME_WINDOW_HEIGHT - EXPLOSION_SIZE : 1)
+
+
+typedef struct {
+  s16 x;
+  s16 y;
+  Sprite* sprite;
+  s8 frameIndex;
+} Explosion;
+
+Explosion explosions[MAX_EXPLOSIONS];
 Entity* level1Entity;
 unsigned long level1_frame = 0;
 Enemy *enemy1;
@@ -19,8 +35,10 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) ;
 void level1_update(void* context);
 void level1_dispose();
 void level1_script();
+void LEVEL1_initExplosions();
+void LEVEL1_updateExplosions();
 
-void Level1_init() {
+void Level1_init() {  
   Background_init();
   PLAYER_init(&player);
   Game_setJoyHandler(level1_joyEventHandler);
@@ -30,7 +48,9 @@ void Level1_init() {
 
   HUD_init();
   ENEMY_initializeAll();
-  level1Entity = Entity_add(NULL, level1_update);
+  LEVEL1_initExplosions();
+  
+  level1Entity = Entity_add(NULL, level1_update);  
   XGM_startPlay(track2);
   
 }
@@ -46,7 +66,7 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
 
 void level1_update(void* context) {
   if (Game_isPaused()) return;
-
+  
   level1_script();
   BULLET_updateAll();
   level1_frame++;
@@ -54,6 +74,14 @@ void level1_update(void* context) {
 
 void level1_dispose() {
   Entity_removeEntity(level1Entity->index);
+
+  for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
+      if (explosions[i].sprite != NULL) {
+          SPR_releaseSprite(explosions[i].sprite);
+          explosions[i].sprite = NULL;
+      }
+  }
+  
 }
 
 void level1_script() {
@@ -85,6 +113,77 @@ void level1_script() {
     ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
   }
 
-  if (level1_frame % 3 == 0)
-    ENEMY_update();  
+  if (level1_frame % 3 == 0){
+    ENEMY_update(); 
+    LEVEL1_updateExplosions();
+ }
+}
+
+void LEVEL1_initExplosions() {
+  for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
+      Explosion* e = &explosions[i];
+
+      e->frameIndex = -(random() % EXPLOSION_COOLDOWN);
+      e->x = random() % EXPLOSION_MAX_X;
+      e->y = random() % EXPLOSION_MAX_Y;
+
+      e->sprite = SPR_addSprite(
+          &stage1_explosions,
+          0,
+          0,
+          TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
+      );
+
+      SPR_setVisibility(e->sprite, HIDDEN);
+  }
+}
+
+void LEVEL1_updateExplosions() {
+  for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
+      Explosion* e = &explosions[i];
+
+      if (e->sprite == NULL) continue;
+
+      // -------- COOLDOWN (Estado Negativo) --------
+      if (e->frameIndex < 0) {
+          e->frameIndex++;
+          continue;
+      }
+
+      // -------- SPAWN (Estado Zero) --------
+      if (e->frameIndex == 0) {
+          e->x = random() % EXPLOSION_MAX_X;
+          e->y = random() % EXPLOSION_MAX_Y;
+
+          SPR_setPosition(e->sprite, e->x, e->y);
+          
+          // Inicia a animação automática do SGDK
+          SPR_setAnim(e->sprite, 0);
+          SPR_setHFlip(e->sprite, e->x % 2);          
+          SPR_setVisibility(e->sprite, VISIBLE);
+          SPR_setAlwaysAtBottom(e->sprite);
+
+          // Começamos a contar o tempo de vida da explosão
+          e->frameIndex = 1; 
+          continue;
+      }
+
+      // -------- VIDA DA ANIMAÇÃO (Estado Positivo) --------
+      // Aqui contamos quantos "ticks" de jogo a animação vai durar.
+      // Se a sua animação tem 8 frames e o SGDK muda o frame a cada 4 frames de jogo,
+      // o tempo total seria 8 * 4 = 32. 
+      // Para simplificar, usaremos o EXPLOSION_ANIMATION_FRAMES como limite de tempo.
+      if (e->frameIndex > 0) {
+          e->frameIndex++;
+
+          // Se o tempo de vida atingir o limite definido
+          if (e->frameIndex >= EXPLOSION_ANIMATION_FRAMES) {
+              SPR_setVisibility(e->sprite, HIDDEN);
+              
+              // Reset para cooldown aleatório
+              e->frameIndex = -(random() % EXPLOSION_COOLDOWN * 2);
+              if (e->frameIndex == 0) e->frameIndex = -1;
+          }
+      }
+  }
 }
