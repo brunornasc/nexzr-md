@@ -29,6 +29,7 @@ typedef struct {
     u8 health;
     SpriteDefinition *bulletSprite;
     u8 index;
+    s16 score_points;
 } Enemy;
 
 extern Enemy enemies[MAX_ENEMIES];
@@ -39,6 +40,7 @@ void ENEMY_initializeAll();
 Enemy* ENEMY_create(Enemy *enemy);
 void ENEMY_update();
 void ENEMY_shoot(Enemy* enemy, SpriteDefinition* bulletSprite, s16 velX, s16 velY);
+void ENEMY_incrementAllocEnemies();
 
 
 #endif

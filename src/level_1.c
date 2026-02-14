@@ -10,6 +10,7 @@
 #include "collision.h"
 #include "resources.h"
 #include "sounds.h"
+#include "enemyfactory.h"
 
 #define MAX_EXPLOSIONS 3
 #define EXPLOSION_ANIMATION_FRAMES 20 //1 % 3 segundo
@@ -18,8 +19,8 @@
 #define EXPLOSION_MAX_X  (GAME_WINDOW_WIDTH  > EXPLOSION_SIZE ? GAME_WINDOW_WIDTH  - EXPLOSION_SIZE : 1)
 #define EXPLOSION_MAX_Y  (GAME_WINDOW_HEIGHT > EXPLOSION_SIZE ? GAME_WINDOW_HEIGHT - EXPLOSION_SIZE : 1)
 
-#define MAX_LASERS 5
-#define LASER_DURATION 8
+#define MAX_LASERS 3
+#define LASER_DURATION 4
 #define LASER_COOLDOWN 15
 #define LASER_MAX_LENGTH 6  // em tiles (6*8 = 48px)
 #define LASER_TILE_INDEX 1  // Índice base para os tiles dos lasers (usa 1-20: 5 lasers * 4 ângulos)
@@ -154,47 +155,6 @@ void LEVEL1_disposeExplosions() {
           explosions[i].sprite = NULL;
       }
   }
-}
-
-void level1_script() {
-  if (level1_frame == 1) {
-    HUD_showStage(1);
-  }
-
-  if (level1_frame == 100) {
-    HUD_dismissStage();
-  }
-
-  if (level1_frame == WARP_DURATION) {
-    LEVEL1_initExplosions();
-    LEVEL1_initLasers();
-  }
-
-  if (level1_frame == 500) {
-    Enemy e;
-    e.x = 100;
-    e.y = 0;
-    e.width = 16;
-    e.height = 16;
-    e.y_speed = 3;
-    e.x_speed = 0;
-    e.spriteIndex = 0;
-    e.type = ENEMY_TYPE_3;
-    e.active = true;
-    e.inverted = false;
-    e.health = 10;
-    e.sprite = &enemy_0003;
-    e.bulletSprite = &enemy_bullet_001;
-
-    enemy1 = ENEMY_create(&e);
-    ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
-  }
-
-  if (level1_frame % 3 == 0 && level1_frame > WARP_DURATION){
-    ENEMY_update(); 
-    LEVEL1_updateExplosions();
-    LEVEL1_updateLasers();
- }
 }
 
 void LEVEL1_initExplosions() {  
@@ -414,4 +374,47 @@ void LEVEL1_disposeLasers() {
             }
         }
     }
+}
+
+void level1_script() {
+  if (level1_frame == 1) {
+    HUD_showStage(1);
+  }
+
+  if (level1_frame == 100) {
+    HUD_dismissStage();
+  }
+
+  if (level1_frame == WARP_DURATION) {
+    LEVEL1_initExplosions();
+    LEVEL1_initLasers();
+  }
+
+  if (level1_frame == 500) {
+    Enemy e;
+    e.x = GAME_WINDOW_WIDTH - 80;
+    e.y = 0;
+    e.width = 16;
+    e.height = 16;
+    e.y_speed = 3;
+    e.x_speed = 0;
+    e.spriteIndex = 0;
+    e.type = ENEMY_TYPE_3;
+    e.active = true;
+    e.inverted = false;
+    e.health = 1;
+    e.sprite = &enemy_0003;
+    e.bulletSprite = &enemy_bullet_001;
+    e.score_points = 100;
+
+    //ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_3, GAME_WINDOW_WIDTH - 80, 0);
+    enemy1 = ENEMY_create(&e);
+    ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
+  }
+
+  if (level1_frame % 3 == 0 && level1_frame > WARP_DURATION){
+    ENEMY_update(); 
+    LEVEL1_updateExplosions();
+    LEVEL1_updateLasers();
+ }
 }

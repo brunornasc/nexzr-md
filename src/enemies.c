@@ -22,6 +22,8 @@ void ENEMY_deactivate(Enemy* enemy) {
     if (enemy->sprite) {
         SPR_releaseSprite(enemy->sprite);
         enemy->sprite = NULL;
+        Game_addGameScore(enemy->score_points);
+        HUD_setScore(Game_getGameScore());
     }
     
     enemy_free_index[++enemy_top_index] = enemy->index;
@@ -157,4 +159,8 @@ void ENEMY_actionFlipSpriteHorizontally(Enemy* enemy, u8 minFrame, u8 maxFrame) 
         SPR_setHFlip(enemy->sprite, enemy->inverted);
         return;                
     }    
+}
+
+void ENEMY_incrementAllocEnemies() {
+    //Todo
 }
