@@ -1,4 +1,5 @@
 #include "collision.h"
+#include "collision_asm.h"
 
 int COLLISION_checkBulletCollisionWithEnemy(Bullet* bullet) {
 
@@ -8,12 +9,18 @@ int COLLISION_checkBulletCollisionWithEnemy(Bullet* bullet) {
         if (!enemy->active)
             continue;
 
-        if (bullet->x < enemy->x + enemy->width &&
+/*        if (bullet->x < enemy->x + enemy->width &&
             bullet->x + bullet->width > enemy->x && 
             bullet->y < enemy->y + enemy->height &&
             bullet->y + bullet->height > enemy->y) {            
                 ENEMY_gotHit(enemy, 1);
                 return true;
+        } */
+
+        if (COLLISION_testCollision_asm(bullet->x, bullet->y, bullet->width, bullet->height,
+                                        enemy->x, enemy->y, enemy->width, enemy->height)) {
+            ENEMY_gotHit(enemy, 1);
+            return true;
         }
     }
 
