@@ -107,6 +107,7 @@ void LEVEL1_disposeExplosions();
 void LEVEL1_initLasers();
 void LEVEL1_updateLasers();
 void LEVEL1_disposeLasers();
+static inline __attribute__((always_inline)) 
 void LEVEL1_createColoredTile(u8 angle, u8 colorIndex, u32* output);
 
 void Level1_init() {  
@@ -224,6 +225,7 @@ void LEVEL1_updateExplosions() {
   }
 }
 
+static inline __attribute__((always_inline))
 void LEVEL1_createColoredTile(u8 angle, u8 colorIndex, u32* output) {
     for (u8 row = 0; row < 8; row++) {
         u32 line = laserTiles[angle][row];

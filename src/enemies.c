@@ -11,8 +11,11 @@ void ENEMY_actionFlipSpriteHorizontally(Enemy* enemy, u8 minFrame, u8 maxFrame);
 void ENEMY_gotHit(Enemy* enemy, u8 damage) {
     enemy->health -= damage;
 
-    if (enemy->health <= 0) 
+    if (enemy->health <= 0) {
         ENEMY_deactivate(enemy);    
+        Game_addGameScore(enemy->score_points);
+    }
+        
 }
 
 void ENEMY_deactivate(Enemy* enemy) {
@@ -22,8 +25,6 @@ void ENEMY_deactivate(Enemy* enemy) {
     if (enemy->sprite) {
         SPR_releaseSprite(enemy->sprite);
         enemy->sprite = NULL;
-        Game_addGameScore(enemy->score_points);
-        HUD_setScore(Game_getGameScore());
     }
     
     enemy_free_index[++enemy_top_index] = enemy->index;
@@ -55,7 +56,8 @@ Enemy* ENEMY_create(Enemy *enemy) {
     enemies[idx].type = enemy->type;
     enemies[idx].inverted = FALSE;
     enemies[idx].spriteIndex = 0;
-    enemies[idx].bulletSprite = enemy->bulletSprite;    
+    enemies[idx].bulletSprite = enemy->bulletSprite;
+    enemies[idx].score_points = enemy->score_points;
 
     PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
     enemies[idx].sprite = SPR_addSprite(enemy->sprite, enemy->x, enemy->y, TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE));

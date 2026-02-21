@@ -92,7 +92,6 @@ void BULLET_updateAll() {
 
                 if (COLLISION_checkBulletCollisionWithEnemy(b)) {
                     deactivate_bullet(b, slasher_free_indices, &slasher_top, i);
-                    HUD_setScore(1000);
                 }
 
             }              

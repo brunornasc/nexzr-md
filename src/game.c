@@ -10,7 +10,7 @@ u8 currentLevel;
 bool game_paused;
 Player player;
 u8 game_lives;
-s16 game_score;
+u32 game_score;
 
 void _globalJoyEventHandler(u16 joy, u16 changed, u16 state);
 void initialize_screen();
@@ -122,15 +122,16 @@ void Game_resetCurrentFrame() {
   currentFrame = 0;
 }
 
-void Game_addGameScore(s16 score) {
+void Game_addGameScore(u32 score) {
   game_score += score;
+  HUD_setScore(game_score);
 }
 
-void Game_setGameScore(s16 score) {
+void Game_setGameScore(u32 score) {
   game_score = score;
 }
 
-s16 Game_getGameScore() {
+u32 Game_getGameScore() {
   return game_score;
 }
 

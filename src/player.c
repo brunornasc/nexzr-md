@@ -126,6 +126,7 @@ void PLAYER_dispose(Player* p) {
 
     Entity_add(p, PLAYER_update_init_animation);
 } 
+
 void PLAYER_update_init_animation(void* context) {
     player_animation.frameCounter++;
 
@@ -146,7 +147,7 @@ void PLAYER_update_init_animation(void* context) {
         player_animation.y -= 1; 
     }
     // --- FASE 3: Topo (BIG_3: 88x120) ---
-    else if (player_animation.frameCounter < 90) {
+    else if (player_animation.frameCounter < 75) {
         if (player_animation.frameCounter == 60) {
             SPR_setDefinition(player_animation.sprite, &slasher_big_3);
             player_animation.x += 4; 
@@ -157,8 +158,8 @@ void PLAYER_update_init_animation(void* context) {
         else if (player_animation.x < middleX) player_animation.x += 2;
     }
     // --- FASE 4: Descida Controlada (BIG_4: 80x96) ---
-    else if (player_animation.frameCounter < 115) {
-        if (player_animation.frameCounter == 90) {
+    else if (player_animation.frameCounter < 90) {
+        if (player_animation.frameCounter == 75) {
             SPR_setDefinition(player_animation.sprite, &slasher_big_4);
             player_animation.x += 4;
             player_animation.y += 12;
@@ -167,8 +168,8 @@ void PLAYER_update_init_animation(void* context) {
         if (player_animation.y < targetFinalY) player_animation.y += 2;
     }
     // --- FASE 5: Descida (BIG_5: 48x64) ---
-    else if (player_animation.frameCounter < 140) {
-        if (player_animation.frameCounter == 115) {
+    else if (player_animation.frameCounter < 115) {
+        if (player_animation.frameCounter == 90) {
             SPR_setDefinition(player_animation.sprite, &slasher_big_5);
             player_animation.x += 16;
             player_animation.y += 16;
@@ -177,8 +178,8 @@ void PLAYER_update_init_animation(void* context) {
         if (player_animation.y < targetFinalY) player_animation.y += 2;
     }
     // --- FASE 6: Transição Final para SLASHER (32x32) ---
-    else if (player_animation.frameCounter < 170) {
-        if (player_animation.frameCounter == 140) {
+    else if (player_animation.frameCounter < 140) {
+        if (player_animation.frameCounter == 115) {
             SPR_setDefinition(player_animation.sprite, &slasher);
             player_animation.x += 8;
             player_animation.y += 16;

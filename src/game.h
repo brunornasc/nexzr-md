@@ -64,9 +64,9 @@ void Game_addLive();
 u8 Game_getLivesCount();
 void Game_setLives(u8 count);
 void Game_resetCurrentFrame();
-void Game_addGameScore(s16 score);
-void Game_setGameScore(s16 score);
-s16 Game_getGameScore();
+void Game_addGameScore(u32 score);
+void Game_setGameScore(u32 score);
+u32 Game_getGameScore();
 void Game_resetGameScore();
 
 #endif
