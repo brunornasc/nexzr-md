@@ -41,32 +41,34 @@ void ENEMY_initializeAll() {
 }
 
 Enemy* ENEMY_create(Enemy *enemy) {
-    if (enemy_top_index < 0) return;
-
-    u8 idx = enemy_free_index[enemy_top_index--];
-    
-    enemies[idx].x = enemy->x;
-    enemies[idx].y = enemy->y;
-    enemies[idx].x_speed = enemy->x_speed;
-    enemies[idx].y_speed = enemy->y_speed;
-    enemies[idx].width = enemy->width;
-    enemies[idx].height = enemy->height;
-    enemies[idx].health = enemy->health;
-    enemies[idx].active = TRUE;
-    enemies[idx].type = enemy->type;
-    enemies[idx].inverted = FALSE;
-    enemies[idx].spriteIndex = 0;
-    enemies[idx].bulletSprite = enemy->bulletSprite;
-    enemies[idx].score_points = enemy->score_points;
-
-    PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
-    enemies[idx].sprite = SPR_addSprite(enemy->sprite, enemy->x, enemy->y, TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE));
-
-    if (enemies[idx].sprite != NULL) {
-        SPR_setAnim(enemies[idx].sprite, 0);
+    if (enemy_top_index < 0) {
+        return NULL; 
     }
 
-    return &enemies[idx];
+    u8 idx = enemy_free_index[enemy_top_index--];
+    Enemy *e = &enemies[idx];
+
+    *e = *enemy; 
+
+    e->active = TRUE;
+    e->inverted = FALSE;
+    e->spriteIndex = 0;
+
+    // PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
+
+    e->sprite = SPR_addSprite(
+        enemy->sprite, 
+        e->x, 
+        e->y, 
+        TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
+    );
+
+    if (e->sprite != NULL) {
+        SPR_setAnim(e->sprite, 0);
+        SPR_setUserData(e->sprite, e); 
+    }
+
+    return e;
 }
 
 void ENEMY_update() {

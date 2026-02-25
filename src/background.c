@@ -83,7 +83,7 @@ void update_background(void* context) {
     if (Game_isPaused()) return;
 
     // desacelera depois do warp pra deixar mais parecido com o original
-    if (currentFrame % 3 != 0 && !isDeacelerating && !isWarping) return;
+    if (currentFrame % 2 != 0 && !isDeacelerating && !isWarping) return;
 
     for (int i = 0; i < STAR_COUNT; i++) {
         Star* s = &stars[i];
@@ -95,8 +95,6 @@ void update_background(void* context) {
             s->y = GAME_WINDOW_START_POSITION_TOP;
             s->x = random() % GAME_WINDOW_WIDTH;
         }
-
-
 
         s->blinkCounter--;
 
@@ -148,7 +146,7 @@ void update_background(void* context) {
 
                 } else if (!s->done) {
                     SPR_setAnimAndFrame(s->spr[0], 1, s->colorFrame);
-                    s->speed = (random() % 2) + 1;
+                    s->speed = (random() % 4) + 1;
                     s->done = true;
                     deAceleratedStarsCount++;
                 }
