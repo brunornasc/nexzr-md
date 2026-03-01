@@ -110,20 +110,16 @@ void LEVEL1_disposeLasers();
 static inline __attribute__((always_inline)) 
 void LEVEL1_createColoredTile(u8 angle, u8 colorIndex, u32* output);
 
-void Level1_init() {  
+void Level1_init() {
+  currentLevel = LEVEL_1;
   Background_init();
+  HUD_init();
+  ENEMY_initializeAll();      
+  level1Entity = Entity_add(NULL, level1_update);
+
+  XGM_startPlay(track1);  
   PLAYER_init(&player);
   Game_setJoyHandler(level1_joyEventHandler);
-  Characters_prepareToPrint();
-
-  currentLevel = LEVEL_1;
-
-  HUD_init();
-  ENEMY_initializeAll();  
-  
-  level1Entity = Entity_add(NULL, level1_update);  
-  XGM_startPlay(track1);
-  
 }
 
 void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {

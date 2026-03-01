@@ -1,5 +1,4 @@
 #include "collision.h"
-#include "collision_asm.h"
 
 static inline __attribute__((always_inline)) 
 u8 COLLISION_testCollision(s16 ax, s16 ay, s16 aw, s16 ah,
@@ -19,10 +18,6 @@ int COLLISION_checkBulletCollisionWithEnemy(Bullet* bullet) {
         if (!enemy->active)
             continue;      
 
-        if (COLLISION_testCollision_asm(bullet->x, bullet->y, bullet->width, bullet->height,
-                                    enemy->x, enemy->y, enemy->width, enemy->height)) { 
-            kprintf("colidiu asm");
-        }
 
         if (COLLISION_testCollision(bullet->x, bullet->y, bullet->width, bullet->height,
                                     enemy->x, enemy->y, enemy->width, enemy->height)) {            

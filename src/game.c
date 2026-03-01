@@ -66,10 +66,8 @@ void Game_resetScreen() {
   VDP_clearPlane(BG_A, TRUE);
 	VDP_clearPlane(BG_B, TRUE);
   VDP_clearPlane(WINDOW, TRUE);
-  PAL_setPalette(PAL0, palette_black, DMA);
-	PAL_setPalette(PAL1, palette_black, DMA);
-  PAL_setPalette(PAL2, palette_black, DMA);
-	PAL_setPalette(PAL3, palette_black, DMA);
+  PAL_setColors(0, palette_black, 64, DMA);
+  SPR_reset();
 }
 
 bool Game_isPaused() {

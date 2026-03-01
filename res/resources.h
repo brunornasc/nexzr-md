@@ -5,6 +5,7 @@ extern const Image titlescreen;
 extern const Image intro;
 extern const Image intro2;
 extern const Image naxat;
+extern const Image indiano;
 extern const SpriteDefinition level_stage;
 extern const SpriteDefinition level_numbers;
 extern const TileSet characters;
