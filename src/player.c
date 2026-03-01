@@ -130,8 +130,8 @@ void PLAYER_dispose(Player* p) {
 void PLAYER_update_init_animation(void* context) {
     player_animation.frameCounter++;
 
-    const s16 targetFinalX = (GAME_WINDOW_WIDTH / 2) - 16;  // 144
-    const s16 targetFinalY = (GAME_WINDOW_HEIGHT) - 64;     // 176
+    const s16 targetFinalX = 144; //(GAME_WINDOW_WIDTH >> 1) - 16;  
+    const s16 targetFinalY = 176; //(GAME_WINDOW_HEIGHT) - 64;   
 
     // --- FASE 1: Subida (BIG_0: 96x148) ---
     if (player_animation.frameCounter < 45) {
@@ -153,7 +153,7 @@ void PLAYER_update_init_animation(void* context) {
             player_animation.x += 4; 
             player_animation.y += 16;
         }
-        s16 middleX = (GAME_WINDOW_WIDTH / 2) - 44;
+        s16 middleX = 116; // (GAME_WINDOW_WIDTH >> 1) - 44;
         if (player_animation.x > middleX) player_animation.x -= 2;
         else if (player_animation.x < middleX) player_animation.x += 2;
     }
