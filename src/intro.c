@@ -5,8 +5,7 @@
 #include "resources.h"
 
 void INTRO_init(void (*function)()) {
-    Game_resetScreen();
-    INTRO_loadSequentially(&naxat, &intro, &intro2, NULL);
+    INTRO_loadSequentially(&naxat, &intro, NULL); // se eu coloco muitas ele da um glitch ao entrar no level 1
 
     if (function) function();
 }
