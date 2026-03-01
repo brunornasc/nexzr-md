@@ -1,7 +1,7 @@
 #include "utils.h"
 #include "game.h"
 
-void Utils_wait(u8 seconds) {
+void UTILS_wait(u8 seconds) {
 
   unsigned t = seconds * FRAMES_PER_SECOND;
 
@@ -9,7 +9,7 @@ void Utils_wait(u8 seconds) {
     SYS_doVBlankProcess();
 }
 
-void Utils_loadAndFadeIn(Image img, u8 seconds) {
+void UTILS_loadAndFadeIn(Image img, u8 seconds) {
   unsigned t = seconds * FRAMES_PER_SECOND;
 
   VDP_drawImageEx(BG_A,
@@ -27,7 +27,7 @@ void Utils_loadAndFadeIn(Image img, u8 seconds) {
 	 SYS_doVBlankProcess();
 }
 
-void Utils_fadeOut(u8 seconds) {
+void UTILS_fadeOut(u8 seconds) {
   unsigned t = seconds * FRAMES_PER_SECOND;
 
   PAL_fadeOut(0, 63, t, FALSE);
