@@ -6,6 +6,6 @@
 #include "game.h"
 #include "utils.h"
 
-void Intro_init(void (*function)());
+void INTRO_init(void (*function)());
 
 #endif

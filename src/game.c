@@ -31,7 +31,7 @@ void Game_init() {
 
   Characters_init();
 
-  Intro_init(&Menu_init);
+  INTRO_init(&Menu_init);
   currentLevel = MENU;
 
   game_paused = false;
