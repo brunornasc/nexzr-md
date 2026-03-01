@@ -16,15 +16,15 @@ typedef struct {
 } EnemyDefaults;
 
 static const EnemyDefaults ENEMY1_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_1, 10, &enemy_0001, &enemy_bullet_001, 100
+    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, 100
 };
 
 static const EnemyDefaults ENEMY2_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_2, 10, &enemy_0002, &enemy_bullet_001, 100
+    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, 100
 };
 
 static const EnemyDefaults ENEMY3_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_3, 10, &enemy_0003, &enemy_bullet_001, 100
+    16, 16, 3, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, 100
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
@@ -50,6 +50,9 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
             break;
         case ENEMY_TYPE_2:
             d = &ENEMY2_DEFAULTS;
+            break;
+        case ENEMY_TYPE_3:
+            d = &ENEMY3_DEFAULTS;
             break;
         default:
             return;

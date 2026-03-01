@@ -42,14 +42,14 @@ void Background_init() {
 
     for (int i = 0; i < STAR_COUNT; i++) {
         u8 size = (random() % MAX_STAR_HEIGHT) + 1;
-        u8 speed = 3 + size * 2 + (random() % 2);
+        u8 speed = ((3 + size) << 1) + (random() % 2);
         u8 colorFrame = random() % 3;
 
         int x = random() % GAME_WINDOW_WIDTH;
         int y = random() % 224;
 
         for (int j = 0; j < size; j++) {
-            stars[i].spr[j] = SPR_addSprite(&star_warp, x, y + j * 8, TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
+            stars[i].spr[j] = SPR_addSprite(&star_warp, x, (y + (j << 3)), TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
             SPR_setFrame(stars[i].spr[j], colorFrame);
         }
 
@@ -83,7 +83,7 @@ void update_background(void* context) {
     if (Game_isPaused()) return;
 
     // desacelera depois do warp pra deixar mais parecido com o original
-    if (currentFrame % 2 != 0 && !isDeacelerating && !isWarping) return;
+    if ((currentFrame & 1) && !isDeacelerating && !isWarping) return;
 
     for (int i = 0; i < STAR_COUNT; i++) {
         Star* s = &stars[i];

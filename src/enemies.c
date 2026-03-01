@@ -54,7 +54,7 @@ Enemy* ENEMY_create(Enemy *enemy) {
     e->inverted = FALSE;
     e->spriteIndex = 0;
 
-    // PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
+    PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
 
     e->sprite = SPR_addSprite(
         enemy->sprite, 
@@ -65,7 +65,6 @@ Enemy* ENEMY_create(Enemy *enemy) {
 
     if (e->sprite != NULL) {
         SPR_setAnim(e->sprite, 0);
-        SPR_setUserData(e->sprite, e); 
     }
 
     return e;

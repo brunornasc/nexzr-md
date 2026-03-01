@@ -122,7 +122,7 @@ void Level1_init() {
   ENEMY_initializeAll();  
   
   level1Entity = Entity_add(NULL, level1_update);  
-  XGM_startPlay(track2);
+  XGM_startPlay(track1);
   
 }
 
@@ -394,27 +394,27 @@ void level1_script() {
 
   if (level1_frame == 500) {
     Enemy e;
-    e.x = GAME_WINDOW_WIDTH - 80;
-    e.y = 0;
-    e.width = 16;
-    e.height = 16;
-    e.y_speed = 3;
-    e.x_speed = 0;
-    e.spriteIndex = 0;
-    e.type = ENEMY_TYPE_3;
-    e.active = true;
-    e.inverted = false;
-    e.health = 1;
-    e.sprite = &enemy_0003;
-    e.bulletSprite = &enemy_bullet_001;
-    e.score_points = 100;
+    // e.x = GAME_WINDOW_WIDTH - 80;
+    // e.y = 0;
+    // e.width = 16;
+    // e.height = 16;
+    // e.y_speed = 3;
+    // e.x_speed = 0;
+    // e.spriteIndex = 0;
+    // e.type = ENEMY_TYPE_3;
+    // e.active = true;
+    // e.inverted = false;
+    // e.health = 1;
+    // e.sprite = &enemy_0003;
+    // e.bulletSprite = &enemy_bullet_001;
+    // e.score_points = 100;
 
-    //ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_3, GAME_WINDOW_WIDTH - 80, 0);
+    ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_3, GAME_WINDOW_WIDTH - 80, 0);
     enemy1 = ENEMY_create(&e);
     ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
   }
 
-  if (level1_frame % 3 == 0 && level1_frame > WARP_DURATION){
+  if ((level1_frame & 3) == 0 && level1_frame > WARP_DURATION) {
     ENEMY_update(); 
     LEVEL1_updateExplosions();
     LEVEL1_updateLasers();
