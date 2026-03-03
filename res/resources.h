@@ -25,6 +25,7 @@ extern const SpriteDefinition enemy_0004;
 extern const SpriteDefinition enemy_0005;
 extern const SpriteDefinition enemy_0006;
 extern const SpriteDefinition enemy_0007;
+extern const SpriteDefinition enemy_explosion;
 extern const SpriteDefinition enemy_bullet_001;
 extern const SpriteDefinition stage1_explosions;
 extern const Image custom_font;

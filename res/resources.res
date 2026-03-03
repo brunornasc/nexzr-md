@@ -29,6 +29,8 @@ SPRITE enemy_0005 "sprites/enemies/enemy_0005.png" 2 2 FAST 4
 SPRITE enemy_0006 "sprites/enemies/enemy_0006.png" 2 2 FAST 4
 SPRITE enemy_0007 "sprites/enemies/enemy_0007.png" 2 2 FAST 2
 
+SPRITE enemy_explosion "sprites/enemies/enemy_explosion.png" 2 2 FAST 5
+
 SPRITE enemy_bullet_001 "sprites/enemies/weapons/bullet_0001.png" 1 1 FAST 4
 
 SPRITE stage1_explosions "sprites/misc/stage1_explosions.png" 2 2 FAST 8

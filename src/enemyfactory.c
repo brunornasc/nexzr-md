@@ -67,4 +67,5 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
     e->sprite       = d->sprite;
     e->score_points = d->score_points;
     e->bulletSprite = d->bulletSprite;
+    e->destroying   = false;
 }

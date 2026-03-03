@@ -30,6 +30,7 @@ typedef struct {
     SpriteDefinition *bulletSprite;
     u8 index;
     u32 score_points;
+    bool destroying;
 } Enemy;
 
 extern Enemy enemies[MAX_ENEMIES];

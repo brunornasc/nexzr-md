@@ -7,12 +7,23 @@ u8 enemy_free_index[MAX_ENEMIES];
 s8 enemy_top_index = -1;
 
 void ENEMY_actionFlipSpriteHorizontally(Enemy* enemy, u8 minFrame, u8 maxFrame);
+void ENEMY_destroyAnim(Enemy* enemy);
 
 void ENEMY_gotHit(Enemy* enemy, u8 damage) {
     enemy->health -= damage;
 
     if (enemy->health <= 0) {
-        ENEMY_deactivate(enemy);    
+        enemy->destroying = true;
+        enemy->spriteIndex = 0;
+        SPR_releaseSprite(enemy->sprite);
+        enemy->sprite = SPR_addSprite(
+            &enemy_explosion, 
+            enemy->x, 
+            enemy->y, 
+            TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
+        );
+
+        ENEMY_destroyAnim(enemy);
         Game_addGameScore(enemy->score_points);
     }
         
@@ -22,16 +33,21 @@ void ENEMY_deactivate(Enemy* enemy) {
     if (!enemy->active) return;
 
     enemy->active = false;
+    enemy->destroying = false;
+
     if (enemy->sprite) {
         SPR_releaseSprite(enemy->sprite);
-        enemy->sprite = NULL;
+        enemy->sprite = NULL;        
     }
     
     enemy_free_index[++enemy_top_index] = enemy->index;
 }
 
 void ENEMY_initializeAll() {
+    enemy_top_index = -1;
+
     for (u8 i = 0; i < MAX_ENEMIES; i++) {
+        memset(&enemies[i], 0, sizeof(Enemy));
         enemies[i].active = false;
         enemies[i].sprite = NULL;
         enemies[i].health = 0;
@@ -79,6 +95,11 @@ void ENEMY_update() {
     
         enemy->y += enemy->y_speed;
         enemy->x += enemy->x_speed;
+
+        if (enemy->destroying) {
+            ENEMY_destroyAnim(enemy);
+            continue;
+        }
 
         // Garbage collector
 
@@ -166,4 +187,16 @@ void ENEMY_actionFlipSpriteHorizontally(Enemy* enemy, u8 minFrame, u8 maxFrame) 
 
 void ENEMY_incrementAllocEnemies() {
     //Todo
+}
+
+void ENEMY_destroyAnim(Enemy* enemy) {
+    // enemy_explosion
+    if (enemy->spriteIndex < 4) {
+        enemy->spriteIndex++;
+        SPR_setFrame(enemy->sprite, enemy->spriteIndex);
+        return;                
+    }
+
+    ENEMY_deactivate(enemy);
+    return;
 }
