@@ -10,21 +10,22 @@ typedef struct {
     s16 x_speed;
     EnemyType type;
     s16 health;
-    SpriteDefinition *sprite;       // No SGDK geralmente usamos SpriteDefinition para recursos
-    SpriteDefinition *bulletSprite;
+    const SpriteDefinition *sprite;       // No SGDK geralmente usamos SpriteDefinition para recursos
+    const SpriteDefinition *bulletSprite;
+	const SpriteDefinition *explosionSprite;
     u16 score_points;
 } EnemyDefaults;
 
 static const EnemyDefaults ENEMY1_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, 100
+    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &enemy_explosion, 100
 };
 
 static const EnemyDefaults ENEMY2_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, 100
+    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &enemy_explosion, 100
 };
 
 static const EnemyDefaults ENEMY3_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, 100
+    16, 16, 3, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &enemy_explosion, 100
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
@@ -58,14 +59,15 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
             return;
     }
 
-    e->width        = d->width;
-    e->height       = d->height;
-    e->y_speed      = d->y_speed;
-    e->x_speed      = d->x_speed;
-    e->type         = d->type;
-    e->health       = d->health;
-    e->sprite       = d->sprite;
-    e->score_points = d->score_points;
-    e->bulletSprite = d->bulletSprite;
-    e->destroying   = false;
+    e->width           = d->width;
+    e->height          = d->height;
+    e->y_speed         = d->y_speed;
+    e->x_speed         = d->x_speed;
+    e->type            = d->type;
+    e->health          = d->health;
+    e->sprite          = d->sprite;
+    e->score_points    = d->score_points;
+    e->bulletSprite    = d->bulletSprite;
+	e->explosionSprite = d->explosionSprite;
+    e->destroying      = false;
 }

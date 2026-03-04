@@ -16,21 +16,22 @@ typedef enum {
 } EnemyType;
 
 typedef struct {
+    u32 score_points;
     s16 x;
     s16 y;
     s16 width;
     s16 height;
     s16 x_speed, y_speed;
     u8 spriteIndex;
+    u8 health;
+    u8 index;
     EnemyType type;
     bool active;
+    bool destroying;
     bool inverted;
     SpriteDefinition* sprite;
-    u8 health;
     SpriteDefinition *bulletSprite;
-    u8 index;
-    u32 score_points;
-    bool destroying;
+    SpriteDefinition *explosionSprite;
 } Enemy;
 
 extern Enemy enemies[MAX_ENEMIES];
