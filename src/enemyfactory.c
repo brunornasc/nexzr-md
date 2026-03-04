@@ -12,20 +12,28 @@ typedef struct {
     s16 health;
     const SpriteDefinition *sprite;       // No SGDK geralmente usamos SpriteDefinition para recursos
     const SpriteDefinition *bulletSprite;
-	const SpriteDefinition *explosionSprite;
+	const ExplosionAnimationDefinition *explosionDefinition;
     u16 score_points;
 } EnemyDefaults;
 
+static const ExplosionAnimationDefinition EXPLOSION1_DEFAULTS = {
+    &enemy_explosion, 4
+};
+
+static const ExplosionAnimationDefinition EXPLOSION2_DEFAULTS = {
+    &enemy_explosion_big, 5
+};
+
 static const EnemyDefaults ENEMY1_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &enemy_explosion, 100
+    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100
 };
 
 static const EnemyDefaults ENEMY2_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &enemy_explosion, 100
+    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100
 };
 
 static const EnemyDefaults ENEMY3_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &enemy_explosion, 100
+    16, 16, 3, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
@@ -68,6 +76,6 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
     e->sprite          = d->sprite;
     e->score_points    = d->score_points;
     e->bulletSprite    = d->bulletSprite;
-	e->explosionSprite = d->explosionSprite;
+	e->explosionDefinition = d->explosionDefinition;
     e->destroying      = false;
 }

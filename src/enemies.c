@@ -17,7 +17,7 @@ void ENEMY_gotHit(Enemy* enemy, u8 damage) {
         enemy->spriteIndex = 0;
         SPR_releaseSprite(enemy->sprite);
         enemy->sprite = SPR_addSprite(
-            enemy->explosionSprite,
+            enemy->explosionDefinition->sprite,
             enemy->x, 
             enemy->y, 
             TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
@@ -50,7 +50,7 @@ void ENEMY_initializeAll() {
         memset(&enemies[i], 0, sizeof(Enemy));
         enemies[i].active = false;
         enemies[i].sprite = NULL;
-        enemies[i].explosionSprite = NULL;
+        enemies[i].explosionDefinition = NULL;
         enemies[i].bulletSprite = NULL;
         enemies[i].health = 0;
         enemies[i].index = i;
@@ -193,7 +193,7 @@ void ENEMY_incrementAllocEnemies() {
 
 void ENEMY_destroyAnim(Enemy* enemy) {
     // enemy_explosion
-    if (enemy->spriteIndex < 4) {
+    if (enemy->spriteIndex < enemy->explosionDefinition->maxFrames) {
         enemy->spriteIndex++;
         SPR_setFrame(enemy->sprite, enemy->spriteIndex);
         return;                
