@@ -128,6 +128,8 @@ void PLAYER_dispose(Player* p) {
 } 
 
 void PLAYER_update_init_animation(void* context) {
+    if (Game_isPaused()) return;
+
     player_animation.frameCounter++;
 
     const s16 targetFinalX = 144; //(GAME_WINDOW_WIDTH >> 1) - 16;  

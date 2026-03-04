@@ -72,7 +72,7 @@ Enemy* ENEMY_create(Enemy *enemy) {
     e->inverted = FALSE;
     e->spriteIndex = 0;
 
-    PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
+    //PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
 
     e->sprite = SPR_addSprite(
         enemy->sprite, 
