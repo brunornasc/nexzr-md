@@ -156,7 +156,7 @@ void ENEMY_update() {
 }
 
 void ENEMY_shoot(Enemy* enemy, SpriteDefinition* bulletSprite, s16 velX, s16 velY) {
-    BULLET_enemyShoot(bulletSprite, enemy->x + enemy->width / 2, enemy->y + enemy->height + 1, velX, velY);
+    BULLET_enemyShoot(bulletSprite, enemy->x + (enemy->width >> 2), enemy->y + enemy->height + 1, velX, velY);
 }
 
 void ENEMY_actionFlipSpriteHorizontally(Enemy* enemy, u8 minFrame, u8 maxFrame) {

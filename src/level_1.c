@@ -214,7 +214,7 @@ void LEVEL1_updateExplosions() {
               SPR_setVisibility(e->sprite, HIDDEN);
               
               // Reset para cooldown aleatório
-              e->frameIndex = -(random() % EXPLOSION_COOLDOWN * 2);
+              e->frameIndex = -(random() % (EXPLOSION_COOLDOWN << 1));
               if (e->frameIndex == 0) e->frameIndex = -1;
           }
       }
@@ -229,14 +229,14 @@ void LEVEL1_createColoredTile(u8 angle, u8 colorIndex, u32* output) {
         
         // Percorre cada nibble (4 bits) da linha
         for (s8 nibble = 7; nibble >= 0; nibble--) {
-            u8 value = (line >> (nibble * 4)) & 0xF;
+            u8 value = (line >> (nibble << 2)) & 0xF;
             
             // Se o valor for 5 (nossa máscara), substitui pela cor escolhida
             // Senão mantém o valor original (0 para transparente)
             if (value == 5) {
-                colored |= ((u32)colorIndex << (nibble * 4));
+                colored |= ((u32)colorIndex << (nibble << 2));
             } else {
-                colored |= ((u32)value << (nibble * 4));
+                colored |= ((u32)value << (nibble << 2));
             }
         }
         
@@ -251,7 +251,7 @@ void LEVEL1_initLasers() {
         lasers[i].length = 0;
         lasers[i].angle = 0;
         lasers[i].colorIndex = 5;  // default
-        lasers[i].tileVramIndex = LASER_TILE_INDEX + (i * 4);  // Cada laser tem 4 tiles (um por ângulo)
+        lasers[i].tileVramIndex = LASER_TILE_INDEX + (i << 2);  // Cada laser tem 4 tiles (um por ângulo)
     }
 }
 
@@ -390,23 +390,9 @@ void level1_script() {
 
   if (level1_frame == 500) {
     Enemy e;
-    // e.x = GAME_WINDOW_WIDTH - 80;
-    // e.y = 0;
-    // e.width = 16;
-    // e.height = 16;
-    // e.y_speed = 3;
-    // e.x_speed = 0;
-    // e.spriteIndex = 0;
-    // e.type = ENEMY_TYPE_3;
-    // e.active = true;
-    // e.inverted = false;
-    // e.health = 1;
-    // e.sprite = &enemy_0003;
-    // e.bulletSprite = &enemy_bullet_001;
-    // e.score_points = 100;
-
     ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_3, GAME_WINDOW_WIDTH - 80, 0);
     enemy1 = ENEMY_create(&e);
+
     ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
   }
 
@@ -414,5 +400,5 @@ void level1_script() {
     ENEMY_update(); 
     LEVEL1_updateExplosions();
     LEVEL1_updateLasers();
- }
+  }
 }
