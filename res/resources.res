@@ -29,6 +29,10 @@ SPRITE enemy_0005 "sprites/enemies/enemy_0005.png" 2 2 FAST 4
 SPRITE enemy_0006 "sprites/enemies/enemy_0006.png" 2 2 FAST 4
 SPRITE enemy_0007 "sprites/enemies/enemy_0007.png" 2 2 FAST 2
 
+IMAGE enemy_0008_background "sprites/enemies/enemy_0008_background.png" FAST ALL
+SPRITE enemy_0008_01 "sprites/enemies/enemy_0008_01.png" 2 8 BEST 0
+SPRITE enemy_0008_02 "sprites/enemies/enemy_0008_02.png" 2 8 BEST 0
+
 SPRITE enemy_explosion "sprites/enemies/enemy_explosion.png" 2 2 FAST 5
 SPRITE enemy_explosion_big "sprites/enemies/enemy_explosion_big.png" 4 4 FAST 6
 
