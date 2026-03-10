@@ -14,6 +14,7 @@ typedef struct {
     const SpriteDefinition *bulletSprite;
 	const ExplosionAnimationDefinition *explosionDefinition;
     u16 score_points;
+    u8 max_frames;
 } EnemyDefaults;
 
 static const ExplosionAnimationDefinition EXPLOSION1_DEFAULTS = {
@@ -25,15 +26,19 @@ static const ExplosionAnimationDefinition EXPLOSION2_DEFAULTS = {
 };
 
 static const EnemyDefaults ENEMY1_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100
+    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 5
 };
 
 static const EnemyDefaults ENEMY2_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100
+    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 5
 };
 
 static const EnemyDefaults ENEMY3_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100
+    16, 16, 2, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 6
+};
+
+static const EnemyDefaults ENEMY4_DEFAULTS = {
+    16, 16, 2, 0, ENEMY_TYPE_4, 1, &enemy_0004, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 6
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
@@ -63,6 +68,9 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
         case ENEMY_TYPE_3:
             d = &ENEMY3_DEFAULTS;
             break;
+        case ENEMY_TYPE_4:
+            d = &ENEMY4_DEFAULTS;
+            break;
         default:
             return;
     }
@@ -78,4 +86,5 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
     e->bulletSprite    = d->bulletSprite;
 	e->explosionDefinition = d->explosionDefinition;
     e->destroying      = false;
+    e->max_frames      = d->max_frames;
 }

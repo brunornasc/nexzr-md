@@ -21,13 +21,13 @@ SPRITE slasher_weapon_0001 "sprites/slasher/weapons/weapon_0001.png" 2 2 FAST 0
 
 SPRITE star_warp "sprites/misc/star_warp.png" 1 1 BEST 0
 
-SPRITE enemy_0001 "sprites/enemies/enemy_0001.png" 2 2 FAST 5
-SPRITE enemy_0002 "sprites/enemies/enemy_0002.png" 2 2 FAST 5
+SPRITE enemy_0001 "sprites/enemies/enemy_0001.png" 2 2 FAST 0
+SPRITE enemy_0002 "sprites/enemies/enemy_0002.png" 2 2 FAST 0
 SPRITE enemy_0003 "sprites/enemies/enemy_0003.png" 2 2 FAST 0
-SPRITE enemy_0004 "sprites/enemies/enemy_0004.png" 2 2 FAST 5
-SPRITE enemy_0005 "sprites/enemies/enemy_0005.png" 2 2 FAST 4
-SPRITE enemy_0006 "sprites/enemies/enemy_0006.png" 2 2 FAST 4
-SPRITE enemy_0007 "sprites/enemies/enemy_0007.png" 2 2 FAST 2
+SPRITE enemy_0004 "sprites/enemies/enemy_0004.png" 2 2 FAST 0
+SPRITE enemy_0005 "sprites/enemies/enemy_0005.png" 2 2 FAST 0
+SPRITE enemy_0006 "sprites/enemies/enemy_0006.png" 2 2 FAST 0
+SPRITE enemy_0007 "sprites/enemies/enemy_0007.png" 2 2 FAST 0
 
 IMAGE enemy_0008_background "sprites/enemies/enemy_0008_background.png" FAST ALL
 SPRITE enemy_0008_01 "sprites/enemies/enemy_0008_01.png" 2 8 BEST 0

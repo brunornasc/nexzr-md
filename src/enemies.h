@@ -12,6 +12,8 @@ typedef enum {
     ENEMY_TYPE_4,
     ENEMY_TYPE_5,
     ENEMY_TYPE_6,
+    ENEMY_TYPE_7,
+    ENEMY_TYPE_8,
     MAX_ENEMY_TYPES
 } EnemyType;
 
@@ -26,8 +28,10 @@ typedef struct {
     s16 y;
     s16 width;
     s16 height;
-    s16 x_speed, y_speed;
+    s16 x_speed;
+    s16 y_speed;
     u8 spriteIndex;
+    u8 max_frames;
     u8 health;
     u8 index;
     EnemyType type;

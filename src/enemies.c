@@ -122,7 +122,7 @@ void ENEMY_update() {
         switch (enemy->type) {
             case ENEMY_TYPE_1:
             case ENEMY_TYPE_2:
-                if (enemy->spriteIndex < 4 && !enemy->inverted) {
+                if (enemy->spriteIndex < enemy->max_frames && !enemy->inverted) {
                     enemy->spriteIndex++;
                     break;                
                 }
@@ -142,13 +142,12 @@ void ENEMY_update() {
                     enemy->inverted = false;
                     SPR_setVFlip(enemy->sprite, enemy->inverted);
                     break;                
-                }                
-
-            case ENEMY_TYPE_3:
-               ENEMY_actionFlipSpriteHorizontally(enemy, 0, 4);
-               break;
-
+                }
             default:
+                enemy->spriteIndex++;
+                if (enemy->spriteIndex >= enemy->max_frames) {
+                    enemy->spriteIndex = 0;
+                }
                 break;
         }
 

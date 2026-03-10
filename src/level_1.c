@@ -390,10 +390,8 @@ void level1_script() {
 
   if (level1_frame == 500) {
     Enemy e;
-    ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_3, GAME_WINDOW_WIDTH - 80, 0);
+    ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_4, GAME_WINDOW_WIDTH - 80, 0);
     enemy1 = ENEMY_create(&e);
-
-    ENEMY_shoot(enemy1, enemy1->bulletSprite, 0, 4);
   }
 
   if ((level1_frame & 3) == 0 && level1_frame > WARP_DURATION) {
