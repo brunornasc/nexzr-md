@@ -5,7 +5,7 @@
 #include "resources.h"
 
 void INTRO_init(void (*function)()) {
-    INTRO_loadSequentially(&naxat, &intro, NULL); // se eu coloco muitas ele da um glitch ao entrar no level 1
+    INTRO_loadSequentially(&naxat, &intro, NULL); // descoberto q e a imagem da intro2 q esta corrompida
 
     if (function) function();
 }

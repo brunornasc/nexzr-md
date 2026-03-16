@@ -42,6 +42,7 @@ void Game_init() {
 void initialize_screen() {
   VDP_setScreenWidth320();
   VDP_setScreenHeight240();
+  VDP_setPlaneSize(64, 64, FALSE);
 }
 
 void Game_update() {

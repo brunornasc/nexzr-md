@@ -35,3 +35,26 @@ void UTILS_fadeOut(u8 seconds) {
   while (PAL_isDoingFade())
 	 SYS_doVBlankProcess();
 }
+
+// Função auxiliar para desenhar imagem espelhada horizontalmente
+void UTILS_drawImageMirroredH(VDPPlane plane, const Image* img, u16 paletteIndex, 
+                         u16 startTileIndex, s16 destX, s16 destY) {
+    u16 w = 8;  // largura em tiles
+    u16 h = 40;                           // altura em tiles
+    
+    for (u16 ty = 0; ty < h; ty++) {
+        for (u16 tx = 0; tx < w; tx++) {
+            // Tile espelhado: pega o tile da direita para esquerda
+            u16 srcTileOffset = (ty * w) + (w - 1 - tx);
+            u16 tileIndex = startTileIndex + srcTileOffset;
+            
+            // Posição destino: coluna invertida
+            s16 px = destX + (w - 1 - tx);
+            s16 py = destY + ty;
+            
+            // Flip horizontal no tile individual + reordenação das posições
+            u16 attr = TILE_ATTR_FULL(paletteIndex, FALSE, FALSE, TRUE, tileIndex);
+            VDP_setTileMapXY(plane, attr, px, py);
+        }
+    }
+}

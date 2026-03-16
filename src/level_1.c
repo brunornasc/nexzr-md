@@ -316,7 +316,7 @@ void LEVEL1_updateLasers() {
                 
                 // Verifica limites da tela
                 if (x >= 0 && x < 40 && y >= 0 && y < 28) {
-                    VDP_setTileMapXY(BG_A, tileAttr, x, y);
+                    VDP_setTileMapXY(VDP_BG_B, tileAttr, x, y);
                 }
             }
             
@@ -339,7 +339,7 @@ void LEVEL1_updateLasers() {
                 
                 if (x >= 0 && x < 40 && y >= 0 && y < 28) {
                     // Limpa com tile vazio
-                    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, FALSE, FALSE, 0), x, y);
+                    VDP_setTileMapXY(VDP_BG_B, TILE_ATTR_FULL(ENEMY_PALLETE, 0, FALSE, FALSE, 0), x, y);
                 }
             }
             
@@ -367,7 +367,7 @@ void LEVEL1_disposeLasers() {
                 }
                 
                 if (x >= 0 && x < 40 && y >= 0 && y < 28) {
-                    VDP_setTileMapXY(BG_A, TILE_ATTR_FULL(PAL0, 0, FALSE, FALSE, 0), x, y);
+                    VDP_setTileMapXY(VDP_BG_B, TILE_ATTR_FULL(ENEMY_PALLETE, 0, FALSE, FALSE, 0), x, y);
                 }
             }
         }
@@ -388,11 +388,27 @@ void level1_script() {
     LEVEL1_initLasers();
   }
 
-  if (level1_frame == 500) {
-    Enemy e;
-    ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_4, GAME_WINDOW_WIDTH - 80, 0);
-    enemy1 = ENEMY_create(&e);
-  }
+//   if (level1_frame == 500) {
+//     Enemy e;
+//     ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_4, GAME_WINDOW_WIDTH - 80, 0);
+//     enemy1 = ENEMY_create(&e);
+//   }
+
+    if (level1_frame == 300) {
+        // Carrega a imagem original (esquerda)
+        VDP_drawImageEx(
+            VDP_BG_A,
+            &enemy_0008_background,
+            TILE_ATTR_FULL(MISC_PALLETE, FALSE, FALSE, FALSE, TILE_USER_INDEX),
+            0, 0,
+            TRUE,   // Carrega tiles na VRAM
+            DMA
+        );
+
+        PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+        PAL_setPalette(ENEMY_PALLETE, enemy_0003.palette->data, DMA);
+        PAL_setPalette(SLASHER_PALLETE, slasher.palette->data, DMA);
+    }
 
   if ((level1_frame & 3) == 0 && level1_frame > WARP_DURATION) {
     ENEMY_update(); 
@@ -400,3 +416,39 @@ void level1_script() {
     LEVEL1_updateLasers();
   }
 }
+
+// u16 testCounter = 0;
+// static const u16 cores_piscando[] = {
+//     RGB24_TO_VDPCOLOR(0x009100), // Cor 1
+//     RGB24_TO_VDPCOLOR(0x006800), // Cor 2
+//     RGB24_TO_VDPCOLOR(0x00FF00), // Cor 3 (exemplo: verde claro)
+//     RGB24_TO_VDPCOLOR(0x003300)  // Cor 4 (exemplo: verde escuro)
+// };
+
+// void TEST_doTests() {
+//     VDP_setPlaneSize(64, 64, FALSE);
+    
+//     // Imagem original (esquerda) - carrega tiles na VRAM
+//     VDP_drawImage(
+//         VDP_BG_B,
+//         &enemy_0008_background,
+//         0, 0
+//     );
+    
+//     PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+//     VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
+//     Entity_add(NULL, TEST_update);
+// }
+
+// void TEST_update(void *ctx) {
+//     testCounter++;
+//     if (testCounter % 5 == 0) {
+//     u16 indice = (testCounter >> 3) & 3;
+    
+//     PAL_setColor(2, cores_piscando[indice]);     
+//     }
+
+//     // (testCounter >> 3) controla a velocidade (mais alto = mais lento)
+//     // & 3 garante que o índice fique sempre entre 0 e 3
+
+// }
