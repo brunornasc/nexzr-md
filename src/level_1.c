@@ -388,12 +388,16 @@ void level1_script() {
     LEVEL1_initLasers();
   }
 
-//   if (level1_frame == 500) {
-//     Enemy e;
-//     ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_4, GAME_WINDOW_WIDTH - 80, 0);
-//     enemy1 = ENEMY_create(&e);
-//   }
+   if (level1_frame == 500) {
+     Enemy e;
+     ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_4, GAME_WINDOW_WIDTH - 80, 0);
+     enemy1 = ENEMY_create(&e);
+   }
 
+    if (level1_frame == 530) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 2);
+    }
+/*
     if (level1_frame == 300) {
         // Carrega a imagem original (esquerda)
         VDP_drawImageEx(
@@ -409,7 +413,7 @@ void level1_script() {
         PAL_setPalette(ENEMY_PALLETE, enemy_0003.palette->data, DMA);
         PAL_setPalette(SLASHER_PALLETE, slasher.palette->data, DMA);
     }
-
+*/
   if ((level1_frame & 3) == 0 && level1_frame > WARP_DURATION) {
     ENEMY_update(); 
     LEVEL1_updateExplosions();

@@ -46,6 +46,10 @@ void BULLET_slasherShoot(s16 posX, s16 posY) {
     slasher_shoot_timer = SLASHER_SHOOT_COOLDOWN;
 }
 
+void BULLET_enemyShoot_slasherDirection(Enemy *enemy, Player* player, s16 speed) {
+
+}
+
 void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 velX, s16 velY) {
     if (enemy_top < 0) return;
 

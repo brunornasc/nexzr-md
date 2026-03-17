@@ -38,7 +38,7 @@ typedef struct {
     bool active;
     bool destroying;
     bool inverted;
-    SpriteDefinition* sprite;
+    SpriteDefinition *sprite;
     SpriteDefinition *bulletSprite;
     ExplosionAnimationDefinition *explosionDefinition;
 } Enemy;
