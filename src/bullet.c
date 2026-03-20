@@ -3,12 +3,20 @@
 #include "game.h"
 #include "hud.h"
 
+// Struct interna para manter posição em fixed-point
+typedef struct {
+    s32 x_fp;
+    s32 y_fp;
+} BulletPosition;
+
 Bullet slasher_bullets[MAX_SLASHER_BULLETS];
+BulletPosition slasher_positions[MAX_SLASHER_BULLETS];
 u8 slasher_free_indices[MAX_SLASHER_BULLETS];
 s8 slasher_top = -1;
 u16 slasher_shoot_timer = 0;
 
 Bullet enemy_bullets[MAX_ENEMY_BULLETS];
+BulletPosition enemy_positions[MAX_ENEMY_BULLETS];
 u8 enemy_free_indices[MAX_ENEMY_BULLETS];
 s8 enemy_top = -1;
 
@@ -33,21 +41,42 @@ void BULLET_slasherShoot(s16 posX, s16 posY) {
 
     u8 idx = slasher_free_indices[slasher_top--];
     Bullet* b = &slasher_bullets[idx];
-    
-    b->x = posX; 
+
+    b->x = posX;
     b->y = posY;
-    b->velX = 0; 
-    b->velY = -8;
+    b->velX = 0;
+    b->velY = -8 << 8;
     b->active = TRUE;
-    b->width = 16; 
+    b->width = 16;
     b->height = 16;
     b->sprite = SPR_addSprite(&slasher_weapon_0001, posX, posY, TILE_ATTR(SLASHER_BULLET_PALLETE, 0, 0, 0));
-    
+
+    // Inicializa posição em fixed-point
+    slasher_positions[idx].x_fp = (s32)posX << 8;
+    slasher_positions[idx].y_fp = (s32)posY << 8;
+
     slasher_shoot_timer = SLASHER_SHOOT_COOLDOWN;
 }
 
 void BULLET_enemyShoot_slasherDirection(Enemy *enemy, Player* player, s16 speed) {
+    s32 dx = (s32)(player->x - enemy->x);
+    s32 dy = (s32)(player->y - enemy->y);
 
+    if (dx == 0 && dy == 0) {
+        BULLET_enemyShoot(enemy->bulletSprite, enemy->x, enemy->y, 0, speed << 8);
+        return;
+    }
+
+    s32 abs_dx = (dx < 0) ? -dx : dx;
+    s32 abs_dy = (dy < 0) ? -dy : dy;
+    s32 dist = (abs_dx > abs_dy) ? (abs_dx + (abs_dy >> 1)) : (abs_dy + (abs_dx >> 1));
+
+    if (dist == 0) dist = 1;
+
+    s16 velX = (s16)((dx * speed * 256) / dist);
+    s16 velY = (s16)((dy * speed * 256) / dist);
+
+    BULLET_enemyShoot(enemy->bulletSprite, enemy->x, enemy->y, velX, velY);
 }
 
 void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 velX, s16 velY) {
@@ -56,15 +85,18 @@ void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 v
     u8 idx = enemy_free_indices[enemy_top--];
     Bullet* b = &enemy_bullets[idx];
 
-    b->x = posX; 
+    b->x = posX;
     b->y = posY;
-    b->velX = velX; 
+    b->velX = velX;
     b->velY = velY;
     b->active = TRUE;
     b->width = 8;
     b->height = 8;
 
     b->sprite = SPR_addSprite(bulletSprite, posX, posY, TILE_ATTR(ENEMY_BULLET_PALLETE, 0, 0, 0));
+
+    enemy_positions[idx].x_fp = (s32)posX << 8;
+    enemy_positions[idx].y_fp = (s32)posY << 8;
 }
 
 static void deactivate_bullet(Bullet* b, u8* stack, s8* top, u8 index) {
@@ -85,21 +117,22 @@ void BULLET_updateAll() {
         Bullet* b = &slasher_bullets[i];
 
         if (b->active) {
-            b->x += b->velX; 
-            b->y += b->velY;
+            slasher_positions[i].x_fp += b->velX;
+            slasher_positions[i].y_fp += b->velY;
 
-            if (b->y < -16 || b->y > GAME_WINDOW_HEIGHT || b->x < -16 || b->x > GAME_WINDOW_WIDTH) 
+            b->x = (s16)(slasher_positions[i].x_fp >> 8);
+            b->y = (s16)(slasher_positions[i].y_fp >> 8);
+
+            if (b->y < -16 || b->y > GAME_WINDOW_HEIGHT || b->x < -16 || b->x > GAME_WINDOW_WIDTH)
                 deactivate_bullet(b, slasher_free_indices, &slasher_top, i);
-
             else {
                 SPR_setPosition(b->sprite, b->x, b->y);
 
                 if (COLLISION_checkBulletCollisionWithEnemy(b)) {
                     deactivate_bullet(b, slasher_free_indices, &slasher_top, i);
+
                 }
-
-            }              
-
+            }
         }
     }
 
@@ -107,8 +140,11 @@ void BULLET_updateAll() {
         Bullet* b = &enemy_bullets[i];
 
         if (b->active) {
-            b->x += b->velX; 
-            b->y += b->velY;
+            enemy_positions[i].x_fp += b->velX;
+            enemy_positions[i].y_fp += b->velY;
+
+            b->x = (s16)(enemy_positions[i].x_fp >> 8);
+            b->y = (s16)(enemy_positions[i].y_fp >> 8);
 
             if (b->y < -16 || b->y > GAME_WINDOW_HEIGHT || b->x < -16 || b->x > GAME_WINDOW_WIDTH)
                 deactivate_bullet(b, enemy_free_indices, &enemy_top, i);
@@ -118,12 +154,9 @@ void BULLET_updateAll() {
 
                 if (COLLISION_checkBulletCollisionWithSlasher(b)) {
                     deactivate_bullet(b, enemy_free_indices, &enemy_top, i);
+
                 }
-
             }
-
         }
-        
     }
-
 }
