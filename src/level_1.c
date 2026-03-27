@@ -395,7 +395,19 @@ void level1_script() {
    }
 
     if (level1_frame == 530) {
-        BULLET_enemyShoot_slasherDirection(enemy1, &player, 2);
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
+    }
+
+    if (level1_frame == 540) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
+    }
+
+    if (level1_frame == 550) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
+    }
+
+    if (level1_frame == 600) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
     }
 /*
     if (level1_frame == 300) {

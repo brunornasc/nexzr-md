@@ -59,8 +59,8 @@ void BULLET_slasherShoot(s16 posX, s16 posY) {
 }
 
 void BULLET_enemyShoot_slasherDirection(Enemy *enemy, Player* player, s16 speed) {
-    s32 dx = (s32)(player->x - enemy->x);
-    s32 dy = (s32)(player->y - enemy->y);
+    s32 dx = (s32)((player->x + 8) - enemy->x);
+    s32 dy = (s32)((player->y + 8) - enemy->y);
 
     if (dx == 0 && dy == 0) {
         BULLET_enemyShoot(enemy->bulletSprite, enemy->x, enemy->y, 0, speed << 8);

@@ -31,7 +31,7 @@ int COLLISION_checkBulletCollisionWithEnemy(Bullet* bullet) {
 
 int COLLISION_checkBulletCollisionWithSlasher(Bullet* bullet) {
 
-    if (COLLISION_testCollision(player.x, player.y, 32, 32,
+    if (COLLISION_testCollision(player.x + 8, player.y + 8, 8, 8,
                                 bullet->x, bullet->y, bullet->width, bullet->height)) {
             PLAYER_gotHit(1);
             return true;
