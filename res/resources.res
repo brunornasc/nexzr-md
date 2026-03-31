@@ -1,7 +1,7 @@
 # SPRITE name path width height compression frames
 IMAGE titlescreen "sprites/misc/titlescreen/titlescreen.png" BEST ALL
 IMAGE intro "sprites/misc/intro.png" BEST ALL
-IMAGE intro2 "sprites/misc/intro2.png" BEST ALL
+IMAGE intro2 "sprites/misc/intro4.png" BEST ALL
 IMAGE naxat "sprites/misc/naxat.png" BEST ALL
 IMAGE indiano "sprites/misc/indiano.png" BEST ALL
 SPRITE level_stage "sprites/misc/level_stage.png" 2 2 BEST 0
@@ -38,6 +38,6 @@ SPRITE enemy_explosion_big "sprites/enemies/enemy_explosion_big.png" 4 4 FAST 6
 
 SPRITE enemy_bullet_001 "sprites/enemies/weapons/bullet_0001.png" 1 1 FAST 4
 
-SPRITE stage1_explosions "sprites/misc/stage1_explosions.png" 2 2 FAST 8
+SPRITE stage1_explosions "sprites/misc/stage1_explosions.png" 2 2 FAST 0
 
 IMAGE custom_font "fonts/font_default.png" BEST

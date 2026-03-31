@@ -5,7 +5,7 @@
 #include "resources.h"
 
 void INTRO_init(void (*function)()) {
-    INTRO_loadSequentially(&naxat, &intro, NULL); // descoberto q e a imagem da intro2 q esta corrompida
+    INTRO_loadSequentially(&naxat, &intro, &intro2, NULL); // descoberto q e a imagem da intro2 q esta corrompida
 
     if (function) function();
 }

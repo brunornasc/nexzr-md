@@ -17,7 +17,8 @@
 // ========================================================
 
 #define MAX_EXPLOSIONS 3
-#define EXPLOSION_ANIMATION_FRAMES 20 //1 % 3 segundo
+#define EXPLOSION_ANIMATION_FRAMES 8 //1 % 3 segundo
+#define EXPLOSION_FRAME_COUNT 8
 #define EXPLOSION_COOLDOWN  (30)
 #define EXPLOSION_SIZE     16
 #define EXPLOSION_MAX_X  (GAME_WINDOW_WIDTH  > EXPLOSION_SIZE ? GAME_WINDOW_WIDTH  - EXPLOSION_SIZE : 1)
@@ -27,7 +28,9 @@ typedef struct {
   s16 x;
   s16 y;
   Sprite* sprite;
-  s8 frameIndex;
+  s8 frameIndex;   // negativo = cooldown, zero = spawn, positivo = tempo de vida
+  u8 currentFrame; // frame atual da animação (separado do timer)
+  u8 totalFrames;  // total de frames do sprite (preenchido no spawn)
 } Explosion;
 
 // ========================================================
@@ -295,42 +298,45 @@ void LEVEL1_updateExplosions() {
 
         if (e->sprite == NULL) continue;
 
-        // -------- COOLDOWN (Estado Negativo) --------
+        // -------- COOLDOWN --------
         if (e->frameIndex < 0) {
             e->frameIndex++;
             continue;
         }
 
-        // -------- SPAWN (Estado Zero) --------
+        // -------- SPAWN --------
         if (e->frameIndex == 0) {
             e->x = random() % EXPLOSION_MAX_X;
             e->y = random() % EXPLOSION_MAX_Y;
 
             SPR_setPosition(e->sprite, e->x, e->y);
-
-            // Inicia a animação automática do SGDK
-            SPR_setAnim(e->sprite, 0);
             SPR_setHFlip(e->sprite, e->x % 2);
             SPR_setVFlip(e->sprite, e->y % 2);
             SPR_setVisibility(e->sprite, VISIBLE);
             SPR_setAlwaysAtBottom(e->sprite);
 
-            // Começamos a contar o tempo de vida da explosão
+            e->currentFrame = 0;
+            e->totalFrames  = EXPLOSION_FRAME_COUNT; // número de frames na sprite sheet
+            SPR_setFrame(e->sprite, 0);
+
             e->frameIndex = 1;
             continue;
         }
 
-        if (e->frameIndex > 0) {
-            e->frameIndex++;
+        // -------- ANIMAÇÃO MANUAL --------
+        e->frameIndex++;
+        e->currentFrame++;
 
-            // Se o tempo de vida atingir o limite definido
-            if (e->frameIndex >= EXPLOSION_ANIMATION_FRAMES) {
-                SPR_setVisibility(e->sprite, HIDDEN);
+        if (e->currentFrame >= e->totalFrames)
+            e->currentFrame = 0; // loop, ou troca por hide se não quiser loop
 
-                // Reset para cooldown aleatório
-                e->frameIndex = -(random() % (EXPLOSION_COOLDOWN << 1));
-                if (e->frameIndex == 0) e->frameIndex = -1;
-            }
+        SPR_setFrame(e->sprite, e->currentFrame);
+
+        // -------- FIM DA DURAÇÃO --------
+        if (e->frameIndex >= EXPLOSION_ANIMATION_FRAMES) {
+            SPR_setVisibility(e->sprite, HIDDEN);
+            e->frameIndex = -(random() % (EXPLOSION_COOLDOWN << 1));
+            if (e->frameIndex == 0) e->frameIndex = -1;
         }
     }
 }
