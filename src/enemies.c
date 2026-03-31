@@ -190,6 +190,7 @@ void ENEMY_update() {
 
         SPR_setFrame(enemy->sprite, enemy->spriteIndex);
         SPR_setPosition(enemy->sprite, enemy->x, enemy->y);
+        SPR_setAlwaysOnTop(enemy->sprite);
     }
 }
 
