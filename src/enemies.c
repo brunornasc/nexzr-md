@@ -120,27 +120,60 @@ void ENEMY_update() {
         //TODO enemy 5 e 6 tem só 4 sprites de animação e o 7 2
         
         switch (enemy->type) {
-            case ENEMY_TYPE_1:
+            case ENEMY_TYPE_1: {
+                s16 dy = player.y - enemy->y;
+
+                if (dy < 0) {
+                    break;
+                }
+
+                s16 dx = player.x - enemy->x;
+
+                bool flipH = (dx < 0);
+                SPR_setHFlip(enemy->sprite, flipH);
+
+                u16 adx = (dx < 0) ? -dx : dx;
+                u16 ady = (dy < 0) ? -dy : dy;
+
+                if (ady > (adx << 2)) {
+                      enemy->spriteIndex = 0;
+                }
+                else if (ady > adx) {
+                    enemy->spriteIndex = 1;
+                }
+                else if (adx > (ady << 2)) {
+                    enemy->spriteIndex = 4;
+                }
+                else if (adx > ady) {
+                    enemy->spriteIndex = 3;
+                }
+                else {
+                    enemy->spriteIndex = 2;
+                }
+
+                break;
+            }
             case ENEMY_TYPE_2:
                 if (enemy->spriteIndex < enemy->max_frames && !enemy->inverted) {
                     enemy->spriteIndex++;
                     break;                
                 }
 
-                else if (enemy->spriteIndex > 3 && !enemy->inverted) {
+                if (enemy->spriteIndex > 3 && !enemy->inverted) {
                     enemy->inverted = true;
                     SPR_setVFlip(enemy->sprite, enemy->inverted);
                     break;                
                 }
 
-                else if (enemy->inverted && enemy->spriteIndex > 0) {
+                if (enemy->inverted && enemy->spriteIndex > 0) {
                     enemy->spriteIndex--;
                     break;                
                 }
 
-                else if (enemy->inverted && enemy->spriteIndex < 1) {
+                if (enemy->inverted && enemy->spriteIndex < 1) {
                     enemy->inverted = false;
                     SPR_setVFlip(enemy->sprite, enemy->inverted);
+
                     break;                
                 }
             default:
@@ -157,6 +190,10 @@ void ENEMY_update() {
 }
 
 void ENEMY_shoot(Enemy* enemy, SpriteDefinition* bulletSprite, s16 velX, s16 velY) {
+    if (!enemy->active) {
+        return;
+    }
+
     BULLET_enemyShoot(bulletSprite, enemy->x + (enemy->width >> 2), enemy->y + enemy->height + 1, velX, velY);
 }
 

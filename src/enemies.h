@@ -3,7 +3,7 @@
 
 #include <genesis.h>
 
-#define MAX_ENEMIES 10
+#define MAX_ENEMIES 20
 
 typedef enum {
     ENEMY_TYPE_1,

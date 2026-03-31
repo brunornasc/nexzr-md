@@ -46,6 +46,9 @@ Explosion explosions[MAX_EXPLOSIONS];
 Entity* level1Entity;
 unsigned long level1_frame = 0;
 Enemy *enemy1;
+Enemy *enemy2;
+Enemy *enemy3;
+Enemy *enemy4;
 
 const u8 laserColors[3] = {2, 5, 8};
 
@@ -390,25 +393,106 @@ void level1_script() {
 
    if (level1_frame == 500) {
      Enemy e;
-     ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_4, GAME_WINDOW_WIDTH - 80, 0);
+     ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, GAME_WINDOW_WIDTH - 80, -8);
      enemy1 = ENEMY_create(&e);
    }
 
-    if (level1_frame == 530) {
-        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
-    }
-
     if (level1_frame == 540) {
-        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
+        Enemy e;
+        ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, GAME_WINDOW_WIDTH - 80, -8);
+        enemy2 = ENEMY_create(&e);
     }
 
-    if (level1_frame == 550) {
-        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
+
+    if (level1_frame == 560) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 5);
+    }
+
+    if (level1_frame == 580) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy2, &player, 5);
+
+        Enemy e;
+        ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, GAME_WINDOW_WIDTH - 80, -8);
+        enemy3 = ENEMY_create(&e);
     }
 
     if (level1_frame == 600) {
-        BULLET_enemyShoot_slasherDirection(enemy1, &player, 4);
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy3, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy2, &player, 6);
+
     }
+
+    if (level1_frame == 620) {
+        Enemy e;
+        ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, GAME_WINDOW_WIDTH - 80, -8);
+        enemy4 = ENEMY_create(&e);
+    }
+
+    if (level1_frame == 640) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 6);
+        BULLET_enemyShoot_slasherDirection(enemy3, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy2, &player, 6);
+        BULLET_enemyShoot_slasherDirection(enemy4, &player, 5);
+    }
+
+    if (level1_frame == 1050) {
+        enemy1 = NULL;
+        enemy2 = NULL;
+        enemy3 = NULL;
+        enemy4 = NULL;
+    }
+
+    if (level1_frame == 1100) {
+        Enemy e;
+        ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, 80, -8);
+        enemy1 = ENEMY_create(&e);
+    }
+
+    if (level1_frame == 1140) {
+        Enemy e;
+        ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, 80, -8);
+        enemy2 = ENEMY_create(&e);
+    }
+
+
+    if (level1_frame == 1180) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 5);
+    }
+
+    if (level1_frame == 1220) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy2, &player, 5);
+
+        Enemy e;
+        ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, 80, -8);
+        enemy3 = ENEMY_create(&e);
+    }
+
+    if (level1_frame == 1260) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy3, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy2, &player, 6);
+
+    }
+
+    if (level1_frame == 1300) {
+        Enemy e;
+        ENEMYFACTORY_initEnemy(&e, ENEMY_TYPE_1, 80, -8);
+        enemy4 = ENEMY_create(&e);
+    }
+
+    if (level1_frame == 1340) {
+        BULLET_enemyShoot_slasherDirection(enemy1, &player, 6);
+        BULLET_enemyShoot_slasherDirection(enemy3, &player, 5);
+        BULLET_enemyShoot_slasherDirection(enemy2, &player, 6);
+        BULLET_enemyShoot_slasherDirection(enemy4, &player, 5);
+    }
+
+
+
+
 /*
     if (level1_frame == 300) {
         // Carrega a imagem original (esquerda)

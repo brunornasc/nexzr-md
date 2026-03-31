@@ -6,7 +6,7 @@
 #include "enemies.h"
 
 #define MAX_SLASHER_BULLETS 9
-#define MAX_ENEMY_BULLETS 11
+#define MAX_ENEMY_BULLETS 20
 #define SLASHER_SHOOT_COOLDOWN 8
 
 typedef struct {
