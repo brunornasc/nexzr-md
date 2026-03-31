@@ -42,11 +42,9 @@ static const EnemyDefaults ENEMY4_DEFAULTS = {
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
-    Enemy *e = malloc(sizeof(Enemy));
-    if (e != NULL) {
-        ENEMYFACTORY_initEnemy(e, type, x, y);
-    }
-    return e;
+    Enemy temp;
+    ENEMYFACTORY_initEnemy(&temp, type, x, y);
+    return ENEMY_create(&temp);
 }
 
 void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
@@ -75,16 +73,17 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
             return;
     }
 
-    e->width           = d->width;
-    e->height          = d->height;
-    e->y_speed         = d->y_speed;
-    e->x_speed         = d->x_speed;
-    e->type            = d->type;
-    e->health          = d->health;
-    e->sprite          = d->sprite;
-    e->score_points    = d->score_points;
-    e->bulletSprite    = d->bulletSprite;
-	e->explosionDefinition = d->explosionDefinition;
-    e->destroying      = false;
-    e->max_frames      = d->max_frames;
+    e->width              = d->width;
+    e->height             = d->height;
+    e->y_speed            = d->y_speed;
+    e->x_speed            = d->x_speed;
+    e->type               = d->type;
+    e->health             = d->health;
+    e->sprite             = NULL;
+    e->spriteDefinition   = (SpriteDefinition*)d->sprite;
+    e->score_points       = d->score_points;
+    e->bulletSprite       = (SpriteDefinition*)d->bulletSprite;
+	e->explosionDefinition = (ExplosionAnimationDefinition*)d->explosionDefinition;
+    e->destroying         = false;
+    e->max_frames         = d->max_frames;
 }

@@ -38,9 +38,10 @@ typedef struct {
     bool active;
     bool destroying;
     bool inverted;
-    SpriteDefinition *sprite;
-    SpriteDefinition *bulletSprite;
-    ExplosionAnimationDefinition *explosionDefinition;
+    Sprite* sprite;
+    SpriteDefinition* spriteDefinition;
+    SpriteDefinition* bulletSprite;
+    ExplosionAnimationDefinition* explosionDefinition;
 } Enemy;
 
 extern Enemy enemies[MAX_ENEMIES];

@@ -50,6 +50,7 @@ void ENEMY_initializeAll() {
         memset(&enemies[i], 0, sizeof(Enemy));
         enemies[i].active = false;
         enemies[i].sprite = NULL;
+        enemies[i].spriteDefinition = NULL;
         enemies[i].explosionDefinition = NULL;
         enemies[i].bulletSprite = NULL;
         enemies[i].health = 0;
@@ -60,24 +61,27 @@ void ENEMY_initializeAll() {
 
 Enemy* ENEMY_create(Enemy *enemy) {
     if (enemy_top_index < 0) {
-        return NULL; 
+        return NULL;
     }
 
     u8 idx = enemy_free_index[enemy_top_index--];
     Enemy *e = &enemies[idx];
 
-    *e = *enemy; 
+    *e = *enemy;
+    e->index = idx;
 
     e->active = TRUE;
+    e->destroying = FALSE;
     e->inverted = FALSE;
     e->spriteIndex = 0;
+    e->sprite = NULL;
 
-    //PAL_setPalette(ENEMY_PALLETE, enemy->sprite->palette->data, DMA);
+    //PAL_setPalette(ENEMY_PALLETE, enemy->spriteDefinition->palette->data, DMA);
 
     e->sprite = SPR_addSprite(
-        enemy->sprite, 
-        e->x, 
-        e->y, 
+        enemy->spriteDefinition,
+        e->x,
+        e->y,
         TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
     );
 
