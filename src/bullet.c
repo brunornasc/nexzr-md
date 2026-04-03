@@ -131,7 +131,7 @@ void BULLET_updateAll() {
                 deactivate_bullet(b, slasher_free_indices, &slasher_top, i);
             else {
                 SPR_setPosition(b->sprite, b->x, b->y);
-
+                
                 if (COLLISION_checkBulletCollisionWithEnemy(b)) {
                     deactivate_bullet(b, slasher_free_indices, &slasher_top, i);
 

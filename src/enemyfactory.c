@@ -15,6 +15,9 @@ typedef struct {
 	const ExplosionAnimationDefinition *explosionDefinition;
     u16 score_points;
     u8 max_frames;
+    u16 accentColors[5];
+    u8 accentColorIndex;
+    u8 paletteAccentIndex;
 } EnemyDefaults;
 
 static const ExplosionAnimationDefinition EXPLOSION1_DEFAULTS = {
@@ -26,19 +29,19 @@ static const ExplosionAnimationDefinition EXPLOSION2_DEFAULTS = {
 };
 
 static const EnemyDefaults ENEMY1_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 5
+    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 5, NULL, NULL, NULL
 };
 
 static const EnemyDefaults ENEMY2_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 5
+    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 5, NULL, NULL, NULL
 };
 
 static const EnemyDefaults ENEMY3_DEFAULTS = {
-    16, 16, 2, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 6
+    16, 16, 2, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 6, NULL, NULL, NULL
 };
 
 static const EnemyDefaults ENEMY4_DEFAULTS = {
-    16, 16, 2, 0, ENEMY_TYPE_4, 1, &enemy_0004, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 100, 6
+    16, 16, 2, 0, ENEMY_TYPE_4, 1, &enemy_0004, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 6, NULL, NULL, NULL
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
@@ -86,4 +89,13 @@ void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
 	e->explosionDefinition = (ExplosionAnimationDefinition*)d->explosionDefinition;
     e->destroying         = false;
     e->max_frames         = d->max_frames;
+
+    if (d->paletteAccentIndex != NULL) {
+        for (u8 i = 0; i < 5; i++) {
+            e->accentColors[i] = d->accentColors[i];
+        }
+
+        e->accentColorIndex  = d->accentColorIndex;
+        e->paletteAccentIndex = d->paletteAccentIndex;
+    }
 }

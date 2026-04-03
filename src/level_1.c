@@ -312,12 +312,12 @@ void LEVEL1_updateExplosions() {
             SPR_setPosition(e->sprite, e->x, e->y);
             SPR_setHFlip(e->sprite, e->x % 2);
             SPR_setVFlip(e->sprite, e->y % 2);
-            SPR_setVisibility(e->sprite, VISIBLE);
-            SPR_setAlwaysAtBottom(e->sprite);
+            SPR_setVisibility(e->sprite, VISIBLE);            
 
             e->currentFrame = 0;
             e->totalFrames  = EXPLOSION_FRAME_COUNT; // número de frames na sprite sheet
             SPR_setFrame(e->sprite, 0);
+            SPR_setAlwaysAtBottom(e->sprite);
 
             e->frameIndex = 1;
             continue;
@@ -331,6 +331,7 @@ void LEVEL1_updateExplosions() {
             e->currentFrame = 0; // loop, ou troca por hide se não quiser loop
 
         SPR_setFrame(e->sprite, e->currentFrame);
+        SPR_setAlwaysAtBottom(e->sprite);
 
         // -------- FIM DA DURAÇÃO --------
         if (e->frameIndex >= EXPLOSION_ANIMATION_FRAMES) {
@@ -452,7 +453,7 @@ void LEVEL1_updateLasers() {
                 }
 
                 if (x >= 0 && x < 40 && y >= 0 && y < 28) {
-                    VDP_setTileMapXY(VDP_BG_B, TILE_ATTR_FULL(ENEMY_PALLETE, 0, FALSE, FALSE, 0), x, y);
+                    VDP_setTileMapXY(VDP_BG_B, TILE_ATTR_FULL(ENEMY_PALLETE, 0, FALSE, FALSE, 0), x, y);                    
                 }
             }
 
@@ -588,11 +589,12 @@ void level1_script() {
     LEVEL1_processScript();
     LEVEL1_updateEnemyShooting();
 
-    if ((level1_frame & 3) == 0 && level1_frame > WARP_DURATION) {
-        ENEMY_update();
+    if ((level1_frame & 3) == 0 && level1_frame > WARP_DURATION) {        
         LEVEL1_updateExplosions();
         LEVEL1_updateLasers();
+        ENEMY_update();
     }
+
 }
 
 // u16 testCounter = 0;

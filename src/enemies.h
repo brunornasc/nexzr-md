@@ -41,7 +41,10 @@ typedef struct {
     Sprite* sprite;
     SpriteDefinition* spriteDefinition;
     SpriteDefinition* bulletSprite;
-    ExplosionAnimationDefinition* explosionDefinition;
+    ExplosionAnimationDefinition* explosionDefinition;    
+    u16 accentColors[5];
+    u8 accentColorIndex;
+    u8 paletteAccentIndex;
 } Enemy;
 
 extern Enemy enemies[MAX_ENEMIES];

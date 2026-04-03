@@ -1,0 +1,53 @@
+1 - 10 inimigos venham pela direita quase no fim da tela (tipo 3) todos derrotados dao 600 pontos cada um 60 pontos
+2 - x inimigos venham pela esquerda quase no fim da tela (tipo 3) todos derrotados dao no total 1320 pontos
+3 - a navezona vem pela esquerda (somente metade) e esta fade
+4 - inimigos venham pela direita quase no fim da tela (tipo 3) todos derrotados 2160 pontos
+5 - inimigo do tipo 1 vem aprox 80 left cada inimigo do tipo 1 da 60pts tbm
+6 - inimigo do tipo 1 vem aprox screen width - 80
+7 - inimigo verde vem do meio (300pts) 3s depois
+8 - junto do inimigo verde vem uma navezona quase no meio da tela, mais a esquerda
+9 - outro inimigo verde vem da direita (3s depois do anterior)
+10 - inimigo do tipo 7 vem 3s depois tbm
+11 - vem upgrade de 3 tiros
+12 - quse no fim da navezona aparece outro inimigo verde pela esquerda
+13 - 2s depois outro inimigo verde pela direita
+14 - junto do inimigo anterior vem outra navezona pela esquerda (fade)
+15 - quase no meio da navezona vem um shield
+16 - 3 segundos depois vem inimigos do tipo 1 mas eles teleportam
+17 quase no fim da navezona aparece um canhao (1k pts)
+18 - cannon laser vindo da esquerda
+19 - navezona teleporta para o meio da tela (1kpts)
+20 - dois inimigos verdes na direita
+21 - dois inimigos tipo verde 2 no meio (mecha sai dela)
+22 - 2 inimigosverdes na esquerda
+23 - inimigos do tipo 4 vem pela diagonal direita esquerda
+{
+24 - navezona na esquerda (atira cannon)
+25 - inimigos tipo 3 na direita
+26 - inimigo verde no meio
+}
+27 cannon e atras uma navezona (fade)
+28 - aparece o tiro guiado
+29 - inimigos do tipo 4 vem pela diagonal em X
+30 - 2 cannon esquerda e direita
+31 - inimigos do tipo 4 vem pela diagonal em X
+32 - 1 inimigo verde na esquerda e depois 1 na direita
+33 - 1 inimigo verde na esquerda e depois 1 na direita (quase no meio)
+34 - x inimigos venham pela esquerda quase no fim da tela (tipo 3) todos derrotados dao no total 1320 pontos
+35 - cannon laser vindo da esquerda
+36 - navezona teleporta para o meio esuqerda da tela (1kpts)
+21 - dois inimigos tipo verde 2 no meio (mecha)
+navezona na esquerda
+18 - cannon laser vindo da esquerda
+navezonas vao da esquerda pra direita e vice versa
+inimigos teleportam tipo 3
+cannon na direita
+mais inimigos teleportam
+cannon na esquerda
+inimigos tipo 7 na esquerda e depois direita
+navezona teleportando no meio
+dois pares de mecha saido dela
+metade de uma nave fade na esuqerda e outra na direta com uma nao fade no meio e dois cannos
+
+
+BOSS

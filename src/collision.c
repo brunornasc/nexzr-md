@@ -15,7 +15,7 @@ int COLLISION_checkBulletCollisionWithEnemy(Bullet* bullet) {
     for (u8 i = 0; i < MAX_ENEMIES; i++) {
         Enemy* enemy = &enemies[i];
 
-        if (!enemy->active)
+        if (!enemy->active || enemy->health <= 0)
             continue;      
 
 
