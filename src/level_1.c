@@ -11,108 +11,22 @@
 #include "resources.h"
 #include "sounds.h"
 #include "enemyfactory.h"
-
-// ========================================================
-// EXPLOSIONS
-// ========================================================
-
-#define MAX_EXPLOSIONS 3
-#define EXPLOSION_ANIMATION_FRAMES 8 //1 % 3 segundo
-#define EXPLOSION_FRAME_COUNT 8
-#define EXPLOSION_COOLDOWN  (30)
-#define EXPLOSION_SIZE     16
-#define EXPLOSION_MAX_X  (GAME_WINDOW_WIDTH  > EXPLOSION_SIZE ? GAME_WINDOW_WIDTH  - EXPLOSION_SIZE : 1)
-#define EXPLOSION_MAX_Y  (GAME_WINDOW_HEIGHT > EXPLOSION_SIZE ? GAME_WINDOW_HEIGHT - EXPLOSION_SIZE : 1)
-
-typedef struct {
-  s16 x;
-  s16 y;
-  Sprite* sprite;
-  s8 frameIndex;   // negativo = cooldown, zero = spawn, positivo = tempo de vida
-  u8 currentFrame; // frame atual da animação (separado do timer)
-  u8 totalFrames;  // total de frames do sprite (preenchido no spawn)
-} Explosion;
-
-// ========================================================
-// LASERS
-// ========================================================
-
-#define MAX_LASERS 3
-#define LASER_DURATION 4
-#define LASER_COOLDOWN 15
-#define LASER_MAX_LENGTH 6  // em tiles (6*8 = 48px)
-#define LASER_TILE_INDEX 1  // Índice base para os tiles dos lasers (usa 1-20: 5 lasers * 4 ângulos)
-
-typedef struct {
-    s16 tileX, tileY;  // posição em tiles
-    u8 length;         // comprimento em tiles (1-6)
-    u8 angle;          // 0=horizontal, 1=vertical, 2=diagonal \, 3=diagonal /
-    u8 colorIndex;     // índice da cor (2, 5 ou 8)
-    u8 tileVramIndex;  // índice único na VRAM para este laser
-    s8 timer;          // negativo = cooldown, positivo = visível
-} Laser;
-
-const u8 laserColors[3] = {2, 5, 8};
-
-const u32 laserTiles[4][8] = {
-    // Horizontal (máscara - 5 será substituído pela cor escolhida)
-    {
-        0x00000000,
-        0x00000000,
-        0x00000000,
-        0x55555555,  // linha no meio
-        0x00000000,
-        0x00000000,
-        0x00000000,
-        0x00000000
-    },
-    // Vertical
-    {
-        0x00500000,
-        0x00500000,
-        0x00500000,
-        0x00500000,
-        0x00500000,
-        0x00500000,
-        0x00500000,
-        0x00500000
-    },
-    // Diagonal \ (top-left to bottom-right)
-    {
-        0x50000000,
-        0x05000000,
-        0x00500000,
-        0x00050000,
-        0x00005000,
-        0x00000500,
-        0x00000050,
-        0x00000005
-    },
-    // Diagonal / (top-right to bottom-left)
-    {
-        0x00000005,
-        0x00000050,
-        0x00000500,
-        0x00005000,
-        0x00050000,
-        0x00500000,
-        0x05000000,
-        0x50000000
-    }
-};
+#include "background_explosions.h"
+#include "background_lasers.h"
 
 // ========================================================
 // SCRIPT DE INIMIGOS
 // ========================================================
 
-#define LEVEL1_ENEMY_SLOTS 4
+#define LEVEL1_ENEMY_SLOTS 20
 
 typedef enum {
     LEVEL1_ACTION_SPAWN,
     LEVEL1_ACTION_SET_SHOOT_RATE,
     LEVEL1_ACTION_SHOOT_ONCE,
     LEVEL1_ACTION_DEACTIVATE,
-    LEVEL1_ACTION_STOP_SHOOT
+    LEVEL1_ACTION_STOP_SHOOT,
+    LEVEL1_ACTION_SHOOT_SLASHER_DIRECTION
 } Level1ActionType;
 
 typedef struct {
@@ -133,60 +47,62 @@ typedef struct {
     s16 shootSpeed;
 } Level1EnemySlot;
 
-// TODO: adicionar boss wave, transição de fase e mais ondas
 static const Level1ScriptItem level1_script_table[] = {
-    // --- WAVE 1: inimigos pela direita ---
-    { 500,  LEVEL1_ACTION_SPAWN,          0, ENEMY_TYPE_1, GAME_WINDOW_WIDTH-80, -8, 0,  0 },
-    { 540,  LEVEL1_ACTION_SPAWN,          1, ENEMY_TYPE_1, GAME_WINDOW_WIDTH-80, -8, 0,  0 },
-    { 560,  LEVEL1_ACTION_SET_SHOOT_RATE, 0, 0,            0,                    0,  40, 5 },
-    { 580,  LEVEL1_ACTION_SPAWN,          2, ENEMY_TYPE_1, GAME_WINDOW_WIDTH-80, -8, 0,  0 },
-    { 580,  LEVEL1_ACTION_SHOOT_ONCE,     0, 0,            0,                    0,  0,  5 },
-    { 580,  LEVEL1_ACTION_SHOOT_ONCE,     1, 0,            0,                    0,  0,  5 },
-    { 600,  LEVEL1_ACTION_SHOOT_ONCE,     0, 0,            0,                    0,  0,  5 },
-    { 600,  LEVEL1_ACTION_SHOOT_ONCE,     1, 0,            0,                    0,  0,  6 },
-    { 600,  LEVEL1_ACTION_SHOOT_ONCE,     2, 0,            0,                    0,  0,  5 },
-    { 620,  LEVEL1_ACTION_SPAWN,          3, ENEMY_TYPE_1, GAME_WINDOW_WIDTH-80, -8, 0,  0 },
-    { 620,  LEVEL1_ACTION_SET_SHOOT_RATE, 3, 0,            0,                    0,  45, 5 },
-    { 640,  LEVEL1_ACTION_SHOOT_ONCE,     0, 0,            0,                    0,  0,  6 },
-    { 640,  LEVEL1_ACTION_SHOOT_ONCE,     1, 0,            0,                    0,  0,  6 },
-    { 640,  LEVEL1_ACTION_SHOOT_ONCE,     2, 0,            0,                    0,  0,  5 },
-    { 640,  LEVEL1_ACTION_SHOOT_ONCE,     3, 0,            0,                    0,  0,  5 },
+    // --- WAVE 1: Direita ---
+    { 500,  LEVEL1_ACTION_SPAWN,      0, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 520,  LEVEL1_ACTION_SHOOT_ONCE, 0, 0,            0,                    0,   0, 5 },
+    { 564,  LEVEL1_ACTION_SPAWN,      1, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 584,  LEVEL1_ACTION_SHOOT_ONCE, 1, 0,            0,                    0,   0, 5 },
+    { 628,  LEVEL1_ACTION_SPAWN,      2, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 648,  LEVEL1_ACTION_SHOOT_ONCE, 2, 0,            0,                    0,   0, 5 },
+    { 692,  LEVEL1_ACTION_SPAWN,      3, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 712,  LEVEL1_ACTION_SHOOT_ONCE, 3, 0,            0,                    0,   0, 5 },
+    { 756,  LEVEL1_ACTION_SPAWN,      4, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 776,  LEVEL1_ACTION_SHOOT_ONCE, 4, 0,            0,                    0,   0, 5 },
+    { 820,  LEVEL1_ACTION_SPAWN,      5, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 840,  LEVEL1_ACTION_SHOOT_ONCE, 5, 0,            0,                    0,   0, 5 },
+    { 884,  LEVEL1_ACTION_SPAWN,      6, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 904,  LEVEL1_ACTION_SHOOT_ONCE, 6, 0,            0,                    0,   0, 5 },
+    { 948,  LEVEL1_ACTION_SPAWN,      7, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 968,  LEVEL1_ACTION_SHOOT_ONCE, 7, 0,            0,                    0,   0, 5 },
+    { 1012, LEVEL1_ACTION_SPAWN,      8, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 1032, LEVEL1_ACTION_SHOOT_ONCE, 8, 0,            0,                    0,   0, 5 },
+    { 1076, LEVEL1_ACTION_SPAWN,      9, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 1096, LEVEL1_ACTION_SHOOT_ONCE, 9, 0,            0,                    0,   0, 5 },
 
-    // --- FIM DA WAVE 1 ---
-    { 1050, LEVEL1_ACTION_DEACTIVATE,     0, 0, 0, 0, 0, 0 },
-    { 1050, LEVEL1_ACTION_DEACTIVATE,     1, 0, 0, 0, 0, 0 },
-    { 1050, LEVEL1_ACTION_DEACTIVATE,     2, 0, 0, 0, 0, 0 },
-    { 1050, LEVEL1_ACTION_DEACTIVATE,     3, 0, 0, 0, 0, 0 },
+    // --- WAVE 2: Esquerda ---
+    { 1176, LEVEL1_ACTION_SPAWN,      10, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1196, LEVEL1_ACTION_SHOOT_ONCE, 10, 0,            0,  0,   0, 5 },
+    { 1240, LEVEL1_ACTION_SPAWN,      11, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1260, LEVEL1_ACTION_SHOOT_ONCE, 11, 0,            0,  0,   0, 5 },
+    { 1304, LEVEL1_ACTION_SPAWN,      12, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1324, LEVEL1_ACTION_SHOOT_ONCE, 12, 0,            0,  0,   0, 5 },
+    { 1368, LEVEL1_ACTION_SPAWN,      13, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1388, LEVEL1_ACTION_SHOOT_ONCE, 13, 0,            0,  0,   0, 5 },
+    { 1432, LEVEL1_ACTION_SPAWN,      14, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1452, LEVEL1_ACTION_SHOOT_ONCE, 14, 0,            0,  0,   0, 5 },
+    { 1496, LEVEL1_ACTION_SPAWN,      15, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1516, LEVEL1_ACTION_SHOOT_ONCE, 15, 0,            0,  0,   0, 5 },
+    { 1560, LEVEL1_ACTION_SPAWN,      16, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1580, LEVEL1_ACTION_SHOOT_ONCE, 16, 0,            0,  0,   0, 5 },
+    { 1624, LEVEL1_ACTION_SPAWN,      17, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1644, LEVEL1_ACTION_SHOOT_ONCE, 17, 0,            0,  0,   0, 5 },
+    { 1688, LEVEL1_ACTION_SPAWN,      18, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1708, LEVEL1_ACTION_SHOOT_ONCE, 18, 0,            0,  0,   0, 5 },
+    { 1752, LEVEL1_ACTION_SPAWN,      19, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1772, LEVEL1_ACTION_SHOOT_ONCE, 19, 0,            0,  0,   0, 5 },
 
-    // --- WAVE 2: inimigos pela esquerda ---
-    { 1100, LEVEL1_ACTION_SPAWN,          0, ENEMY_TYPE_1, 80, -8, 0,  0 },
-    { 1140, LEVEL1_ACTION_SPAWN,          1, ENEMY_TYPE_1, 80, -8, 0,  0 },
-    { 1180, LEVEL1_ACTION_SET_SHOOT_RATE, 0, 0,            0,  0,  36, 5 },
-    { 1220, LEVEL1_ACTION_SHOOT_ONCE,     0, 0,            0,  0,  0,  5 },
-    { 1220, LEVEL1_ACTION_SHOOT_ONCE,     1, 0,            0,  0,  0,  5 },
-    { 1220, LEVEL1_ACTION_SPAWN,          2, ENEMY_TYPE_1, 80, -8, 0,  0 },
-    { 1260, LEVEL1_ACTION_SHOOT_ONCE,     0, 0,            0,  0,  0,  5 },
-    { 1260, LEVEL1_ACTION_SHOOT_ONCE,     1, 0,            0,  0,  0,  6 },
-    { 1260, LEVEL1_ACTION_SHOOT_ONCE,     2, 0,            0,  0,  0,  5 },
-    { 1300, LEVEL1_ACTION_SPAWN,          3, ENEMY_TYPE_1, 80, -8, 0,  0 },
-    { 1340, LEVEL1_ACTION_SHOOT_ONCE,     0, 0,            0,  0,  0,  6 },
-    { 1340, LEVEL1_ACTION_SHOOT_ONCE,     1, 0,            0,  0,  0,  6 },
-    { 1340, LEVEL1_ACTION_SHOOT_ONCE,     2, 0,            0,  0,  0,  5 },
-    { 1340, LEVEL1_ACTION_SHOOT_ONCE,     3, 0,            0,  0,  0,  5 },
-
-    // TODO: wave 3, wave 4, boss
+    { 2500, LEVEL1_ACTION_STOP_SHOOT, 0, 0, 0, 0, 0, 0 }
 };
+
 static const int level1_script_len = sizeof(level1_script_table) / sizeof(level1_script_table[0]);
 
 // ========================================================
-// STATE
+// STATE & GLOBALS
 // ========================================================
 
-Laser lasers[MAX_LASERS];
-Explosion explosions[MAX_EXPLOSIONS];
 Entity* level1Entity;
 unsigned long level1_frame = 0;
-
 static Level1EnemySlot level1_slots[LEVEL1_ENEMY_SLOTS];
 static int level1_script_index = 0;
 
@@ -198,14 +114,6 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state);
 void level1_update(void* context);
 void level1_dispose();
 void level1_script();
-void LEVEL1_initExplosions();
-void LEVEL1_updateExplosions();
-void LEVEL1_disposeExplosions();
-void LEVEL1_initLasers();
-void LEVEL1_updateLasers();
-void LEVEL1_disposeLasers();
-static inline __attribute__((always_inline))
-void LEVEL1_createColoredTile(u8 angle, u8 colorIndex, u32* output);
 static void LEVEL1_resetEnemySlots(void);
 static void LEVEL1_processScript(void);
 static void LEVEL1_updateEnemyShooting(void);
@@ -229,8 +137,8 @@ void Level1_init() {
 
 void level1_dispose() {
     Entity_removeEntity(level1Entity->index);
-    LEVEL1_disposeLasers();
-    LEVEL1_disposeExplosions();
+    BACKGROUND_LASERS_dispose();
+    BACKGROUND_EXPLOSIONS_dispose();
 }
 
 // ========================================================
@@ -259,294 +167,54 @@ void level1_update(void* context) {
 }
 
 // ========================================================
-// EXPLOSIONS
-// ========================================================
-
-void LEVEL1_disposeExplosions() {
-    for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
-        if (explosions[i].sprite != NULL) {
-            SPR_releaseSprite(explosions[i].sprite);
-            explosions[i].sprite = NULL;
-        }
-    }
-}
-
-void LEVEL1_initExplosions() {
-    PAL_setPalette(ENEMY_PALLETE, enemy_0003.palette->data, DMA);
-
-    for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
-        Explosion* e = &explosions[i];
-
-        e->frameIndex = -(random() % EXPLOSION_COOLDOWN);
-        e->x = random() % EXPLOSION_MAX_X;
-        e->y = random() % EXPLOSION_MAX_Y;
-
-        e->sprite = SPR_addSprite(
-            &stage1_explosions,
-            e->x,
-            e->y,
-            TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
-        );
-
-        SPR_setVisibility(e->sprite, HIDDEN);
-    }
-}
-
-void LEVEL1_updateExplosions() {
-    for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
-        Explosion* e = &explosions[i];
-
-        if (e->sprite == NULL) continue;
-
-        // -------- COOLDOWN --------
-        if (e->frameIndex < 0) {
-            e->frameIndex++;
-            continue;
-        }
-
-        // -------- SPAWN --------
-        if (e->frameIndex == 0) {
-            e->x = random() % EXPLOSION_MAX_X;
-            e->y = random() % EXPLOSION_MAX_Y;
-
-            SPR_setPosition(e->sprite, e->x, e->y);
-            SPR_setHFlip(e->sprite, e->x % 2);
-            SPR_setVFlip(e->sprite, e->y % 2);
-            SPR_setVisibility(e->sprite, VISIBLE);            
-
-            e->currentFrame = 0;
-            e->totalFrames  = EXPLOSION_FRAME_COUNT; // número de frames na sprite sheet
-            SPR_setFrame(e->sprite, 0);
-            SPR_setAlwaysAtBottom(e->sprite);
-
-            e->frameIndex = 1;
-            continue;
-        }
-
-        // -------- ANIMAÇÃO MANUAL --------
-        e->frameIndex++;
-        e->currentFrame++;
-
-        if (e->currentFrame >= e->totalFrames)
-            e->currentFrame = 0; // loop, ou troca por hide se não quiser loop
-
-        SPR_setFrame(e->sprite, e->currentFrame);
-        SPR_setAlwaysAtBottom(e->sprite);
-
-        // -------- FIM DA DURAÇÃO --------
-        if (e->frameIndex >= EXPLOSION_ANIMATION_FRAMES) {
-            SPR_setVisibility(e->sprite, HIDDEN);
-            e->frameIndex = -(random() % (EXPLOSION_COOLDOWN << 1));
-            if (e->frameIndex == 0) e->frameIndex = -1;
-        }
-    }
-}
-
-// ========================================================
-// LASERS
-// ========================================================
-
-static inline __attribute__((always_inline))
-void LEVEL1_createColoredTile(u8 angle, u8 colorIndex, u32* output) {
-    for (u8 row = 0; row < 8; row++) {
-        u32 line = laserTiles[angle][row];
-        u32 colored = 0;
-
-        // Percorre cada nibble (4 bits) da linha
-        for (s8 nibble = 7; nibble >= 0; nibble--) {
-            u8 value = (line >> (nibble << 2)) & 0xF;
-
-            // Se o valor for 5 (nossa máscara), substitui pela cor escolhida
-            // Senão mantém o valor original (0 para transparente)
-            if (value == 5) {
-                colored |= ((u32)colorIndex << (nibble << 2));
-            } else {
-                colored |= ((u32)value << (nibble << 2));
-            }
-        }
-
-        output[row] = colored;
-    }
-}
-
-void LEVEL1_initLasers() {
-    // Inicializa os lasers
-    for (u8 i = 0; i < MAX_LASERS; i++) {
-        lasers[i].timer        = -(random() % LASER_COOLDOWN);
-        lasers[i].length       = 0;
-        lasers[i].angle        = 0;
-        lasers[i].colorIndex   = 5;  // default
-        lasers[i].tileVramIndex = LASER_TILE_INDEX + (i << 2);  // Cada laser tem 4 tiles (um por ângulo)
-    }
-}
-
-void LEVEL1_updateLasers() {
-    for (u8 i = 0; i < MAX_LASERS; i++) {
-        Laser* l = &lasers[i];
-
-        // -------- COOLDOWN --------
-        if (l->timer < 0) {
-            l->timer++;
-            continue;
-        }
-
-        // -------- SPAWN --------
-        if (l->timer == 0) {
-            // Posição inicial aleatória em tiles
-            l->tileX  = random() % 40;  // 320/8 = 40 tiles
-            l->tileY  = random() % 28;  // 224/8 = 28 tiles
-
-            // Comprimento aleatório (1-6 tiles)
-            l->length = 1 + (random() % LASER_MAX_LENGTH);
-
-            // Ângulo aleatório (0-3)
-            l->angle  = random() % 4;
-
-            // Cor aleatória (2, 5 ou 8)
-            l->colorIndex = laserColors[random() % 3];
-
-            // Carrega o tile com a cor escolhida na VRAM (índice único para este laser)
-            u32 coloredTile[8];
-            LEVEL1_createColoredTile(l->angle, l->colorIndex, coloredTile);
-            VDP_loadTileData(coloredTile, l->tileVramIndex + l->angle, 1, DMA);
-
-            l->timer = 1;
-        }
-
-        // -------- DESENHAR LASER --------
-        if (l->timer > 0 && l->timer <= LASER_DURATION) {
-            u16 tileAttr = TILE_ATTR_FULL(ENEMY_PALLETE, 0, FALSE, FALSE, l->tileVramIndex + l->angle);
-
-            for (u8 j = 0; j < l->length; j++) {
-                s16 x = l->tileX;
-                s16 y = l->tileY;
-
-                // Calcula posição baseado no ângulo
-                switch(l->angle) {
-                    case 0: x += j; break;          // Horizontal
-                    case 1: y += j; break;          // Vertical
-                    case 2: x += j; y += j; break;  // Diagonal (backslash)
-                    case 3: x += j; y -= j; break;  // Diagonal (forward slash)
-                }
-
-                // Verifica limites da tela
-                if (x >= 0 && x < 40 && y >= 0 && y < 28) {
-                    VDP_setTileMapXY(VDP_BG_B, tileAttr, x, y);
-                }
-            }
-
-            l->timer++;
-        }
-
-        // -------- FIM DA DURAÇÃO --------
-        if (l->timer > LASER_DURATION) {
-            // Limpa os tiles do laser (tile 0 = transparente/vazio)
-            for (u8 j = 0; j < l->length; j++) {
-                s16 x = l->tileX;
-                s16 y = l->tileY;
-
-                switch(l->angle) {
-                    case 0: x += j; break;
-                    case 1: y += j; break;
-                    case 2: x += j; y += j; break;
-                    case 3: x += j; y -= j; break;
-                }
-
-                if (x >= 0 && x < 40 && y >= 0 && y < 28) {
-                    VDP_setTileMapXY(VDP_BG_B, TILE_ATTR_FULL(ENEMY_PALLETE, 0, FALSE, FALSE, 0), x, y);                    
-                }
-            }
-
-            // Volta para cooldown aleatório
-            l->timer = -(random() % (LASER_COOLDOWN * 2));
-            if (l->timer == 0) l->timer = -1;
-        }
-    }
-}
-
-void LEVEL1_disposeLasers() {
-    // Limpa todos os lasers ativos da tela
-    for (u8 i = 0; i < MAX_LASERS; i++) {
-        Laser* l = &lasers[i];
-        if (l->timer > 0 && l->timer <= LASER_DURATION) {
-            for (u8 j = 0; j < l->length; j++) {
-                s16 x = l->tileX;
-                s16 y = l->tileY;
-
-                switch(l->angle) {
-                    case 0: x += j; break;
-                    case 1: y += j; break;
-                    case 2: x += j; y += j; break;
-                    case 3: x += j; y -= j; break;
-                }
-
-                if (x >= 0 && x < 40 && y >= 0 && y < 28) {
-                    VDP_setTileMapXY(VDP_BG_B, TILE_ATTR_FULL(ENEMY_PALLETE, 0, FALSE, FALSE, 0), x, y);
-                }
-            }
-        }
-    }
-}
-
-// ========================================================
-// SCRIPT: SLOTS DE INIMIGOS
+// SCRIPT CORE FUNCTIONS
 // ========================================================
 
 static void LEVEL1_resetEnemySlots(void) {
     for (u8 i = 0; i < LEVEL1_ENEMY_SLOTS; i++) {
-        level1_slots[i].enemy         = NULL;
+        level1_slots[i].enemy = NULL;
         level1_slots[i].shootInterval = 0;
-        level1_slots[i].shootTimer    = 0;
-        level1_slots[i].shootSpeed    = 0;
+        level1_slots[i].shootTimer = 0;
     }
     level1_script_index = 0;
 }
 
 static void LEVEL1_processScript(void) {
-    while (level1_script_index < level1_script_len
-           && level1_script_table[level1_script_index].frame == level1_frame)
-    {
+    while (level1_script_index < level1_script_len && level1_script_table[level1_script_index].frame == level1_frame) {
         const Level1ScriptItem* item = &level1_script_table[level1_script_index++];
         if (item->slot >= LEVEL1_ENEMY_SLOTS) continue;
-
         Level1EnemySlot* slot = &level1_slots[item->slot];
 
         switch (item->action) {
             case LEVEL1_ACTION_SPAWN:
-                if (slot->enemy && slot->enemy->active)
-                    ENEMY_deactivate(slot->enemy);
-                slot->enemy           = ENEMYFACTORY_createEnemy(item->type, item->x, item->y);
-                slot->shootInterval   = 0;
-                slot->shootTimer      = 0;
-                slot->shootSpeed      = 0;
+                if (slot->enemy && slot->enemy->active) ENEMY_deactivate(slot->enemy);
+                slot->enemy = ENEMYFACTORY_createEnemy(item->type, item->x, item->y);
+                slot->shootInterval = 0;
                 break;
 
             case LEVEL1_ACTION_SET_SHOOT_RATE:
-                slot->shootInterval   = item->shootInterval;
-                slot->shootTimer      = 0;
-                slot->shootSpeed      = item->shootSpeed;
+                slot->shootInterval = item->shootInterval;
+                slot->shootTimer = 0;
+                slot->shootSpeed = item->shootSpeed;
                 break;
 
             case LEVEL1_ACTION_SHOOT_ONCE:
+                if (slot->enemy && slot->enemy->active)
+                    BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x, slot->enemy->y, 0, 3);
+                break;
+
+            case LEVEL1_ACTION_SHOOT_SLASHER_DIRECTION:
                 if (slot->enemy && slot->enemy->active)
                     BULLET_enemyShoot_slasherDirection(slot->enemy, &player, item->shootSpeed);
                 break;
 
             case LEVEL1_ACTION_DEACTIVATE:
-                if (slot->enemy && slot->enemy->active)
-                    ENEMY_deactivate(slot->enemy);
-                slot->enemy           = NULL;
-                slot->shootInterval   = 0;
-                slot->shootTimer      = 0;
-                slot->shootSpeed      = 0;
+                if (slot->enemy && slot->enemy->active) ENEMY_deactivate(slot->enemy);
+                slot->enemy = NULL;
                 break;
 
             case LEVEL1_ACTION_STOP_SHOOT:
-                slot->shootInterval   = 0;
-                slot->shootTimer      = 0;
-                break;
-
-            default:
+                slot->shootInterval = 0;
                 break;
         }
     }
@@ -555,16 +223,11 @@ static void LEVEL1_processScript(void) {
 static void LEVEL1_updateEnemyShooting(void) {
     for (u8 i = 0; i < LEVEL1_ENEMY_SLOTS; i++) {
         Level1EnemySlot* slot = &level1_slots[i];
-
-        if (!slot->enemy || !slot->enemy->active) {
-            slot->enemy = NULL;
-            continue;
-        }
-
+        if (!slot->enemy || !slot->enemy->active) continue;
         if (slot->shootInterval == 0) continue;
 
         if (slot->shootTimer == 0) {
-            BULLET_enemyShoot_slasherDirection(slot->enemy, &player, slot->shootSpeed);
+            BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x, slot->enemy->y, 0, slot->shootSpeed);
             slot->shootTimer = slot->shootInterval;
         } else {
             slot->shootTimer--;
@@ -573,7 +236,7 @@ static void LEVEL1_updateEnemyShooting(void) {
 }
 
 // ========================================================
-// SCRIPT PRINCIPAL
+// MAIN SCRIPT LOOP
 // ========================================================
 
 void level1_script() {
@@ -581,20 +244,36 @@ void level1_script() {
     if (level1_frame == 100) HUD_dismissStage();
 
     if (level1_frame == WARP_DURATION) {
-        LEVEL1_initExplosions();
-        LEVEL1_initLasers();
+        BACKGROUND_EXPLOSIONS_init();
+        BACKGROUND_LASERS_init();
     }
 
-    // Processa eventos do script e tiro automático por slot
     LEVEL1_processScript();
     LEVEL1_updateEnemyShooting();
 
-    if ((level1_frame & 3) == 0 && level1_frame > WARP_DURATION) {        
-        LEVEL1_updateExplosions();
-        LEVEL1_updateLasers();
-        ENEMY_update();
-    }
+    // --- LOAD BALANCER (Distribuição de Carga) ---
+    if (level1_frame > WARP_DURATION) {
+        
+        u16 phase = level1_frame % 4; 
 
+        switch (phase) {
+            case 0:
+                ENEMY_update(); 
+                break;
+
+            case 1:
+                BACKGROUND_EXPLOSIONS_update();
+                break;
+
+            case 2:
+                BACKGROUND_LASERS_update();
+                break;
+
+            case 3:
+                // Janela livre para evitar picos de CPU
+                break;
+        }
+    }
 }
 
 // u16 testCounter = 0;

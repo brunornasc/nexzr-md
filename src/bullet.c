@@ -91,8 +91,8 @@ void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 v
 
     b->x = posX;
     b->y = posY;
-    b->velX = velX;
-    b->velY = velY;
+    b->velX = velX << 8; 
+    b->velY = velY << 8; 
     b->active = TRUE;
     b->width = 8;
     b->height = 8;

@@ -1,0 +1,15 @@
+#ifndef _EXPLOSIONS_H_
+#define _EXPLOSIONS_H_
+
+#include <genesis.h>
+
+#define MAX_EXPLOSIONS 3
+#define EXPLOSION_ANIMATION_FRAMES 8 
+#define EXPLOSION_FRAME_COUNT 8
+#define EXPLOSION_COOLDOWN 30
+
+void BACKGROUND_EXPLOSIONS_init();
+void BACKGROUND_EXPLOSIONS_update();
+void BACKGROUND_EXPLOSIONS_dispose();
+
+#endif
