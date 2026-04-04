@@ -19,12 +19,13 @@ typedef struct {
 
 Player_animation player_animation;
 
+
 void PLAYERinit_animation(Player* p);
 void PLAYER_update_init_animation();
 void constraint_animation(Player* p);
 
 void PLAYER_init(Player* p) {
-    PLAYERinit_animation(p);
+    PLAYERinit_animation(p);  
     /*
     
     p->x = (GAME_WINDOW_WIDTH / 2) - 16;
@@ -39,10 +40,13 @@ void PLAYER_init(Player* p) {
     */
 }
 
-void PLAYER_handleInput(void* context) {
+void PLAYER_handleInput(void* context) {    
     if (Game_isPaused()) return;
-
+    
     Player* p = (Player*) context;
+
+    if (p->destroying) return;
+    
     u16 value = JOY_readJoypad(JOY_1);
 
     if (value & BUTTON_RIGHT) {
@@ -99,8 +103,15 @@ void constraint_animation(Player* p) {
     }
 }
 
-void PLAYER_gotHit(u8 damage) {
-    // Implement player damage handling here
+void PLAYER_gotHit(Player *p, u8 damage) {
+    if (p->destroying) return;
+
+    p->destroying = true;
+    // colocar o sprite de destruição em cima do player
+    SpriteDefinition* dest = SPR_addSprite(&slasher_destroing, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
+    SPR_setDepth(p->sprite, 1);
+    SPR_setAnim(dest, 0);
+    SPR_setAlwaysOnTop(dest);
 }
 
 void PLAYER_dispose(Player* p) {
@@ -209,6 +220,7 @@ void PLAYER_update_init_animation(void* context) {
         p->moveFrame = 0;
         p->frameCounter = 0;
         p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
+        p->destroying = false;
         
         SPR_setAnim(p->sprite, SLASHER_IDLE);
         SPR_setAlwaysOnTop(p->sprite);

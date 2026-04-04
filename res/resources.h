@@ -11,6 +11,7 @@ extern const SpriteDefinition level_numbers;
 extern const TileSet characters;
 extern const SpriteDefinition hud_slasher;
 extern const SpriteDefinition slasher;
+extern const SpriteDefinition slasher_destroing;
 extern const SpriteDefinition slasher_big_0;
 extern const SpriteDefinition slasher_big_2;
 extern const SpriteDefinition slasher_big_3;

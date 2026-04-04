@@ -8,11 +8,12 @@ typedef struct {
     int x, y;
     int moveFrame;
     int frameCounter;
+    bool destroying;
 } Player;
 
 void PLAYER_init(Player* p);
 void PLAYER_handleInput(void* context);
-void PLAYER_gotHit(u8 damage);
+void PLAYER_gotHit(Player *p, u8 damage);
 void PLAYER_dispose(Player* p);
 
 #endif

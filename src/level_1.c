@@ -80,7 +80,7 @@ static const ScriptItem level1_script_table[] = {
     { 1241, ACTION_SET_LINEAR_MOVEMENT,             1,              0,                      0,                              3,              0,                      0 },
     { 1260, ACTION_SET_SHOOT_RATE,                  1,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
     
-    { 1304, ACTION_SPAWN,                           2,              ENEMY_TYPE_1,          48,                           -16,              0,                      0 },
+    { 1304, ACTION_SPAWN,                           2,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1305, ACTION_SET_LINEAR_MOVEMENT,             2,              0,                      0,                              3,              0,                      0 },
     { 1324, ACTION_SET_SHOOT_RATE,                  2,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },    
 
@@ -128,7 +128,7 @@ static const int level1_script_len = sizeof(level1_script_table) / sizeof(level1
 // ========================================================
 
 Entity* level1Entity;
-unsigned long level1_frame = 0;
+unsigned long level1_frame;
 
 // ========================================================
 // FORWARD DECLARATIONS
@@ -159,12 +159,20 @@ void Level1_init() {
     XGM_startPlay(track1);
     PLAYER_init(&player);
     Game_setJoyHandler(level1_joyEventHandler);
+    level1_frame = 0;
 }
 
 void level1_dispose() {
+    // implementar isso
     Entity_removeEntity(level1Entity->index);
     BACKGROUND_LASERS_dispose();
     BACKGROUND_EXPLOSIONS_dispose();
+    Game_setJoyHandler(NULL);
+}
+
+void LEVEL1_restart() {
+    level1_dispose();
+    Level1_init();
 }
 
 // ========================================================
@@ -206,6 +214,11 @@ void level1_script() {
 
     // Processa o script da fase usando o Motor modular
     SCRIPT_process(l1_slots, LEVEL1_ENEMY_SLOTS, level1_script_table, level1_script_len, level1_frame, &l1_script_index);
+
+    if (player.destroying) {
+        LEVEL1_restart();
+        return;
+    }
 
     // --- LOAD BALANCER (Distribuição de Carga) ---
     if (level1_frame > WARP_DURATION + 20) {

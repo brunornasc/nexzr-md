@@ -46,7 +46,7 @@ static const EnemyDefaults ENEMY4_DEFAULTS = {
 };
 
 static const EnemyDefaults ENEMY9_DEFAULTS = {
-    32, 32, 0, 0, ENEMY_TYPE_9, 1, &enemy_0009, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 3, true, NULL, NULL, NULL
+    32, 32, 0, 0, ENEMY_TYPE_9, 5, &enemy_0009, &enemy_bullet_001, &EXPLOSION2_DEFAULTS, 60, 3, true, NULL, NULL, NULL
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {

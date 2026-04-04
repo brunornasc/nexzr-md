@@ -10,6 +10,7 @@ TILESET characters "sprites/misc/characters.png" BEST
 SPRITE hud_slasher "sprites/slasher/minislasher.png" 2 2 BEST 0
 
 SPRITE slasher "sprites/slasher/slasher.png" 4 4 FAST 5
+SPRITE slasher_destroing "sprites/slasher/slasher_destroing.png" 4 4 FAST 4
 SPRITE slasher_big_0 "sprites/slasher/slasher_big_0.png" 12 21 BEST 0
 #SPRITE slasher_big_1 "sprites/slasher/slasher_big_1.png" 13 22 BEST 0 16x2
 SPRITE slasher_big_2 "sprites/slasher/slasher_big_2.png" 12 19 BEST 0
