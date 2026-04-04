@@ -49,7 +49,7 @@ void BULLET_slasherShoot(s16 posX, s16 posY) {
     b->active = TRUE;
     b->width = 16;
     b->height = 16;
-    b->sprite = SPR_addSprite(&slasher_weapon_0001, posX, posY, TILE_ATTR(SLASHER_BULLET_PALLETE, 0, 0, 0));
+    b->sprite = SPR_addSprite(&slasher_weapon_0001, posX, posY, TILE_ATTR(SLASHER_BULLET_PALLETE, TRUE, 0, 0));
 
     slasher_positions[idx].x_fp = (s32)posX << 8;
     slasher_positions[idx].y_fp = (s32)posY << 8;
@@ -98,7 +98,7 @@ void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 v
     b->width = 8;
     b->height = 8;
 
-    b->sprite = SPR_addSprite(bulletSprite, posX, posY, TILE_ATTR(ENEMY_BULLET_PALLETE, 0, 0, 0));
+    b->sprite = SPR_addSprite(bulletSprite, posX, posY, TILE_ATTR(ENEMY_BULLET_PALLETE, TRUE, 0, 0));
 
     enemy_positions[idx].x_fp = (s32)posX << 8;
     enemy_positions[idx].y_fp = (s32)posY << 8;
@@ -118,7 +118,7 @@ void BULLET_enemyShoot2(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 
     b->width = 8;
     b->height = 8;
 
-    b->sprite = SPR_addSprite(bulletSprite, posX, posY, TILE_ATTR(ENEMY_BULLET_PALLETE, 0, 0, 0));
+    b->sprite = SPR_addSprite(bulletSprite, posX, posY, TILE_ATTR(ENEMY_BULLET_PALLETE, TRUE, 0, 0));
 
     enemy_positions[idx].x_fp = (s32)posX << 8;
     enemy_positions[idx].y_fp = (s32)posY << 8;

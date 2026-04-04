@@ -4,6 +4,7 @@ typedef struct {
     s16 tileX, tileY;  
     u8 length, angle, colorIndex, tileVramIndex;
     s8 timer;
+    u16 savedTiles[LASER_MAX_LENGTH]; 
 } Laser;
 
 static Laser lasers[MAX_LASERS];
@@ -43,13 +44,27 @@ void BACKGROUND_LASERS_update() {
             l->tileX = random() % 40; l->tileY = random() % 28;
             l->length = 1 + (random() % LASER_MAX_LENGTH); l->angle = random() % 4;
             l->colorIndex = laserColors[random() % 3];
+
             u32 tile[8]; createLaserTile(l->angle, l->colorIndex, tile);
             VDP_loadTileData(tile, l->tileVramIndex + l->angle, 1, DMA);
+
+            // Salva os tiles que serão sobrescritos
+            for (u8 j = 0; j < l->length; j++) {
+                s16 x = l->tileX, y = l->tileY;
+                if (l->angle == 0) x += j; else if (l->angle == 1) y += j;
+                else if (l->angle == 2) { x += j; y += j; } else { x += j; y -= j; }
+
+                if (x >= 0 && x < 40 && y >= 0 && y < 28)
+                    l->savedTiles[j] = 0;//VDP_getTileMapXY(BG_B, x, y); // <-- salva
+                else
+                    l->savedTiles[j] = 0;
+            }
+
             l->timer = 1;
         }
 
         if (l->timer > 0 && l->timer <= LASER_DURATION) {
-            u16 attr = TILE_ATTR_FULL(PAL2, 0, 0, 0, l->tileVramIndex + l->angle);
+            u16 attr = TILE_ATTR_FULL(PAL2, TRUE, 0, 0, l->tileVramIndex + l->angle);
             for (u8 j = 0; j < l->length; j++) {
                 s16 x = l->tileX, y = l->tileY;
                 if (l->angle == 0) x += j; else if (l->angle == 1) y += j;
@@ -64,7 +79,9 @@ void BACKGROUND_LASERS_update() {
                 s16 x = l->tileX, y = l->tileY;
                 if (l->angle == 0) x += j; else if (l->angle == 1) y += j;
                 else if (l->angle == 2) { x += j; y += j; } else { x += j; y -= j; }
-                if (x >= 0 && x < 40 && y >= 0 && y < 28) VDP_setTileMapXY(VDP_BG_B, 0, x, y);
+
+                if (x >= 0 && x < 40 && y >= 0 && y < 28)
+                    VDP_setTileMapXY(VDP_BG_B, l->savedTiles[j], x, y); // <-- restaura
             }
             l->timer = -(random() % (LASER_COOLDOWN * 2));
         }

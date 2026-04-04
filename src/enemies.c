@@ -90,7 +90,7 @@ Enemy* ENEMY_create(Enemy *enemy) {
         enemy->spriteDefinition,
         e->x,
         e->y,
-        TILE_ATTR(paletteIndex, FALSE, FALSE, FALSE)
+        TILE_ATTR(paletteIndex, TRUE, FALSE, FALSE)
     );
 
     if (e->sprite != NULL) {

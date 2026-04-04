@@ -148,6 +148,7 @@ void Level1_init() {
     Background_init();
     HUD_init();
     ENEMY_initializeAll();
+    VDP_setHilightShadow(1); 
     
     // Inicializa o Motor de Script
     SCRIPT_init(l1_slots, LEVEL1_ENEMY_SLOTS);

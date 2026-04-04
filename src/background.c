@@ -49,7 +49,7 @@ void Background_init() {
         int y = random() % 224;
 
         for (int j = 0; j < size; j++) {
-            stars[i].spr[j] = SPR_addSprite(&star_warp, x, (y + (j << 3)), TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
+            stars[i].spr[j] = SPR_addSprite(&star_warp, x, (y + (j << 3)), TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
             SPR_setFrame(stars[i].spr[j], colorFrame);
         }
 

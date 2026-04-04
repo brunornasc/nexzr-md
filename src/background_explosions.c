@@ -18,7 +18,7 @@ void BACKGROUND_EXPLOSIONS_init() {
     for (u8 i = 0; i < MAX_EXPLOSIONS; i++) {
         Explosion* e = &explosions[i];
         e->frameIndex = -(random() % EXPLOSION_COOLDOWN);
-        e->sprite = SPR_addSprite(&stage1_explosions, 0, 0, TILE_ATTR(PAL2, 0, 0, 0));
+        e->sprite = SPR_addSprite(&stage1_explosions, 0, 0, TILE_ATTR(PAL2, TRUE, FALSE, FALSE));
         SPR_setVisibility(e->sprite, HIDDEN);
     }
 }

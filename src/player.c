@@ -122,7 +122,7 @@ void PLAYER_dispose(Player* p) {
     player_animation.frameCounter = 0;
     player_animation.x = 0;
     player_animation.y = GAME_WINDOW_HEIGHT;
-    player_animation.sprite = SPR_addSprite(&slasher_big_0, player_animation.x, player_animation.y, TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
+    player_animation.sprite = SPR_addSprite(&slasher_big_0, player_animation.x, player_animation.y, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
 
     Entity_add(p, PLAYER_update_init_animation);
 } 
@@ -208,7 +208,7 @@ void PLAYER_update_init_animation(void* context) {
         p->y = targetFinalY;
         p->moveFrame = 0;
         p->frameCounter = 0;
-        p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, FALSE, FALSE, FALSE));
+        p->sprite = SPR_addSprite(&slasher, p->x, p->y, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));
         
         SPR_setAnim(p->sprite, SLASHER_IDLE);
         SPR_setAlwaysOnTop(p->sprite);
