@@ -21,10 +21,13 @@
 
 #define LEVEL1_ENEMY_SLOTS 20
 #define ENEMY3_SHOOT_INTERVAL 80
+/** ~2 s a 60 Hz (NTSC); em PAL ~2,4 s — ajusta se quiseres tempo exacto por região */
+#define LEVEL1_DEATH_RESTART_DELAY_FRAMES 120
 
 static int l1_script_index = 0;
 static EnemySlot l1_slots[LEVEL1_ENEMY_SLOTS];
 static bool level1_restart_pending;
+static u16 level1_death_wait_frames;
 
 static const ScriptItem level1_script_table[] = {
     // --- WAVE 1: Direita ---
@@ -155,6 +158,7 @@ void Level1_init() {
     SCRIPT_init(l1_slots, LEVEL1_ENEMY_SLOTS);
     l1_script_index = 0;
     level1_restart_pending = false;
+    level1_death_wait_frames = 0;
 
     level1Entity = Entity_add(NULL, level1_update);
 
@@ -166,6 +170,7 @@ void Level1_init() {
 
 void level1_dispose() {
     level1_restart_pending = false;
+    level1_death_wait_frames = 0;
 
     // Para a música
     XGM_stopPlay();
@@ -252,6 +257,16 @@ void level1_update(void* context) {
 // ========================================================
 
 void level1_script() {
+    if (player.destroying) {
+        if (level1_death_wait_frames < LEVEL1_DEATH_RESTART_DELAY_FRAMES) {
+            level1_death_wait_frames++;
+            return;
+        }
+        level1_restart_pending = true;
+        return;
+    }
+    level1_death_wait_frames = 0;
+
     if (level1_frame == 1)   HUD_showStage(1);
     if (level1_frame == 100) HUD_dismissStage();
 
@@ -262,11 +277,6 @@ void level1_script() {
 
     // Processa o script da fase usando o Motor modular
     SCRIPT_process(l1_slots, LEVEL1_ENEMY_SLOTS, level1_script_table, level1_script_len, level1_frame, &l1_script_index);
-
-    if (player.destroying) {
-        level1_restart_pending = true;
-        return;
-    }
 
     // --- LOAD BALANCER (Distribuição de Carga) ---
     if (level1_frame > WARP_DURATION + 20) {
