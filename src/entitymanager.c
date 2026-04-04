@@ -64,3 +64,11 @@ Entity* Entity_search(unsigned index, void* context) {
 
     return NULL;
 }
+
+void Entity_clearAll() {
+    for (unsigned i = 0; i < entityCount; i++) {
+        entities[i].active = false;
+    }
+
+    entityCount = 0;
+}

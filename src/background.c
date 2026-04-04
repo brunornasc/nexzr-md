@@ -170,3 +170,27 @@ void update_background(void* context) {
         }
     }
 }
+
+void Background_dispose() {
+    // Libera todos os sprites das estrelas
+    for (int i = 0; i < STAR_COUNT; i++) {
+        for (int j = 0; j < MAX_STAR_HEIGHT; j++) {
+            if (stars[i].spr[j] != NULL) {
+                SPR_releaseSprite(stars[i].spr[j]);
+                stars[i].spr[j] = NULL;
+            }
+        }
+    }
+    
+    // Reseta as variáveis estáticas do background
+    warpTimer = 0;
+    isWarping = true;
+    isDeacelerating = false;
+    deAceleratedStarsCount = 0;
+    
+    // Remove a entidade de background
+    if (backgroundTask != NULL) {
+        Entity_removeEntity(backgroundTask->index);
+        backgroundTask = NULL;
+    }
+}

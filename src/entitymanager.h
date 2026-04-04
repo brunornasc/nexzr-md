@@ -20,5 +20,6 @@ void Entity_executeAll();
 void Entity_executeByContext(void* context);
 void Entity_executeByIndex(unsigned index);
 Entity* Entity_search(unsigned index, void* context);
+void Entity_clearAll();
 
 #endif

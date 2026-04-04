@@ -24,6 +24,7 @@
 
 static int l1_script_index = 0;
 static EnemySlot l1_slots[LEVEL1_ENEMY_SLOTS];
+static bool level1_restart_pending;
 
 static const ScriptItem level1_script_table[] = {
     // --- WAVE 1: Direita ---
@@ -153,7 +154,8 @@ void Level1_init() {
     // Inicializa o Motor de Script
     SCRIPT_init(l1_slots, LEVEL1_ENEMY_SLOTS);
     l1_script_index = 0;
-    
+    level1_restart_pending = false;
+
     level1Entity = Entity_add(NULL, level1_update);
 
     XGM_startPlay(track1);
@@ -163,11 +165,51 @@ void Level1_init() {
 }
 
 void level1_dispose() {
-    // implementar isso
-    Entity_removeEntity(level1Entity->index);
+    level1_restart_pending = false;
+
+    // Para a música
+    XGM_stopPlay();
+
+    // Remove o level antes de outras entidades — senão swaps no array invalidam level1Entity->index
+    if (level1Entity) {
+        Entity_removeEntity(level1Entity->index);
+        level1Entity = NULL;
+    }
+
+    PLAYER_dispose(&player);
+    
+    // Desativa todos os inimigos
+    for (u8 i = 0; i < MAX_ENEMIES; i++) {
+        if (enemies[i].active) {
+            ENEMY_deactivate(&enemies[i]);
+        }
+    }
+    
+    // Reseta o pool de balas (limpa todas as balas ativas)
+    BULLET_setup_pool();
+    
+    // Reseta o Motor de Script (limpa os slots de inimigos)
+    SCRIPT_init(l1_slots, LEVEL1_ENEMY_SLOTS);
+    
+    // Limpa as variáveis estáticas de estado do level
+    l1_script_index = 0;
+    level1_frame = 0;
+    
+    // Limpa o HUD
+    HUD_clear();
+    
+    // Limpa o background (stars e estado)
+    Background_dispose();
+    
+    // Limpa os sub-sistemas de efeitos
     BACKGROUND_LASERS_dispose();
     BACKGROUND_EXPLOSIONS_dispose();
+    
+    // Remove o handler de entrada
     Game_setJoyHandler(NULL);
+    
+    // Limpa todas as entidades restantes (garante estado limpo)
+    Entity_clearAll();
 }
 
 void LEVEL1_restart() {
@@ -195,7 +237,13 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
 void level1_update(void* context) {
     if (Game_isPaused()) return;
 
-    level1_script();    
+    if (level1_restart_pending) {
+        level1_restart_pending = false;
+        LEVEL1_restart();
+        return;
+    }
+
+    level1_script();
     level1_frame++;
 }
 
@@ -216,7 +264,7 @@ void level1_script() {
     SCRIPT_process(l1_slots, LEVEL1_ENEMY_SLOTS, level1_script_table, level1_script_len, level1_frame, &l1_script_index);
 
     if (player.destroying) {
-        LEVEL1_restart();
+        level1_restart_pending = true;
         return;
     }
 

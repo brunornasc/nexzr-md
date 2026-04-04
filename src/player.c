@@ -115,11 +115,20 @@ void PLAYER_gotHit(Player *p, u8 damage) {
 }
 
 void PLAYER_dispose(Player* p) {
+    if (player_animation.sprite) {
+        SPR_releaseSprite(player_animation.sprite);
+        player_animation.sprite = NULL;
+    }
+    player_animation.frameCounter = 0;
+
     if (p->sprite) {
         SPR_releaseSprite(p->sprite);
         p->sprite = NULL;
     }
 
+    p->destroying = false;
+
+    Entity_removeByContext(p);
     Entity_removeByContext(p);
 }
 
