@@ -218,6 +218,6 @@ void ENEMY_setMoveToPlayer(Enemy* enemy, s16 velocity) {
     fix16 norm_x = fix16Div(fdx, dist);
     fix16 norm_y = fix16Div(fdy, dist);
     
-    enemy->x_speed = fix16ToInt(fix16Mul(norm_x, FIX16(velocity)));
-    enemy->y_speed = fix16ToInt(fix16Mul(norm_y, FIX16(velocity)));
+    enemy->x_speed = fix16ToInt(fix16Mul(norm_x, FIX16(velocity))) >> 2;
+    enemy->y_speed = fix16ToInt(fix16Mul(norm_y, FIX16(velocity))) >> 2;
 }
