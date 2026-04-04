@@ -50,9 +50,9 @@ typedef struct {
 static const Level1ScriptItem level1_script_table[] = {
     // --- WAVE 1: Direita ---
     { 500,  LEVEL1_ACTION_SPAWN,      0, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 520,  LEVEL1_ACTION_SHOOT_ONCE, 0, 0,            0,                    0,   0, 5 },
+    { 520,  LEVEL1_ACTION_SET_SHOOT_RATE, 0, 0,            0,              0,   100, 5 },
     { 564,  LEVEL1_ACTION_SPAWN,      1, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 584,  LEVEL1_ACTION_SHOOT_ONCE, 1, 0,            0,                    0,   0, 5 },
+    { 584,  LEVEL1_ACTION_SHOOT_SLASHER_DIRECTION, 1,    0,    0,            0,   0, 5 },
     { 628,  LEVEL1_ACTION_SPAWN,      2, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
     { 648,  LEVEL1_ACTION_SHOOT_ONCE, 2, 0,            0,                    0,   0, 5 },
     { 692,  LEVEL1_ACTION_SPAWN,      3, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
@@ -69,6 +69,8 @@ static const Level1ScriptItem level1_script_table[] = {
     { 1032, LEVEL1_ACTION_SHOOT_ONCE, 8, 0,            0,                    0,   0, 5 },
     { 1076, LEVEL1_ACTION_SPAWN,      9, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
     { 1096, LEVEL1_ACTION_SHOOT_ONCE, 9, 0,            0,                    0,   0, 5 },
+
+    { 1100, LEVEL1_ACTION_STOP_SHOOT, 0, 0, 0, 0, 0, 0 },
 
     // --- WAVE 2: Esquerda ---
     { 1176, LEVEL1_ACTION_SPAWN,      10, ENEMY_TYPE_3, 48, -16, 0, 0 },
@@ -161,8 +163,7 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
 void level1_update(void* context) {
     if (Game_isPaused()) return;
 
-    level1_script();
-    BULLET_updateAll();
+    level1_script();    
     level1_frame++;
 }
 
@@ -190,6 +191,8 @@ static void LEVEL1_processScript(void) {
                 if (slot->enemy && slot->enemy->active) ENEMY_deactivate(slot->enemy);
                 slot->enemy = ENEMYFACTORY_createEnemy(item->type, item->x, item->y);
                 slot->shootInterval = 0;
+                slot->shootTimer = 0;
+                slot->shootSpeed = 0;
                 break;
 
             case LEVEL1_ACTION_SET_SHOOT_RATE:
@@ -227,7 +230,8 @@ static void LEVEL1_updateEnemyShooting(void) {
         if (slot->shootInterval == 0) continue;
 
         if (slot->shootTimer == 0) {
-            BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x, slot->enemy->y, 0, slot->shootSpeed);
+            //BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x, slot->enemy->y, 0, slot->shootSpeed);
+            BULLET_enemyShoot_slasherDirection(slot->enemy, &player, slot->shootSpeed);
             slot->shootTimer = slot->shootInterval;
         } else {
             slot->shootTimer--;
@@ -243,17 +247,19 @@ void level1_script() {
     if (level1_frame == 1)   HUD_showStage(1);
     if (level1_frame == 100) HUD_dismissStage();
 
-    if (level1_frame == WARP_DURATION) {
+    if (level1_frame == WARP_DURATION + 20) {
         BACKGROUND_EXPLOSIONS_init();
         BACKGROUND_LASERS_init();
     }
 
-    LEVEL1_processScript();
-    LEVEL1_updateEnemyShooting();
+    LEVEL1_processScript();    
 
     // --- LOAD BALANCER (Distribuição de Carga) ---
-    if (level1_frame > WARP_DURATION) {
-        
+    if (level1_frame > WARP_DURATION + 20) {
+        BULLET_updateAll();
+        COLLISION_checkAllCollisions();        
+        LEVEL1_updateEnemyShooting();
+
         u16 phase = level1_frame % 4; 
 
         switch (phase) {
@@ -270,7 +276,7 @@ void level1_script() {
                 break;
 
             case 3:
-                // Janela livre para evitar picos de CPU
+                // Janela livre para evitar picos de CPU                
                 break;
         }
     }

@@ -39,3 +39,25 @@ int COLLISION_checkBulletCollisionWithSlasher(Bullet* bullet) {
     
     return false;
 }
+
+int COLLISION_checkEnemyCollisionWithPlayer(Enemy* enemy) {
+    if (!enemy->active || enemy->health <= 0)
+        return false;      
+
+    if (COLLISION_testCollision(player.x + 8, player.y + 8, 8, 8,
+                                enemy->x + 2, enemy->y + 2, enemy->width - 2, enemy->height - 2)) {
+            PLAYER_gotHit(1);
+            return true;
+    }
+    
+    return false;
+}
+
+void COLLISION_checkAllCollisions() {
+    for (u8 i = 0; i < MAX_ENEMIES; i++) {
+        Enemy* enemy = &enemies[i];
+        if (COLLISION_checkEnemyCollisionWithPlayer(enemy)) {
+            kprintf("Player hit by enemy at index %d!", i);
+        }
+    }
+}

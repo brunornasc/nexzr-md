@@ -109,12 +109,12 @@ void ENEMY_update() {
 
         // Garbage collector
 
-        if (enemy->y > GAME_WINDOW_HEIGHT || enemy->y < -enemy->height) {
+        if (enemy->y > (GAME_WINDOW_HEIGHT + (enemy->height << 1)) || enemy->y < -(enemy->height << 1)) {
             ENEMY_deactivate(enemy);
             continue;
         }
 
-        if (enemy->x < -enemy->width || enemy->x > GAME_WINDOW_WIDTH) {
+        if (enemy->x < -(enemy->width << 1) || enemy->x > (GAME_WINDOW_WIDTH + (enemy->width << 1))) {
             ENEMY_deactivate(enemy);
             continue;
         }        
