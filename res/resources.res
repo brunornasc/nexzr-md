@@ -29,9 +29,33 @@ SPRITE enemy_0005 "sprites/enemies/enemy_0005.png" 2 2 FAST 0
 SPRITE enemy_0006 "sprites/enemies/enemy_0006.png" 2 2 FAST 0
 SPRITE enemy_0007 "sprites/enemies/enemy_0007.png" 2 2 FAST 0
 
-IMAGE enemy_0008_background "sprites/enemies/enemy_0008_background.png" BEST ALL
+# INIMIGO 8 BIG SHIP / ENEMY AND BACKGROUND
+SPRITE enemy_0008_001 "sprites/enemies/enemy_0008_001.png" 4 4 BEST 0
+SPRITE enemy_0008_002 "sprites/enemies/enemy_0008_002.png" 4 4 BEST 0
+SPRITE enemy_0008_003 "sprites/enemies/enemy_0008_003.png" 4 4 BEST 0
+SPRITE enemy_0008_004 "sprites/enemies/enemy_0008_004.png" 4 4 BEST 0
+SPRITE enemy_0008_005 "sprites/enemies/enemy_0008_005.png" 4 4 BEST 0
+SPRITE enemy_0008_006 "sprites/enemies/enemy_0008_006.png" 4 4 BEST 0
+SPRITE enemy_0008_007 "sprites/enemies/enemy_0008_007.png" 4 4 BEST 0
+SPRITE enemy_0008_008 "sprites/enemies/enemy_0008_008.png" 4 4 BEST 0
+SPRITE enemy_0008_009 "sprites/enemies/enemy_0008_009.png" 4 4 BEST 0
+SPRITE enemy_0008_010 "sprites/enemies/enemy_0008_010.png" 4 4 BEST 0
+SPRITE enemy_0008_011 "sprites/enemies/enemy_0008_011.png" 4 4 BEST 0
+SPRITE enemy_0008_012 "sprites/enemies/enemy_0008_012.png" 4 4 BEST 0
+SPRITE enemy_0008_013 "sprites/enemies/enemy_0008_013.png" 4 4 BEST 0
+SPRITE enemy_0008_014 "sprites/enemies/enemy_0008_014.png" 4 4 BEST 0
+SPRITE enemy_0008_015 "sprites/enemies/enemy_0008_015.png" 4 4 BEST 0
+SPRITE enemy_0008_016 "sprites/enemies/enemy_0008_016.png" 4 4 BEST 0
+SPRITE enemy_0008_017 "sprites/enemies/enemy_0008_017.png" 4 4 BEST 0
+SPRITE enemy_0008_018 "sprites/enemies/enemy_0008_018.png" 4 4 BEST 0
+SPRITE enemy_0008_019 "sprites/enemies/enemy_0008_019.png" 4 4 BEST 0
+SPRITE enemy_0008_020 "sprites/enemies/enemy_0008_020.png" 4 4 BEST 0
+
+
 SPRITE enemy_0008_01 "sprites/enemies/enemy_0008_01.png" 2 8 BEST 0
 SPRITE enemy_0008_02 "sprites/enemies/enemy_0008_02.png" 2 7 BEST 0
+
+# INIMIGO 8 FIM
 
 SPRITE enemy_0009 "sprites/enemies/enemy_0009.png" 4 4 FAST 0
 SPRITE enemy_0010 "sprites/enemies/enemy_0010.png" 4 4 FAST 0

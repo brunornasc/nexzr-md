@@ -4,7 +4,6 @@ typedef struct {
     s16 tileX, tileY;  
     u8 length, angle, colorIndex, tileVramIndex;
     s8 timer;
-    u16 savedTiles[LASER_MAX_LENGTH]; 
 } Laser;
 
 static Laser lasers[MAX_LASERS];
@@ -48,18 +47,6 @@ void BACKGROUND_LASERS_update() {
             u32 tile[8]; createLaserTile(l->angle, l->colorIndex, tile);
             VDP_loadTileData(tile, l->tileVramIndex + l->angle, 1, DMA);
 
-            // Salva os tiles que serão sobrescritos
-            for (u8 j = 0; j < l->length; j++) {
-                s16 x = l->tileX, y = l->tileY;
-                if (l->angle == 0) x += j; else if (l->angle == 1) y += j;
-                else if (l->angle == 2) { x += j; y += j; } else { x += j; y -= j; }
-
-                if (x >= 0 && x < 40 && y >= 0 && y < 28)
-                    l->savedTiles[j] = 0;//VDP_getTileMapXY(BG_B, x, y); // <-- salva
-                else
-                    l->savedTiles[j] = 0;
-            }
-
             l->timer = 1;
         }
 
@@ -69,7 +56,7 @@ void BACKGROUND_LASERS_update() {
                 s16 x = l->tileX, y = l->tileY;
                 if (l->angle == 0) x += j; else if (l->angle == 1) y += j;
                 else if (l->angle == 2) { x += j; y += j; } else { x += j; y -= j; }
-                if (x >= 0 && x < 40 && y >= 0 && y < 28) VDP_setTileMapXY(VDP_BG_B, attr, x, y);
+                if (x >= 0 && x < 40 && y >= 0 && y < 28) VDP_setTileMapXY(VDP_BG_A, attr, x, y);
             }
             l->timer++;
         }
@@ -81,7 +68,7 @@ void BACKGROUND_LASERS_update() {
                 else if (l->angle == 2) { x += j; y += j; } else { x += j; y -= j; }
 
                 if (x >= 0 && x < 40 && y >= 0 && y < 28)
-                    VDP_setTileMapXY(VDP_BG_B, l->savedTiles[j], x, y); // <-- restaura
+                    VDP_setTileMapXY(VDP_BG_A, TILE_ATTR_FULL(PAL1, 0, FALSE, FALSE, TILE_SYSTEM_INDEX), x, y);
             }
             l->timer = -(random() % (LASER_COOLDOWN * 2));
         }

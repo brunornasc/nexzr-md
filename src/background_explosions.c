@@ -42,6 +42,7 @@ void BACKGROUND_EXPLOSIONS_update() {
         e->currentFrame++;
         if (e->currentFrame >= e->totalFrames) e->currentFrame = 0;
         SPR_setFrame(e->sprite, e->currentFrame);
+        SPR_setAlwaysAtBottom(e->sprite);
 
         if (++e->frameIndex >= EXPLOSION_ANIMATION_FRAMES) {
             SPR_setVisibility(e->sprite, HIDDEN);
