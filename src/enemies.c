@@ -1,6 +1,7 @@
 #include "enemies.h"
 #include "resources.h"
 #include "game.h"
+#include <genesis.h>
 
 Enemy enemies[MAX_ENEMIES];
 u8 enemy_free_index[MAX_ENEMIES];
@@ -126,73 +127,10 @@ void ENEMY_update() {
             continue;
         }        
 
-        // Sprite rotation
-
-        //TODO enemy 5 e 6 tem só 4 sprites de animação e o 7 2
-        
-        switch (enemy->type) {
-            case ENEMY_TYPE_1: {
-                s16 dy = player.y - enemy->y;
-
-                if (dy < 0) {
-                    break;
-                }
-
-                s16 dx = player.x - enemy->x;
-
-                bool flipH = (dx < 0);
-                SPR_setHFlip(enemy->sprite, flipH);
-
-                u16 adx = (dx < 0) ? -dx : dx;
-                u16 ady = (dy < 0) ? -dy : dy;
-
-                if (ady > (adx << 2)) {
-                      enemy->spriteIndex = 0;
-                }
-                else if (ady > adx) {
-                    enemy->spriteIndex = 1;
-                }
-                else if (adx > (ady << 2)) {
-                    enemy->spriteIndex = 4;
-                }
-                else if (adx > ady) {
-                    enemy->spriteIndex = 3;
-                }
-                else {
-                    enemy->spriteIndex = 2;
-                }
-
-                break;
-            }
-            case ENEMY_TYPE_2:
-                if (enemy->spriteIndex < enemy->max_frames && !enemy->inverted) {
-                    enemy->spriteIndex++;
-                    break;                
-                }
-
-                if (enemy->spriteIndex > 3 && !enemy->inverted) {
-                    enemy->inverted = true;
-                    SPR_setVFlip(enemy->sprite, enemy->inverted);
-                    break;                
-                }
-
-                if (enemy->inverted && enemy->spriteIndex > 0) {
-                    enemy->spriteIndex--;
-                    break;                
-                }
-
-                if (enemy->inverted && enemy->spriteIndex < 1) {
-                    enemy->inverted = false;
-                    SPR_setVFlip(enemy->sprite, enemy->inverted);
-
-                    break;                
-                }
-            default:
-                enemy->spriteIndex++;
-                if (enemy->spriteIndex >= enemy->max_frames) {
-                    enemy->spriteIndex = 0;
-                }
-                break;
+        // Sprite animation - default for all types
+        enemy->spriteIndex++;
+        if (enemy->spriteIndex >= enemy->max_frames) {
+            enemy->spriteIndex = 0;
         }
 
         SPR_setFrame(enemy->sprite, enemy->spriteIndex);
@@ -249,4 +187,37 @@ void ENEMY_destroyAnim(Enemy* enemy) {
 
     ENEMY_deactivate(enemy);
     return;
+}
+
+// Novas funções de movimento
+void ENEMY_setLinearMovement(Enemy* enemy, s16 vx, s16 vy) {
+    enemy->x_speed = vx;
+    enemy->y_speed = vy;
+}
+
+void ENEMY_setArcedMovement(Enemy* enemy, s16 vx, s16 vy, s16 angle, s16 velocity) {
+    enemy->x_speed = vx;
+    enemy->y_speed = vy;
+    enemy->angle = angle;
+    // velocity pode ser usado para algo futuro, como magnitude
+}
+
+void ENEMY_setMoveToPlayer(Enemy* enemy, s16 velocity) {
+    // Calcular direção para o player
+    s16 dx = player.x - enemy->x;
+    s16 dy = player.y - enemy->y;
+    
+    // Usar fix16 para normalizar
+    fix16 fdx = FIX16(dx);
+    fix16 fdy = FIX16(dy);
+    fix16 dist_sq = fix16Mul(fdx, fdx) + fix16Mul(fdy, fdy);
+    fix16 dist = fix16Sqrt(dist_sq);
+    
+    if (dist == 0) return; // Evitar divisão por zero
+    
+    fix16 norm_x = fix16Div(fdx, dist);
+    fix16 norm_y = fix16Div(fdy, dist);
+    
+    enemy->x_speed = fix16ToInt(fix16Mul(norm_x, FIX16(velocity)));
+    enemy->y_speed = fix16ToInt(fix16Mul(norm_y, FIX16(velocity)));
 }

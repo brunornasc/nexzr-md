@@ -61,6 +61,21 @@ void SCRIPT_process(EnemySlot* slots, u8 numSlots, const ScriptItem* table, u16 
                 slot->shootInterval = 0;
                 break;
 
+            case ACTION_SET_LINEAR_MOVEMENT:
+                if (slot->enemy && slot->enemy->active)
+                    ENEMY_setLinearMovement(slot->enemy, item->x, item->y); // Usar x e y como vx, vy
+                break;
+
+            case ACTION_SET_ARCED_MOVEMENT:
+                if (slot->enemy && slot->enemy->active)
+                    ENEMY_setArcedMovement(slot->enemy, item->x, item->y, item->shootInterval, item->shootSpeed);
+                break;
+
+            case ACTION_SET_MOVE_TO_PLAYER:
+                if (slot->enemy && slot->enemy->active)
+                    ENEMY_setMoveToPlayer(slot->enemy, item->shootSpeed); // shootSpeed como velocity
+                break;
+
             case ACTION_CUSTOM_0:
                 if (slot->enemy && slot->enemy->active && slot->customActions[0])
                     slot->customActions[0](slot->enemy);

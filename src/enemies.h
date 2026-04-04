@@ -31,6 +31,7 @@ typedef struct {
     s16 height;
     s16 x_speed;
     s16 y_speed;
+    s16 angle; // Para movimento arqueado
     u8 spriteIndex;
     u8 max_frames;
     u8 health;
@@ -58,6 +59,11 @@ Enemy* ENEMY_create(Enemy *enemy);
 void ENEMY_update();
 void ENEMY_shoot(Enemy* enemy, SpriteDefinition* bulletSprite, s16 velX, s16 velY);
 void ENEMY_incrementAllocEnemies();
+
+// Novas funções de movimento
+void ENEMY_setLinearMovement(Enemy* enemy, s16 vx, s16 vy);
+void ENEMY_setArcedMovement(Enemy* enemy, s16 vx, s16 vy, s16 angle, s16 velocity);
+void ENEMY_setMoveToPlayer(Enemy* enemy, s16 velocity);
 
 
 #endif

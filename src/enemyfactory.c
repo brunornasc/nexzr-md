@@ -30,23 +30,23 @@ static const ExplosionAnimationDefinition EXPLOSION2_DEFAULTS = {
 };
 
 static const EnemyDefaults ENEMY1_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 5, false, NULL, NULL, NULL
+    16, 16, 0, 0, ENEMY_TYPE_1, 1, &enemy_0001, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 5, false, NULL, NULL, NULL
 };
 
 static const EnemyDefaults ENEMY2_DEFAULTS = {
-    16, 16, 3, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 5, false, NULL, NULL, NULL
+    16, 16, 0, 0, ENEMY_TYPE_2, 1, &enemy_0002, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 5, false, NULL, NULL, NULL
 };
 
 static const EnemyDefaults ENEMY3_DEFAULTS = {
-    16, 16, 2, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 6, false, NULL, NULL, NULL
+    16, 16, 0, 0, ENEMY_TYPE_3, 1, &enemy_0003, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 6, false, NULL, NULL, NULL
 };
 
 static const EnemyDefaults ENEMY4_DEFAULTS = {
-    16, 16, 2, 0, ENEMY_TYPE_4, 1, &enemy_0004, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 6, false, NULL, NULL, NULL
+    16, 16, 0, 0, ENEMY_TYPE_4, 1, &enemy_0004, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 6, false, NULL, NULL, NULL
 };
 
 static const EnemyDefaults ENEMY9_DEFAULTS = {
-    32, 32, 2, 0, ENEMY_TYPE_9, 1, &enemy_0009, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 3, true, NULL, NULL, NULL
+    32, 32, 0, 0, ENEMY_TYPE_9, 1, &enemy_0009, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 3, true, NULL, NULL, NULL
 };
 
 Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
@@ -58,6 +58,7 @@ Enemy *ENEMYFACTORY_createEnemy(EnemyType type, s16 x, s16 y) {
 void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
     e->x = x;
     e->y = y;
+    e->angle = 0;
     e->spriteIndex = 0;
     e->active = true;
     e->inverted = false;
