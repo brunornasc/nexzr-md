@@ -125,13 +125,75 @@ void ENEMY_update() {
         if (enemy->x < -(enemy->width << 1) || enemy->x > (GAME_WINDOW_WIDTH + (enemy->width << 1))) {
             ENEMY_deactivate(enemy);
             continue;
-        }        
-
-        // Sprite animation - default for all types
-        enemy->spriteIndex++;
-        if (enemy->spriteIndex >= enemy->max_frames) {
-            enemy->spriteIndex = 0;
         }
+
+
+
+        switch (enemy->type) {
+            case ENEMY_TYPE_1: {
+                s16 dy = player.y - enemy->y;
+
+                if (dy < 0) {
+                    break;
+                }
+
+                s16 dx = player.x - enemy->x;
+
+                bool flipH = (dx < 0);
+                SPR_setHFlip(enemy->sprite, flipH);
+
+                u16 adx = (dx < 0) ? -dx : dx;
+                u16 ady = (dy < 0) ? -dy : dy;
+
+                if (ady > (adx << 2)) {
+                      enemy->spriteIndex = 0;
+                }
+                else if (ady > adx) {
+                    enemy->spriteIndex = 1;
+                }
+                else if (adx > (ady << 2)) {
+                    enemy->spriteIndex = 4;
+                }
+                else if (adx > ady) {
+                    enemy->spriteIndex = 3;
+                }
+                else {
+                    enemy->spriteIndex = 2;
+                }
+
+                break;
+            }
+            case ENEMY_TYPE_2:
+                if (enemy->spriteIndex < enemy->max_frames && !enemy->inverted) {
+                    enemy->spriteIndex++;
+                    break;                
+                }
+
+                if (enemy->spriteIndex > 3 && !enemy->inverted) {
+                    enemy->inverted = true;
+                    SPR_setVFlip(enemy->sprite, enemy->inverted);
+                    break;                
+                }
+
+                if (enemy->inverted && enemy->spriteIndex > 0) {
+                    enemy->spriteIndex--;
+                    break;                
+                }
+
+                if (enemy->inverted && enemy->spriteIndex < 1) {
+                    enemy->inverted = false;
+                    SPR_setVFlip(enemy->sprite, enemy->inverted);
+
+                    break;                
+                }
+            default:
+                enemy->spriteIndex++;
+                if (enemy->spriteIndex >= enemy->max_frames) {
+                    enemy->spriteIndex = 0;
+                }
+                break;
+        }
+
 
         SPR_setFrame(enemy->sprite, enemy->spriteIndex);
         SPR_setPosition(enemy->sprite, enemy->x, enemy->y);
