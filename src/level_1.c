@@ -13,88 +13,64 @@
 #include "enemyfactory.h"
 #include "background_explosions.h"
 #include "background_lasers.h"
+#include "game_script.h"
 
 // ========================================================
-// SCRIPT DE INIMIGOS
+// CONFIGURAÇÕES DA FASE
 // ========================================================
 
 #define LEVEL1_ENEMY_SLOTS 20
+#define ENEMY3_SHOOT_INTERVAL 120
 
-typedef enum {
-    LEVEL1_ACTION_SPAWN,
-    LEVEL1_ACTION_SET_SHOOT_RATE,
-    LEVEL1_ACTION_SHOOT_ONCE,
-    LEVEL1_ACTION_DEACTIVATE,
-    LEVEL1_ACTION_STOP_SHOOT,
-    LEVEL1_ACTION_SHOOT_SLASHER_DIRECTION
-} Level1ActionType;
+static int l1_script_index = 0;
+static EnemySlot l1_slots[LEVEL1_ENEMY_SLOTS];
 
-typedef struct {
-    u16 frame;
-    Level1ActionType action;
-    u8 slot;
-    EnemyType type;
-    s16 x;
-    s16 y;
-    u16 shootInterval;
-    s16 shootSpeed;
-} Level1ScriptItem;
-
-typedef struct {
-    Enemy* enemy;
-    u16 shootInterval;
-    u16 shootTimer;
-    s16 shootSpeed;
-} Level1EnemySlot;
-
-static const Level1ScriptItem level1_script_table[] = {
+static const ScriptItem level1_script_table[] = {
     // --- WAVE 1: Direita ---
-    { 500,  LEVEL1_ACTION_SPAWN,      0, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 520,  LEVEL1_ACTION_SET_SHOOT_RATE, 0, 0,            0,              0,   100, 5 },
-    { 564,  LEVEL1_ACTION_SPAWN,      1, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 584,  LEVEL1_ACTION_SHOOT_SLASHER_DIRECTION, 1,    0,    0,            0,   0, 5 },
-    { 628,  LEVEL1_ACTION_SPAWN,      2, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 648,  LEVEL1_ACTION_SHOOT_ONCE, 2, 0,            0,                    0,   0, 5 },
-    { 692,  LEVEL1_ACTION_SPAWN,      3, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 712,  LEVEL1_ACTION_SHOOT_ONCE, 3, 0,            0,                    0,   0, 5 },
-    { 756,  LEVEL1_ACTION_SPAWN,      4, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 776,  LEVEL1_ACTION_SHOOT_ONCE, 4, 0,            0,                    0,   0, 5 },
-    { 820,  LEVEL1_ACTION_SPAWN,      5, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 840,  LEVEL1_ACTION_SHOOT_ONCE, 5, 0,            0,                    0,   0, 5 },
-    { 884,  LEVEL1_ACTION_SPAWN,      6, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 904,  LEVEL1_ACTION_SHOOT_ONCE, 6, 0,            0,                    0,   0, 5 },
-    { 948,  LEVEL1_ACTION_SPAWN,      7, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 968,  LEVEL1_ACTION_SHOOT_ONCE, 7, 0,            0,                    0,   0, 5 },
-    { 1012, LEVEL1_ACTION_SPAWN,      8, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 1032, LEVEL1_ACTION_SHOOT_ONCE, 8, 0,            0,                    0,   0, 5 },
-    { 1076, LEVEL1_ACTION_SPAWN,      9, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
-    { 1096, LEVEL1_ACTION_SHOOT_ONCE, 9, 0,            0,                    0,   0, 5 },
+    { 500,  ACTION_SPAWN,                0, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 520,  ACTION_SET_SHOOT_RATE,       0, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 564,  ACTION_SPAWN,                1, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 584,  ACTION_SET_SHOOT_RATE,       1, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 628,  ACTION_SPAWN,                2, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 648,  ACTION_SET_SHOOT_RATE,       2, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 692,  ACTION_SPAWN,                3, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 712,  ACTION_SET_SHOOT_RATE,       3, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 756,  ACTION_SPAWN,                4, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 776,  ACTION_SET_SHOOT_RATE,       4, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 820,  ACTION_SPAWN,                5, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 840,  ACTION_SET_SHOOT_RATE,       5, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 884,  ACTION_SPAWN,                6, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 904,  ACTION_SET_SHOOT_RATE,       6, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 948,  ACTION_SPAWN,                7, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 968,  ACTION_SET_SHOOT_RATE,       7, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1012, ACTION_SPAWN,                8, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 1032, ACTION_SET_SHOOT_RATE,       8, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1076, ACTION_SPAWN,                9, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 1096, ACTION_SET_SHOOT_RATE,       9, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
 
-    { 1100, LEVEL1_ACTION_STOP_SHOOT, 0, 0, 0, 0, 0, 0 },
+    { 1100, ACTION_STOP_SHOOT,           0, 0, 0, 0, 0, 0 },
 
     // --- WAVE 2: Esquerda ---
-    { 1176, LEVEL1_ACTION_SPAWN,      10, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1196, LEVEL1_ACTION_SHOOT_ONCE, 10, 0,            0,  0,   0, 5 },
-    { 1240, LEVEL1_ACTION_SPAWN,      11, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1260, LEVEL1_ACTION_SHOOT_ONCE, 11, 0,            0,  0,   0, 5 },
-    { 1304, LEVEL1_ACTION_SPAWN,      12, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1324, LEVEL1_ACTION_SHOOT_ONCE, 12, 0,            0,  0,   0, 5 },
-    { 1368, LEVEL1_ACTION_SPAWN,      13, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1388, LEVEL1_ACTION_SHOOT_ONCE, 13, 0,            0,  0,   0, 5 },
-    { 1432, LEVEL1_ACTION_SPAWN,      14, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1452, LEVEL1_ACTION_SHOOT_ONCE, 14, 0,            0,  0,   0, 5 },
-    { 1496, LEVEL1_ACTION_SPAWN,      15, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1516, LEVEL1_ACTION_SHOOT_ONCE, 15, 0,            0,  0,   0, 5 },
-    { 1560, LEVEL1_ACTION_SPAWN,      16, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1580, LEVEL1_ACTION_SHOOT_ONCE, 16, 0,            0,  0,   0, 5 },
-    { 1624, LEVEL1_ACTION_SPAWN,      17, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1644, LEVEL1_ACTION_SHOOT_ONCE, 17, 0,            0,  0,   0, 5 },
-    { 1688, LEVEL1_ACTION_SPAWN,      18, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1708, LEVEL1_ACTION_SHOOT_ONCE, 18, 0,            0,  0,   0, 5 },
-    { 1752, LEVEL1_ACTION_SPAWN,      19, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1772, LEVEL1_ACTION_SHOOT_ONCE, 19, 0,            0,  0,   0, 5 },
+    { 1176, ACTION_SPAWN,                10, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1196, ACTION_SET_SHOOT_RATE,       10, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1240, ACTION_SPAWN,                11, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1260, ACTION_SET_SHOOT_RATE,       11, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1304, ACTION_SPAWN,                12, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1324, ACTION_SET_SHOOT_RATE,       12, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1368, ACTION_SPAWN,                13, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1388, ACTION_SET_SHOOT_RATE,       13, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1432, ACTION_SPAWN,                14, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1452, ACTION_SET_SHOOT_RATE,       14, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1496, ACTION_SPAWN,                15, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1516, ACTION_SET_SHOOT_RATE,       15, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1560, ACTION_SPAWN,                16, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1580, ACTION_SET_SHOOT_RATE,       16, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1624, ACTION_SPAWN,                17, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1644, ACTION_SET_SHOOT_RATE,       17, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1706, ACTION_SPAWN,                19, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1726, ACTION_SET_SHOOT_RATE,       19, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
 
-    { 2500, LEVEL1_ACTION_STOP_SHOOT, 0, 0, 0, 0, 0, 0 }
+    { 2000, ACTION_STOP_SHOOT,           0, 0, 0, 0, 0, 0 }
 };
 
 static const int level1_script_len = sizeof(level1_script_table) / sizeof(level1_script_table[0]);
@@ -105,8 +81,6 @@ static const int level1_script_len = sizeof(level1_script_table) / sizeof(level1
 
 Entity* level1Entity;
 unsigned long level1_frame = 0;
-static Level1EnemySlot level1_slots[LEVEL1_ENEMY_SLOTS];
-static int level1_script_index = 0;
 
 // ========================================================
 // FORWARD DECLARATIONS
@@ -116,9 +90,6 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state);
 void level1_update(void* context);
 void level1_dispose();
 void level1_script();
-static void LEVEL1_resetEnemySlots(void);
-static void LEVEL1_processScript(void);
-static void LEVEL1_updateEnemyShooting(void);
 
 // ========================================================
 // INIT / DISPOSE
@@ -129,7 +100,11 @@ void Level1_init() {
     Background_init();
     HUD_init();
     ENEMY_initializeAll();
-    LEVEL1_resetEnemySlots();
+    
+    // Inicializa o Motor de Script
+    SCRIPT_init(l1_slots, LEVEL1_ENEMY_SLOTS);
+    l1_script_index = 0;
+    
     level1Entity = Entity_add(NULL, level1_update);
 
     XGM_startPlay(track1);
@@ -168,78 +143,6 @@ void level1_update(void* context) {
 }
 
 // ========================================================
-// SCRIPT CORE FUNCTIONS
-// ========================================================
-
-static void LEVEL1_resetEnemySlots(void) {
-    for (u8 i = 0; i < LEVEL1_ENEMY_SLOTS; i++) {
-        level1_slots[i].enemy = NULL;
-        level1_slots[i].shootInterval = 0;
-        level1_slots[i].shootTimer = 0;
-    }
-    level1_script_index = 0;
-}
-
-static void LEVEL1_processScript(void) {
-    while (level1_script_index < level1_script_len && level1_script_table[level1_script_index].frame == level1_frame) {
-        const Level1ScriptItem* item = &level1_script_table[level1_script_index++];
-        if (item->slot >= LEVEL1_ENEMY_SLOTS) continue;
-        Level1EnemySlot* slot = &level1_slots[item->slot];
-
-        switch (item->action) {
-            case LEVEL1_ACTION_SPAWN:
-                if (slot->enemy && slot->enemy->active) ENEMY_deactivate(slot->enemy);
-                slot->enemy = ENEMYFACTORY_createEnemy(item->type, item->x, item->y);
-                slot->shootInterval = 0;
-                slot->shootTimer = 0;
-                slot->shootSpeed = 0;
-                break;
-
-            case LEVEL1_ACTION_SET_SHOOT_RATE:
-                slot->shootInterval = item->shootInterval;
-                slot->shootTimer = 0;
-                slot->shootSpeed = item->shootSpeed;
-                break;
-
-            case LEVEL1_ACTION_SHOOT_ONCE:
-                if (slot->enemy && slot->enemy->active)
-                    BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x, slot->enemy->y, 0, 3);
-                break;
-
-            case LEVEL1_ACTION_SHOOT_SLASHER_DIRECTION:
-                if (slot->enemy && slot->enemy->active)
-                    BULLET_enemyShoot_slasherDirection(slot->enemy, &player, item->shootSpeed);
-                break;
-
-            case LEVEL1_ACTION_DEACTIVATE:
-                if (slot->enemy && slot->enemy->active) ENEMY_deactivate(slot->enemy);
-                slot->enemy = NULL;
-                break;
-
-            case LEVEL1_ACTION_STOP_SHOOT:
-                slot->shootInterval = 0;
-                break;
-        }
-    }
-}
-
-static void LEVEL1_updateEnemyShooting(void) {
-    for (u8 i = 0; i < LEVEL1_ENEMY_SLOTS; i++) {
-        Level1EnemySlot* slot = &level1_slots[i];
-        if (!slot->enemy || !slot->enemy->active) continue;
-        if (slot->shootInterval == 0) continue;
-
-        if (slot->shootTimer == 0) {
-            //BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x, slot->enemy->y, 0, slot->shootSpeed);
-            BULLET_enemyShoot_slasherDirection(slot->enemy, &player, slot->shootSpeed);
-            slot->shootTimer = slot->shootInterval;
-        } else {
-            slot->shootTimer--;
-        }
-    }
-}
-
-// ========================================================
 // MAIN SCRIPT LOOP
 // ========================================================
 
@@ -252,13 +155,16 @@ void level1_script() {
         BACKGROUND_LASERS_init();
     }
 
-    LEVEL1_processScript();    
+    // Processa o script da fase usando o Motor modular
+    SCRIPT_process(l1_slots, LEVEL1_ENEMY_SLOTS, level1_script_table, level1_script_len, level1_frame, &l1_script_index);
 
     // --- LOAD BALANCER (Distribuição de Carga) ---
     if (level1_frame > WARP_DURATION + 20) {
         BULLET_updateAll();
         COLLISION_checkAllCollisions();        
-        LEVEL1_updateEnemyShooting();
+        
+        // Update de tiro movido para o Motor modular
+        SCRIPT_updateShooting(l1_slots, LEVEL1_ENEMY_SLOTS);
 
         u16 phase = level1_frame % 4; 
 
