@@ -27,7 +27,7 @@ static EnemySlot l1_slots[LEVEL1_ENEMY_SLOTS];
 
 static const ScriptItem level1_script_table[] = {
     // --- WAVE 1: Direita ---
-    { 500,  ACTION_SPAWN,                0, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
+    { 500,  ACTION_SPAWN,                0, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },    
     { 520,  ACTION_SET_SHOOT_RATE,       0, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
     { 564,  ACTION_SPAWN,                1, ENEMY_TYPE_3, GAME_WINDOW_WIDTH-48, -16, 0, 0 },
     { 584,  ACTION_SET_SHOOT_RATE,       1, 0,            0,                    0,   ENEMY3_SHOOT_INTERVAL, 5 },
@@ -51,26 +51,29 @@ static const ScriptItem level1_script_table[] = {
     { 1100, ACTION_STOP_SHOOT,           0, 0, 0, 0, 0, 0 },
 
     // --- WAVE 2: Esquerda ---
-    { 1176, ACTION_SPAWN,                10, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1196, ACTION_SET_SHOOT_RATE,       10, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1240, ACTION_SPAWN,                11, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1260, ACTION_SET_SHOOT_RATE,       11, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1304, ACTION_SPAWN,                12, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1324, ACTION_SET_SHOOT_RATE,       12, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1368, ACTION_SPAWN,                13, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1388, ACTION_SET_SHOOT_RATE,       13, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1432, ACTION_SPAWN,                14, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1452, ACTION_SET_SHOOT_RATE,       14, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1496, ACTION_SPAWN,                15, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1516, ACTION_SET_SHOOT_RATE,       15, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1560, ACTION_SPAWN,                16, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1580, ACTION_SET_SHOOT_RATE,       16, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1624, ACTION_SPAWN,                17, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1644, ACTION_SET_SHOOT_RATE,       17, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
-    { 1706, ACTION_SPAWN,                19, ENEMY_TYPE_3, 48, -16, 0, 0 },
-    { 1726, ACTION_SET_SHOOT_RATE,       19, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1176, ACTION_SPAWN,                0, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1196, ACTION_SET_SHOOT_RATE,       0, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1240, ACTION_SPAWN,                1, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1260, ACTION_SET_SHOOT_RATE,       1, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1304, ACTION_SPAWN,                2, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1324, ACTION_SET_SHOOT_RATE,       2, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1368, ACTION_SPAWN,                3, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1388, ACTION_SET_SHOOT_RATE,       3, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1432, ACTION_SPAWN,                4, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1452, ACTION_SET_SHOOT_RATE,       4, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1496, ACTION_SPAWN,                5, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1516, ACTION_SET_SHOOT_RATE,       5, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1560, ACTION_SPAWN,                6, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1580, ACTION_SET_SHOOT_RATE,       6, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1624, ACTION_SPAWN,                7, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1644, ACTION_SET_SHOOT_RATE,       7, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
+    { 1686, ACTION_SPAWN,                9, ENEMY_TYPE_3, 48, -16, 0, 0 },
+    { 1726, ACTION_SET_SHOOT_RATE,       9, 0,            0,  0,   ENEMY3_SHOOT_INTERVAL, 5 },
 
-    { 2000, ACTION_STOP_SHOOT,           0, 0, 0, 0, 0, 0 }
+    { 2000, ACTION_STOP_SHOOT,           0, 0, 0, 0, 0, 0 },
+
+    // WAVE 3
+    { 2200,  ACTION_SPAWN,               1, ENEMY_TYPE_9, 100, 100, 0, 0 },
 };
 
 static const int level1_script_len = sizeof(level1_script_table) / sizeof(level1_script_table[0]);

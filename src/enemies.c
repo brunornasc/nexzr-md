@@ -56,6 +56,7 @@ void ENEMY_initializeAll() {
         enemies[i].health = 0;
         enemies[i].index = i;
         enemy_free_index[++enemy_top_index] = i;
+        enemies[i].useMiscPalette = false;
     }
 }
 
@@ -77,12 +78,18 @@ Enemy* ENEMY_create(Enemy *enemy) {
     e->sprite = NULL;
 
     //PAL_setPalette(ENEMY_PALLETE, enemy->spriteDefinition->palette->data, DMA);
+    u8 paletteIndex = ENEMY_PALLETE;
+
+    if (enemy->useMiscPalette) {
+        paletteIndex = MISC_PALLETE;
+        PAL_setPalette(MISC_PALLETE, enemy->spriteDefinition->palette->data, DMA);
+    }
 
     e->sprite = SPR_addSprite(
         enemy->spriteDefinition,
         e->x,
         e->y,
-        TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
+        TILE_ATTR(paletteIndex, FALSE, FALSE, FALSE)
     );
 
     if (e->sprite != NULL) {

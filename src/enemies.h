@@ -14,6 +14,7 @@ typedef enum {
     ENEMY_TYPE_6,
     ENEMY_TYPE_7,
     ENEMY_TYPE_8,
+    ENEMY_TYPE_9,
     MAX_ENEMY_TYPES
 } EnemyType;
 
@@ -45,6 +46,7 @@ typedef struct {
     u16 accentColors[5];
     u8 accentColorIndex;
     u8 paletteAccentIndex;
+    bool useMiscPalette;
 } Enemy;
 
 extern Enemy enemies[MAX_ENEMIES];
