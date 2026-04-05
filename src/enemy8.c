@@ -19,7 +19,7 @@ typedef struct {
     Sprite *head_right;
 } Enemy8Wrapper;
 
-static Enemy8Wrapper enemy8_wrappers[3];
+static Enemy8Wrapper enemy8_wrappers[20];
 static bool enemy8_vram_loaded = FALSE;
 
 // -----------------------------------------------------------------------
@@ -89,6 +89,18 @@ void ENEMY8_move(Enemy8Wrapper *w, s16 x, s16 y) {
 }
 
 void ENEMY8_destroy(Enemy8Wrapper *w) {
+    // Limpa o plano para o chefe sumir
+    VDP_clearPlane(BG_B, TRUE);
+
+    if (w->head_left)  SPR_releaseSprite(w->head_left);
+    if (w->head_right) SPR_releaseSprite(w->head_right);
+
+    // Head destruída (opcional: criar efeito de explosão aqui)
+    w->active = FALSE;
+}
+
+void ENEMY8_destroy_by_index(u8 idx) {
+    Enemy8Wrapper *w = &enemy8_wrappers[idx];
     // Limpa o plano para o chefe sumir
     VDP_clearPlane(BG_B, TRUE);
 

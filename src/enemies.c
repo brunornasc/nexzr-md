@@ -1,7 +1,8 @@
+#include <genesis.h>
 #include "enemies.h"
+#include "enemy8.h"
 #include "resources.h"
 #include "game.h"
-#include <genesis.h>
 
 Enemy enemies[MAX_ENEMIES];
 u8 enemy_free_index[MAX_ENEMIES];
@@ -32,6 +33,10 @@ void ENEMY_gotHit(Enemy* enemy, u8 damage) {
 
 void ENEMY_deactivate(Enemy* enemy) {
     if (!enemy->active) return;
+
+    if (enemy->type == ENEMY_TYPE_8) {
+        ENEMY8_destroy_by_index(enemy->index);        
+    }
 
     enemy->active = false;
     enemy->destroying = false;
@@ -68,15 +73,20 @@ Enemy* ENEMY_create(Enemy *enemy) {
 
     u8 idx = enemy_free_index[enemy_top_index--];
     Enemy *e = &enemies[idx];
-
+    
     *e = *enemy;
-    e->index = idx;
 
+    e->index = idx;
     e->active = TRUE;
     e->destroying = FALSE;
     e->inverted = FALSE;
     e->spriteIndex = 0;
     e->sprite = NULL;
+
+    if (e->type == ENEMY_TYPE_8) {
+        ENEMY8_create(e, e->useMiscPalette);
+        return e;
+    }
 
     //PAL_setPalette(ENEMY_PALLETE, enemy->spriteDefinition->palette->data, DMA);
     u8 paletteIndex = ENEMY_PALLETE;
@@ -117,17 +127,17 @@ void ENEMY_update() {
 
         // Garbage collector
 
-        if (enemy->y > (GAME_WINDOW_HEIGHT + (enemy->height << 1)) || enemy->y < -(enemy->height << 1)) {
-            ENEMY_deactivate(enemy);
-            continue;
+        if (!enemy->type == ENEMY_TYPE_8) {
+            if (enemy->y > (GAME_WINDOW_HEIGHT + (enemy->height << 1)) || enemy->y < -(enemy->height << 1)) {
+                ENEMY_deactivate(enemy);
+                continue;
+            }
+
+            if (enemy->x < -(enemy->width << 1) || enemy->x > (GAME_WINDOW_WIDTH + (enemy->width << 1))) {
+                ENEMY_deactivate(enemy);
+                continue;
+            }
         }
-
-        if (enemy->x < -(enemy->width << 1) || enemy->x > (GAME_WINDOW_WIDTH + (enemy->width << 1))) {
-            ENEMY_deactivate(enemy);
-            continue;
-        }
-
-
 
         switch (enemy->type) {
             case ENEMY_TYPE_1: {
@@ -186,6 +196,18 @@ void ENEMY_update() {
 
                     break;                
                 }
+
+            case ENEMY_TYPE_8:
+            // ta muito rapido
+                PAL_setColor(enemy->paletteAccentIndex, enemy->accentColors[enemy->accentColorIndex]);
+                enemy->accentColorIndex++;
+
+                if (enemy->accentColorIndex >= 5) {
+                    enemy->accentColorIndex = 0;
+                }
+
+                return;
+
             default:
                 enemy->spriteIndex++;
                 if (enemy->spriteIndex >= enemy->max_frames) {
