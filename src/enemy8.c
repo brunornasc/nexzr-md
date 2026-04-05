@@ -70,6 +70,8 @@ void ENEMY8_create(Enemy *enemy, bool isEnemy) {
                                   TILE_ATTR(BACKGROUND_PALLETE, isEnemy, FALSE, TRUE));
 
     enemy->sprite = w->head_left; // Referência para colisão do sistema
+
+    PAL_setPalette(BACKGROUND_PALLETE, enemy_0008.palette->data, DMA);
 }
 
 void ENEMY8_move(Enemy8Wrapper *w, s16 x, s16 y) {

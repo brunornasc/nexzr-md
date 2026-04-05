@@ -30,13 +30,9 @@ static bool level1_restart_pending;
 static u16 level1_death_wait_frames;
 
 static const ScriptItem level1_script_table[] = {
-    
-};
-
-static const ScriptItem level1_script_table_[] = {
     // --- WAVE 1: Direita ---
     // FRAME, ACTION,                               SLOT,           ENEMY_TYPE,             X,                              Y,              SHOOT_INTERVAL,         SHOOT_SPEED
-    { 500,  ACTION_SPAWN,                           0,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },    
+    { 501,  ACTION_SPAWN,                           0,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },    
     { 520,  ACTION_SET_SHOOT_RATE,                  0,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
     { 521,  ACTION_SET_LINEAR_MOVEMENT,             0,              0,                      0,                              3,              0,                      0 },
 
