@@ -14,6 +14,7 @@
 #include "background_explosions.h"
 #include "background_lasers.h"
 #include "game_script.h"
+#include "enemy8.h"
 
 // ========================================================
 // CONFIGURAÇÕES DA FASE
@@ -22,7 +23,7 @@
 #define LEVEL1_ENEMY_SLOTS 20
 #define ENEMY3_SHOOT_INTERVAL 80
 /** ~2 s a 60 Hz (NTSC); em PAL ~2,4 s — ajusta se quiseres tempo exacto por região */
-#define LEVEL1_DEATH_RESTART_DELAY_FRAMES 120
+#define LEVEL1_DEATH_RESTART_DELAY_FRAMES 30
 
 static int l1_script_index = 0;
 static EnemySlot l1_slots[LEVEL1_ENEMY_SLOTS];
@@ -30,6 +31,10 @@ static bool level1_restart_pending;
 static u16 level1_death_wait_frames;
 
 static const ScriptItem level1_script_table[] = {
+    
+};
+
+static const ScriptItem level1_script_table_[] = {
     // --- WAVE 1: Direita ---
     // FRAME, ACTION,                               SLOT,           ENEMY_TYPE,             X,                              Y,              SHOOT_INTERVAL,         SHOOT_SPEED
     { 500,  ACTION_SPAWN,                           0,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },    
@@ -305,6 +310,18 @@ void level1_script() {
                 // Janela livre para evitar picos de CPU                
                 break;
         }
+    }
+
+
+    // test area
+    if (level1_frame == 500) {
+        PAL_setPalette(BACKGROUND_PALLETE, enemy_0008_001.palette->data, DMA);
+        Enemy teste;
+        teste.x = 0;
+        teste.y = 0;
+
+        ENEMY8_create(&teste);
+        PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
     }
 }
 
