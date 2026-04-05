@@ -7,7 +7,7 @@
 typedef struct Enemy8Wrapper Enemy8Wrapper;
  
 void           ENEMY8_initAll(void);
-void           ENEMY8_create(Enemy *enemy);
+void           ENEMY8_create(Enemy *enemy, bool isEnemy);
 void           ENEMY8_move(Enemy8Wrapper *w, s16 x, s16 y);
 void           ENEMY8_destroy(Enemy8Wrapper *w);
 

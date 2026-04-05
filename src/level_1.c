@@ -320,7 +320,7 @@ void level1_script() {
         teste.x = 0;
         teste.y = 0;
 
-        ENEMY8_create(&teste);
+        ENEMY8_create(&teste, true);
         // PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
     }
 }

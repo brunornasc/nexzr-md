@@ -48,7 +48,7 @@ void ENEMY8_initAll(void) {
     enemy8_vram_loaded = FALSE;
 }
 
-void ENEMY8_create(Enemy *enemy) {
+void ENEMY8_create(Enemy *enemy, bool isEnemy) {
     enemy8_prepare_vram();
 
     Enemy8Wrapper *w = &enemy8_wrappers[enemy->index];
@@ -60,14 +60,14 @@ void ENEMY8_create(Enemy *enemy) {
     // Desenha a nave no Plano B uma única vez
     // Usamos VDP_setTileMapEx para mapear a imagem inteira para a VRAM
     VDP_setTileMapEx(BG_B, enemy_0008.tilemap, 
-                     TILE_ATTR_FULL(BACKGROUND_PALLETE, 0, 0, 0, ENEMY8_VRAM_INDEX), 
+                     TILE_ATTR_FULL(BACKGROUND_PALLETE, isEnemy, 0, 0, ENEMY8_VRAM_INDEX), 
                      0, 0, 0, 0, ENEMY8_WIDTH_TILES, ENEMY8_HEIGHT_TILES, DMA);
 
     // Cria os sprites da cabeça para colisão (VDP Sprites)
     w->head_left = SPR_addSprite(&enemy_0008_01, w->x + 48, w->y + 16, 
-                                 TILE_ATTR(BACKGROUND_PALLETE, FALSE, FALSE, FALSE));
+                                 TILE_ATTR(BACKGROUND_PALLETE, isEnemy, FALSE, FALSE));
     w->head_right = SPR_addSprite(&enemy_0008_01, w->x + 64, w->y + 16, 
-                                  TILE_ATTR(BACKGROUND_PALLETE, FALSE, FALSE, TRUE));
+                                  TILE_ATTR(BACKGROUND_PALLETE, isEnemy, FALSE, TRUE));
 
     enemy->sprite = w->head_left; // Referência para colisão do sistema
 }
