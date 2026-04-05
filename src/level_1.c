@@ -315,13 +315,13 @@ void level1_script() {
 
     // test area
     if (level1_frame == 500) {
-        PAL_setPalette(BACKGROUND_PALLETE, enemy_0008_001.palette->data, DMA);
+        //PAL_setPalette(BACKGROUND_PALLETE, enemy_0008_001.palette->data, DMA);
         Enemy teste;
         teste.x = 0;
         teste.y = 0;
 
         ENEMY8_create(&teste);
-        PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+        // PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
     }
 }
 
