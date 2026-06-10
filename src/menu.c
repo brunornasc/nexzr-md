@@ -1,7 +1,7 @@
 #include "menu.h"
 #include "game.h"
 #include "i18n.h"
-#include "level.h"
+#include "level_1.h"
 #include "bullet.h"
 
 typedef enum {
@@ -137,11 +137,11 @@ void handleSecondaryMenu(u16 joy, u16 changed, u16 state) {
   		else if (option_selected == LANGUAGE) {
     		game_options.language = game_options.language > 1 ? 0 : game_options.language + 1;
 			I18N_setLanguage(game_options.language);
-   			VDP_clearPlane(BG_B, TRUE);
+   			VDP_clearPlane(BG_A, TRUE);
   		}
   		else if (option_selected == MD_MODE) {
     		game_options.md_mode = !game_options.md_mode;
-   			VDP_clearPlane(BG_B, TRUE);
+   			VDP_clearPlane(BG_A, TRUE);
   		}
  	}
 

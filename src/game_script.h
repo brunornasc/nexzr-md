@@ -1,5 +1,5 @@
-#ifndef LEVEL_H
-#define LEVEL_H
+#ifndef GAME_SCRIPT_H
+#define GAME_SCRIPT_H
 
 #include <genesis.h>
 #include "enemy.h"
@@ -41,6 +41,8 @@ typedef struct {
     ScriptCustomFunc customActions[MAX_CUSTOM_ACTIONS];
 } EnemySlot;
 
-void Level1_init();
+void SCRIPT_init(EnemySlot* slots, u8 numSlots);
+void SCRIPT_process(EnemySlot* slots, u8 numSlots, const ScriptItem* table, u16 tableLen, u16 currentFrame, int* scriptIndex);
+void SCRIPT_updateShooting(EnemySlot* slots, u8 numSlots);
 
 #endif
