@@ -3,7 +3,6 @@
 
 #include <genesis.h>
 #include "player.h"
-#include "menu.h"
 #include "entitymanager.h"
 #include "callback.h"
 #include "resources.h"
@@ -45,7 +44,6 @@ typedef enum {
 
 extern game_options_struct game_options;
 
-//u32 globalCounter;
 extern u32 currentFrame;
 extern u8 currentLevel;
 extern bool game_paused;

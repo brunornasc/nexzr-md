@@ -2,10 +2,8 @@
 #include "resources.h"
 #include "game.h"
 #include "hud.h"
+#include "collision.h"
 
-void BULLET_enemyShoot2(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 velX, s16 velY);
-
-// Struct interna para manter posição em fixed-point
 typedef struct {
     s32 x_fp;
     s32 y_fp;
@@ -45,7 +43,7 @@ void BULLET_slasherShoot(s16 posX, s16 posY) {
     b->x = posX;
     b->y = posY;
     b->velX = 0;
-    b->velY = -8 << 8; // Slasher já manda em Fixed Point
+    b->velY = -8 << 8;
     b->active = TRUE;
     b->width = 16;
     b->height = 16;
@@ -63,9 +61,8 @@ void BULLET_enemyShoot_slasherDirection(Enemy *enemy, Player* player, s16 speed)
     s32 dx = (s32)((player->x + 8) - enemy->x);
     s32 dy = (s32)((player->y + 8) - enemy->y);
 
-    // Se estiver exatamente em cima, atira para baixo
     if (dx == 0 && dy == 0) {
-        BULLET_enemyShoot(enemy->bulletSprite, enemy->x, enemy->y, 0, speed);
+        BULLET_enemyShoot(enemy->bulletSprite, enemy->x, enemy->y, 0, speed << 8);
         return;
     }
 
@@ -75,36 +72,13 @@ void BULLET_enemyShoot_slasherDirection(Enemy *enemy, Player* player, s16 speed)
 
     if (dist == 0) dist = 1;
 
-    // Aqui já estamos convertendo para Fixed Point (* 256)
     s16 velX = (s16)((dx * speed * 256) / dist);
     s16 velY = (s16)((dy * speed * 256) / dist);
 
-    BULLET_enemyShoot2(enemy->bulletSprite, enemy->x, enemy->y, velX, velY);
-
+    BULLET_enemyShoot(enemy->bulletSprite, enemy->x, enemy->y, velX, velY);
 }
 
-// A função base agora recebe o valor JÁ em Fixed Point
 void BULLET_enemyShoot(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 velX, s16 velY) {
-    if (enemy_top < 0) return;
-
-    u8 idx = enemy_free_indices[enemy_top--];
-    Bullet* b = &enemy_bullets[idx];
-
-    b->x = posX;
-    b->y = posY;
-    b->velX = velX << 8;
-    b->velY = velY << 8;
-    b->active = TRUE;
-    b->width = 8;
-    b->height = 8;
-
-    b->sprite = SPR_addSprite(bulletSprite, posX, posY, TILE_ATTR(ENEMY_BULLET_PALLETE, TRUE, 0, 0));
-
-    enemy_positions[idx].x_fp = (s32)posX << 8;
-    enemy_positions[idx].y_fp = (s32)posY << 8;
-}
-
-void BULLET_enemyShoot2(SpriteDefinition* bulletSprite, s16 posX, s16 posY, s16 velX, s16 velY) {
     if (enemy_top < 0) return;
 
     u8 idx = enemy_free_indices[enemy_top--];
@@ -136,7 +110,6 @@ static void deactivate_bullet(Bullet* b, u8* stack, s8* top, u8 index) {
 void BULLET_updateAll() {
     if (slasher_shoot_timer > 0) slasher_shoot_timer--;
 
-    // Update Slasher Bullets
     for (u8 i = 0; i < MAX_SLASHER_BULLETS; i++) {
         Bullet* b = &slasher_bullets[i];
         if (b->active) {
@@ -154,7 +127,6 @@ void BULLET_updateAll() {
         }
     }
 
-    // Update Enemy Bullets
     for (u8 i = 0; i < MAX_ENEMY_BULLETS; i++) {
         Bullet* b = &enemy_bullets[i];
         if (b->active) {

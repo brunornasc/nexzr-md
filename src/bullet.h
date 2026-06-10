@@ -3,7 +3,7 @@
 
 #include <genesis.h>
 #include "player.h"
-#include "enemies.h"
+#include "enemy.h"
 
 #define MAX_SLASHER_BULLETS 9
 #define MAX_ENEMY_BULLETS 20

@@ -1,19 +1,14 @@
-#include "level_1.h"
+#include "level.h"
 #include "background.h"
 #include "game.h"
 #include "player.h"
 #include "i18n.h"
 #include "hud.h"
 #include "entitymanager.h"
-#include "enemies.h"
 #include "bullet.h"
 #include "collision.h"
 #include "resources.h"
 #include "sounds.h"
-#include "enemyfactory.h"
-#include "background_explosions.h"
-#include "background_lasers.h"
-#include "game_script.h"
 
 // ========================================================
 // CONFIGURAÇÕES DA FASE
@@ -21,7 +16,6 @@
 
 #define LEVEL1_ENEMY_SLOTS 20
 #define ENEMY3_SHOOT_INTERVAL 80
-/** ~2 s a 60 Hz (NTSC); em PAL ~2,4 s — ajusta se quiseres tempo exacto por região */
 #define LEVEL1_DEATH_RESTART_DELAY_FRAMES 30
 
 static int l1_script_index = 0;
@@ -31,62 +25,60 @@ static u16 level1_death_wait_frames;
 
 static const ScriptItem level1_script_table[] = {
     // --- WAVE 1: Direita ---
-    // FRAME, ACTION,                               SLOT,           ENEMY_TYPE,             X,                              Y,              SHOOT_INTERVAL,         SHOOT_SPEED
-    { 501,  ACTION_SPAWN,                           0,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },    
+    { 501,  ACTION_SPAWN,                           0,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 520,  ACTION_SET_SHOOT_RATE,                  0,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
     { 521,  ACTION_SET_LINEAR_MOVEMENT,             0,              0,                      0,                              3,              0,                      0 },
 
     { 564,  ACTION_SPAWN,                           1,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 584,  ACTION_SET_LINEAR_MOVEMENT,             1,              0,                      0,                              3,              0,                      0 },
     { 584,  ACTION_SET_SHOOT_RATE,                  1,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 628,  ACTION_SPAWN,                           2,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 629,  ACTION_SET_LINEAR_MOVEMENT,             2,              0,                      0,                              3,              0,                      0 },
     { 648,  ACTION_SET_SHOOT_RATE,                  2,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 692,  ACTION_SPAWN,                           3,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 693,  ACTION_SET_LINEAR_MOVEMENT,             3,              0,                      0,                              3,              0,                      0 },
     { 712,  ACTION_SET_SHOOT_RATE,                  3,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 756,  ACTION_SPAWN,                           4,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 757,  ACTION_SET_LINEAR_MOVEMENT,             4,              0,                      0,                              3,              0,                      0 },
     { 776,  ACTION_SET_SHOOT_RATE,                  4,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 820,  ACTION_SPAWN,                           5,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 821,  ACTION_SET_LINEAR_MOVEMENT,             5,              0,                      0,                              3,              0,                      0 },
     { 840,  ACTION_SET_SHOOT_RATE,                  5,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 884,  ACTION_SPAWN,                           6,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 885,  ACTION_SET_LINEAR_MOVEMENT,             6,              0,                      0,                              3,              0,                      0 },
     { 904,  ACTION_SET_SHOOT_RATE,                  6,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 948,  ACTION_SPAWN,                           7,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 949,  ACTION_SET_LINEAR_MOVEMENT,             7,              0,                      0,                              3,              0,                      0 },
     { 968,  ACTION_SET_SHOOT_RATE,                  7,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 1012, ACTION_SPAWN,                           8,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 1013, ACTION_SET_LINEAR_MOVEMENT,             8,              0,                      0,                              3,              0,                      0 },
     { 1032, ACTION_SET_SHOOT_RATE,                  8,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 1076, ACTION_SPAWN,                           9,              ENEMY_TYPE_1,           GAME_WINDOW_WIDTH-48,         -16,              0,                      0 },
     { 1077, ACTION_SET_LINEAR_MOVEMENT,             9,              0,                      0,                              3,              0,                      0 },
     { 1096, ACTION_SET_SHOOT_RATE,                  9,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-            
+
     { 1100, ACTION_STOP_SHOOT,                      0,              0,                      0,                              0,              0,                      0 },
-            
-    // --- WAVE 2: Esquerda ---         
+
+    // --- WAVE 2: Esquerda ---
     { 1176, ACTION_SPAWN,                           0,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1177, ACTION_SET_LINEAR_MOVEMENT,             0,              0,                      0,                              3,              0,                      0 },
     { 1196, ACTION_SET_SHOOT_RATE,                  0,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
 
     { 1240, ACTION_SPAWN,                           1,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1241, ACTION_SET_LINEAR_MOVEMENT,             1,              0,                      0,                              3,              0,                      0 },
     { 1260, ACTION_SET_SHOOT_RATE,                  1,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 1304, ACTION_SPAWN,                           2,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1305, ACTION_SET_LINEAR_MOVEMENT,             2,              0,                      0,                              3,              0,                      0 },
-    { 1324, ACTION_SET_SHOOT_RATE,                  2,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },    
+    { 1324, ACTION_SET_SHOOT_RATE,                  2,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
 
     { 1368, ACTION_SPAWN,                           3,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1369, ACTION_SET_LINEAR_MOVEMENT,             3,              0,                      0,                              3,              0,                      0 },
@@ -95,31 +87,30 @@ static const ScriptItem level1_script_table[] = {
     { 1432, ACTION_SPAWN,                           4,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1433, ACTION_SET_LINEAR_MOVEMENT,             4,              0,                      0,                              3,              0,                      0 },
     { 1452, ACTION_SET_SHOOT_RATE,                  4,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
 
     { 1496, ACTION_SPAWN,                           5,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1497, ACTION_SET_LINEAR_MOVEMENT,             5,              0,                      0,                              3,              0,                      0 },
     { 1516, ACTION_SET_SHOOT_RATE,                  5,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 1560, ACTION_SPAWN,                           6,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1561, ACTION_SET_LINEAR_MOVEMENT,             6,              0,                      0,                              3,              0,                      0 },
     { 1580, ACTION_SET_SHOOT_RATE,                  6,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 1624, ACTION_SPAWN,                           7,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1625, ACTION_SET_LINEAR_MOVEMENT,             7,              0,                      0,                              3,              0,                      0 },
     { 1644, ACTION_SET_SHOOT_RATE,                  7,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 1686, ACTION_SPAWN,                           8,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1687, ACTION_SET_LINEAR_MOVEMENT,             8,              0,                      0,                              3,              0,                      0 },
     { 1726, ACTION_SET_SHOOT_RATE,                  8,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 1746, ACTION_SPAWN,                           9,              ENEMY_TYPE_1,          48,                            -16,              0,                      0 },
     { 1747, ACTION_SET_LINEAR_MOVEMENT,             9,              0,                      0,                              3,              0,                      0 },
     { 1780, ACTION_SET_SHOOT_RATE,                  9,              0,                      0,                              0,              ENEMY3_SHOOT_INTERVAL,  5 },
-    
+
     { 2000, ACTION_STOP_SHOOT,                      0,              0,                      0,                              0,              0,                      0 },
-                     
-    // WAVE 3           
+
+    // WAVE 3
     { 2500,  ACTION_SPAWN,                          0,              ENEMY_TYPE_9,           40,                           -20,              0,                      0 },
     { 2500,  ACTION_SET_MOVE_TO_PLAYER,             0,              0,                      0,                              0,              0,                      2 },
 
@@ -128,20 +119,124 @@ static const ScriptItem level1_script_table[] = {
 static const int level1_script_len = sizeof(level1_script_table) / sizeof(level1_script_table[0]);
 
 // ========================================================
-// STATE & GLOBALS
+// SCRIPT ENGINE
 // ========================================================
 
-Entity* level1Entity;
-unsigned long level1_frame;
+static void SCRIPT_init(EnemySlot* slots, u8 numSlots) {
+    for (u8 i = 0; i < numSlots; i++) {
+        slots[i].enemy = NULL;
+        slots[i].shootInterval = 0;
+        slots[i].shootTimer = 0;
+        slots[i].shootSpeed = 0;
+        slots[i].customActions[0] = NULL;
+        slots[i].customActions[1] = NULL;
+    }
+}
+
+static void SCRIPT_process(EnemySlot* slots, u8 numSlots, const ScriptItem* table, u16 tableLen, u16 currentFrame, int* scriptIndex) {
+    while (*scriptIndex < tableLen && table[*scriptIndex].frame == currentFrame) {
+        const ScriptItem* item = &table[(*scriptIndex)++];
+
+        if (item->slot >= numSlots) continue;
+        EnemySlot* slot = &slots[item->slot];
+
+        switch (item->action) {
+            case ACTION_SPAWN:
+                if (slot->enemy && slot->enemy->active) ENEMY_deactivate(slot->enemy);
+                slot->enemy = ENEMYFACTORY_createEnemy(item->type, item->x, item->y);
+                slot->shootInterval = 0;
+                slot->shootTimer = 0;
+                slot->shootSpeed = 0;
+                break;
+
+            case ACTION_SET_SHOOT_RATE:
+                slot->shootInterval = item->shootInterval;
+                slot->shootTimer = 0;
+                slot->shootSpeed = item->shootSpeed;
+                break;
+
+            case ACTION_SHOOT_ONCE:
+                if (slot->enemy && slot->enemy->active)
+                    BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x, slot->enemy->y, 0, item->shootSpeed << 8);
+                break;
+
+            case ACTION_SHOOT_SLASHER_DIRECTION:
+                if (slot->enemy && slot->enemy->active)
+                    BULLET_enemyShoot_slasherDirection(slot->enemy, &player, item->shootSpeed);
+                break;
+
+            case ACTION_DEACTIVATE:
+                if (slot->enemy && slot->enemy->active) ENEMY_deactivate(slot->enemy);
+                slot->enemy = NULL;
+                break;
+
+            case ACTION_STOP_SHOOT:
+                slot->shootInterval = 0;
+                break;
+
+            case ACTION_SET_LINEAR_MOVEMENT:
+                if (slot->enemy && slot->enemy->active)
+                    ENEMY_setLinearMovement(slot->enemy, item->x, item->y);
+                break;
+
+            case ACTION_SET_ARCED_MOVEMENT:
+                if (slot->enemy && slot->enemy->active)
+                    ENEMY_setArcedMovement(slot->enemy, item->x, item->y, item->shootInterval, item->shootSpeed);
+                break;
+
+            case ACTION_SET_MOVE_TO_PLAYER:
+                if (slot->enemy && slot->enemy->active)
+                    ENEMY_setMoveToPlayer(slot->enemy, item->shootSpeed);
+                break;
+
+            case ACTION_CUSTOM_0:
+                if (slot->enemy && slot->enemy->active && slot->customActions[0])
+                    slot->customActions[0](slot->enemy);
+                break;
+
+            case ACTION_CUSTOM_1:
+                if (slot->enemy && slot->enemy->active && slot->customActions[1])
+                    slot->customActions[1](slot->enemy);
+                break;
+        }
+    }
+}
+
+static void SCRIPT_updateShooting(EnemySlot* slots, u8 numSlots) {
+    for (u8 i = 0; i < numSlots; i++) {
+        EnemySlot* slot = &slots[i];
+
+        if (!slot->enemy || !slot->enemy->active) {
+            slot->enemy = NULL;
+            continue;
+        }
+
+        if (slot->shootInterval == 0) continue;
+
+        if (slot->shootTimer == 0) {
+            BULLET_enemyShoot_slasherDirection(slot->enemy, &player, slot->shootSpeed);
+            slot->shootTimer = slot->shootInterval;
+        } else {
+            slot->shootTimer--;
+        }
+    }
+}
+
+// ========================================================
+// STATE
+// ========================================================
+
+static Entity* level1Entity;
+static unsigned long level1_frame;
 
 // ========================================================
 // FORWARD DECLARATIONS
 // ========================================================
 
-void level1_joyEventHandler(u16 joy, u16 changed, u16 state);
-void level1_update(void* context);
-void level1_dispose();
-void level1_script();
+static void level1_joyEventHandler(u16 joy, u16 changed, u16 state);
+static void level1_update(void* context);
+static void level1_dispose();
+static void level1_script();
 
 // ========================================================
 // INIT / DISPOSE
@@ -152,9 +247,8 @@ void Level1_init() {
     Background_init();
     HUD_init();
     ENEMY_initializeAll();
-    VDP_setHilightShadow(1); 
-    
-    // Inicializa o Motor de Script
+    VDP_setHilightShadow(1);
+
     SCRIPT_init(l1_slots, LEVEL1_ENEMY_SLOTS);
     l1_script_index = 0;
     level1_restart_pending = false;
@@ -168,56 +262,40 @@ void Level1_init() {
     level1_frame = 0;
 }
 
-void level1_dispose() {
+static void level1_dispose() {
     level1_restart_pending = false;
     level1_death_wait_frames = 0;
 
-    // Para a música
     XGM_stopPlay();
 
-    // Remove o level antes de outras entidades — senão swaps no array invalidam level1Entity->index
     if (level1Entity) {
         Entity_removeEntity(level1Entity->index);
         level1Entity = NULL;
     }
 
     PLAYER_dispose(&player);
-    
-    // Desativa todos os inimigos
+
     for (u8 i = 0; i < MAX_ENEMIES; i++) {
         if (enemies[i].active) {
             ENEMY_deactivate(&enemies[i]);
         }
     }
-    
-    // Reseta o pool de balas (limpa todas as balas ativas)
+
     BULLET_setup_pool();
-    
-    // Reseta o Motor de Script (limpa os slots de inimigos)
     SCRIPT_init(l1_slots, LEVEL1_ENEMY_SLOTS);
-    
-    // Limpa as variáveis estáticas de estado do level
     l1_script_index = 0;
     level1_frame = 0;
-    
-    // Limpa o HUD
+
     HUD_clear();
-    
-    // Limpa o background (stars e estado)
     Background_dispose();
-    
-    // Limpa os sub-sistemas de efeitos
     BACKGROUND_LASERS_dispose();
     BACKGROUND_EXPLOSIONS_dispose();
-    
-    // Remove o handler de entrada
+
     Game_setJoyHandler(NULL);
-    
-    // Limpa todas as entidades restantes (garante estado limpo)
     Entity_clearAll();
 }
 
-void LEVEL1_restart() {
+static void LEVEL1_restart() {
     level1_dispose();
     Level1_init();
 }
@@ -226,7 +304,7 @@ void LEVEL1_restart() {
 // INPUT
 // ========================================================
 
-void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
+static void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
     if (joy == JOY_1) {
         if (changed & state & BUTTON_START) {
             Game_pause();
@@ -239,7 +317,7 @@ void level1_joyEventHandler(u16 joy, u16 changed, u16 state) {
 // UPDATE
 // ========================================================
 
-void level1_update(void* context) {
+static void level1_update(void* context) {
     if (Game_isPaused()) return;
 
     if (level1_restart_pending) {
@@ -256,7 +334,7 @@ void level1_update(void* context) {
 // MAIN SCRIPT LOOP
 // ========================================================
 
-void level1_script() {
+static void level1_script() {
     if (player.destroying) {
         if (level1_death_wait_frames < LEVEL1_DEATH_RESTART_DELAY_FRAMES) {
             level1_death_wait_frames++;
@@ -275,42 +353,32 @@ void level1_script() {
         BACKGROUND_LASERS_init();
     }
 
-    // Processa o script da fase usando o Motor modular
     SCRIPT_process(l1_slots, LEVEL1_ENEMY_SLOTS, level1_script_table, level1_script_len, level1_frame, &l1_script_index);
 
-    // --- LOAD BALANCER (Distribuição de Carga) ---
     if (level1_frame > WARP_DURATION + 20) {
         BULLET_updateAll();
-        COLLISION_checkAllCollisions();        
-        
-        // Update de tiro movido para o Motor modular
+        COLLISION_checkAllCollisions();
+
         SCRIPT_updateShooting(l1_slots, LEVEL1_ENEMY_SLOTS);
 
-        u16 phase = level1_frame % 4; 
+        u16 phase = level1_frame % 4;
 
         switch (phase) {
             case 0:
-                ENEMY_update(); 
+                ENEMY_update();
                 break;
-
             case 1:
                 BACKGROUND_EXPLOSIONS_update();
                 break;
-
             case 2:
                 BACKGROUND_LASERS_update();
                 break;
-
             case 3:
-                // Janela livre para evitar picos de CPU                
                 break;
         }
     }
 
-
-    // test area
     if (level1_frame == 500) {
-        //PAL_setPalette(BACKGROUND_PALLETE, enemy_0008_001.palette->data, DMA);
         Enemy teste;
         teste.x = 0;
         teste.y = 0;
@@ -324,42 +392,5 @@ void level1_script() {
         teste.useMiscPalette = true;
 
         ENEMY_create(&teste);
-        // PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
     }
 }
-
-// u16 testCounter = 0;
-// static const u16 cores_piscando[] = {
-//     RGB24_TO_VDPCOLOR(0x009100), // Cor 1
-//     RGB24_TO_VDPCOLOR(0x006800), // Cor 2
-//     RGB24_TO_VDPCOLOR(0x00FF00), // Cor 3 (exemplo: verde claro)
-//     RGB24_TO_VDPCOLOR(0x003300)  // Cor 4 (exemplo: verde escuro)
-// };
-
-// void TEST_doTests() {
-//     VDP_setPlaneSize(64, 64, FALSE);
-//
-//     // Imagem original (esquerda) - carrega tiles na VRAM
-//     VDP_drawImage(
-//         VDP_BG_B,
-//         &enemy_0008_background,
-//         0, 0
-//     );
-//
-//     PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
-//     VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-//     Entity_add(NULL, TEST_update);
-// }
-
-// void TEST_update(void *ctx) {
-//     testCounter++;
-//     if (testCounter % 5 == 0) {
-//     u16 indice = (testCounter >> 3) & 3;
-//
-//     PAL_setColor(2, cores_piscando[indice]);
-//     }
-
-//     // (testCounter >> 3) controla a velocidade (mais alto = mais lento)
-//     // & 3 garante que o índice fique sempre entre 0 e 3
-
-// }

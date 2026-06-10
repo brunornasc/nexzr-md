@@ -2,7 +2,7 @@
 #define COLLISION_H
 
 #include <genesis.h>
-#include "enemies.h"
+#include "enemy.h"
 #include "player.h"
 #include "bullet.h"
 #include "game.h"

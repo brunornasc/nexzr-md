@@ -4,13 +4,15 @@
 #include <stdarg.h>
 #include "resources.h"
 
+static void INTRO_loadSequentially(const Image *first, ...);
+
 void INTRO_init(void (*function)()) {
     INTRO_loadSequentially(&naxat, &intro, &intro2, NULL); // descoberto q e a imagem da intro2 q esta corrompida
 
     if (function) function();
 }
 
-void INTRO_loadSequentially(const Image *first, ...) {
+static void INTRO_loadSequentially(const Image *first, ...) {
     va_list args;
     const Image *current = first;
 

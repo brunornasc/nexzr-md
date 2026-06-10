@@ -1,13 +1,12 @@
 #include "hud.h"
 #include "game.h"
 #include "resources.h"
+#include "characters.h"
 
 Sprite* HUD_slasher;
 Sprite* HUD_stageNum;
 Sprite* HUD_stageText[5];
 Sprite* teste;
-
-void Characters_clear(u16 x, u16 y, u16 width);
 
 void HUD_init() {
   HUD_slasher = SPR_addSprite(&hud_slasher, GAME_WINDOW_WIDTH - 32, GAME_WINDOW_HEIGHT - 32, TILE_ATTR(SLASHER_PALLETE, TRUE, FALSE, FALSE));

@@ -2,7 +2,6 @@
 #define CHARACTERS_H
 
 #include <genesis.h>
-#include "resources.h"
 
 typedef enum {
     FONT_ACTIVE = 0,

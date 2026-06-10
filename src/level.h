@@ -1,8 +1,8 @@
-#ifndef _GAME_SCRIPT_H_
-#define _GAME_SCRIPT_H_
+#ifndef LEVEL_H
+#define LEVEL_H
 
 #include <genesis.h>
-#include "enemies.h"
+#include "enemy.h"
 
 #define MAX_CUSTOM_ACTIONS 5
 
@@ -38,12 +38,9 @@ typedef struct {
     u16 shootInterval;
     u16 shootTimer;
     s16 shootSpeed;
-    ScriptCustomFunc customActions[MAX_CUSTOM_ACTIONS]; // slots para funções personalizadas
+    ScriptCustomFunc customActions[MAX_CUSTOM_ACTIONS];
 } EnemySlot;
 
-// Funções do Motor de Script
-void SCRIPT_init(EnemySlot* slots, u8 numSlots);
-void SCRIPT_process(EnemySlot* slots, u8 numSlots, const ScriptItem* table, u16 tableLen, u16 currentFrame, int* scriptIndex);
-void SCRIPT_updateShooting(EnemySlot* slots, u8 numSlots);
+void Level1_init();
 
 #endif

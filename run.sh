@@ -1,3 +1,3 @@
 #bin/sh
 
-blastem ./out/rom.bin
+blastem -d ./out/rom.bin

@@ -129,7 +129,6 @@ void PLAYER_dispose(Player* p) {
     p->destroying = false;
 
     Entity_removeByContext(p);
-    Entity_removeByContext(p);
 }
 
  void PLAYERinit_animation(Player* p) {

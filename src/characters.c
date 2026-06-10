@@ -43,7 +43,7 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
             tileIndex += CHARS_ACTIVE_OFFSET;
 
         // Desenha o tile na tela
-        VDP_setTileMapXY(BG_B,
+        VDP_setTileMapXY(BG_A,
             TILE_ATTR_FULL(CHARACTER_PALLETE, TRUE, FALSE, FALSE, TILE_FONT_INDEX + tileIndex),
             x + i, y);
 
@@ -55,7 +55,7 @@ void Characters_print(const char* str, u16 x, u16 y, FontState state) {
 void Characters_clearXY(u16 x, u16 y, u16 width) {
     u16 i;
     for (i = 0; i < width; i++) {
-        VDP_setTileMapXY(BG_B,
+        VDP_setTileMapXY(BG_A,
             TILE_ATTR_FULL(CHARACTER_PALLETE, FALSE, FALSE, FALSE, 0),
             x + i, y);
     }

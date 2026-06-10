@@ -17,10 +17,11 @@ Entity* Entity_add(void* ctx, Func func) {
 }
 
 void Entity_removeEntity(unsigned index) {
-    if (index >= entityCount && entityCount <= 0) return;
+    if (index >= entityCount || entityCount <= 0) return;
 
     entities[index].active = false;
     entities[index] = entities[entityCount - 1];
+    entities[index].index = index;
     entityCount--;
 }
 
@@ -42,7 +43,7 @@ void Entity_executeAll() {
 void Entity_executeByContext(void* context) {
     Entity *e = Entity_search(0, context);
 
-    e->func(e->context);
+    if (e) e->func(e->context);
 }
 
 void Entity_executeByIndex(unsigned index) {

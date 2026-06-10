@@ -1,7 +1,7 @@
 #include "menu.h"
 #include "game.h"
 #include "i18n.h"
-#include "level_1.h"
+#include "level.h"
 #include "bullet.h"
 
 typedef enum {
@@ -87,11 +87,12 @@ void handleMainMenu(u16 joy, u16 changed, u16 state) {
     	if (option_selected > GAME_START) option_selected--;
     }
  	if (changed & state & BUTTON_START) {
-   		if (option_selected == OPTIONS) {
-		  menu_current = SECONDARY;
-    	  option_selected = LANGUAGE;
+ 		if (option_selected == OPTIONS) {
+ 		  menu_current = SECONDARY;
+     	  option_selected = LANGUAGE;
 		  VDP_clearPlane(BG_B, TRUE);
-    	  drawMenuSecondary();
+		  VDP_clearPlane(BG_A, TRUE);
+     	  drawMenuSecondary();
 
 		  return;
   		}
