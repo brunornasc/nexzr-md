@@ -41,7 +41,7 @@ static void ENEMY8_create(Enemy *enemy, bool isEnemy) {
 
     VDP_setTileMapEx(BG_B, enemy_0008.tilemap,
                      TILE_ATTR_FULL(BACKGROUND_PALLETE, isEnemy, 0, 0, ENEMY8_VRAM_INDEX),
-                     0, 0, 0, 0, ENEMY8_WIDTH_TILES, ENEMY8_HEIGHT_TILES, DMA);
+                     w->x/8, w->y/8, 0, 0, ENEMY8_WIDTH_TILES, ENEMY8_HEIGHT_TILES, CPU);
 
     w->head_left = SPR_addSprite(&enemy_0008_01, w->x + 48, w->y + 16,
                                  TILE_ATTR(BACKGROUND_PALLETE, isEnemy, FALSE, FALSE));
@@ -49,6 +49,9 @@ static void ENEMY8_create(Enemy *enemy, bool isEnemy) {
                                   TILE_ATTR(BACKGROUND_PALLETE, isEnemy, FALSE, TRUE));
 
     enemy->sprite = w->head_left;
+
+    SPR_setDepth(w->head_left, SPR_MIN_DEPTH);
+    SPR_setDepth(w->head_right, SPR_MIN_DEPTH);
     PAL_setPalette(BACKGROUND_PALLETE, enemy_0008.palette->data, DMA);
 }
 
@@ -156,7 +159,7 @@ void ENEMY_gotHit(Enemy* enemy, u8 damage) {
             enemy->explosionDefinition->sprite,
             enemy->x,
             enemy->y,
-            TILE_ATTR(ENEMY_PALLETE, FALSE, FALSE, FALSE)
+            TILE_ATTR(ENEMY_PALLETE, TRUE, FALSE, FALSE)
         );
 
         ENEMY_destroyAnim(enemy);

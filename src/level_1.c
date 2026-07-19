@@ -243,19 +243,19 @@ static void level1_script() {
         }
     }
 
-    if (level1_frame == 500) {
-        Enemy teste;
-        teste.x = 0;
-        teste.y = 0;
-        teste.type = ENEMY_TYPE_8;
-        teste.accentColors[0] = RGB24_TO_VDPCOLOR(0x009100);
-        teste.accentColors[1] = RGB24_TO_VDPCOLOR(0x006800);
-        teste.accentColors[2] = RGB24_TO_VDPCOLOR(0x00FF00);
-        teste.accentColors[3] = RGB24_TO_VDPCOLOR(0x003300);
-        teste.accentColors[4] = RGB24_TO_VDPCOLOR(0x000000);
-        teste.paletteAccentIndex = 2;
-        teste.useMiscPalette = true;
+    // if (level1_frame == 500) {
+    //     Enemy teste;
+    //     teste.x = 0;
+    //     teste.y = -120;
+    //     teste.type = ENEMY_TYPE_8;
+    //     teste.accentColors[0] = RGB24_TO_VDPCOLOR(0x009100);
+    //     teste.accentColors[1] = RGB24_TO_VDPCOLOR(0x006800);
+    //     teste.accentColors[2] = RGB24_TO_VDPCOLOR(0x00FF00);
+    //     teste.accentColors[3] = RGB24_TO_VDPCOLOR(0x003300);
+    //     teste.accentColors[4] = RGB24_TO_VDPCOLOR(0x000000);
+    //     teste.paletteAccentIndex = 2;
+    //     teste.useMiscPalette = true;
 
-        ENEMY_create(&teste);
-    }
+    //     ENEMY_create(&teste);        
+    // }
 }
