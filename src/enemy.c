@@ -106,10 +106,25 @@ static const EnemyDefaults ENEMY4_DEFAULTS = {
     16, 16, 0, 0, ENEMY_TYPE_4, 1, &enemy_0004, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 6, false
 };
 
+static const EnemyDefaults ENEMY5_DEFAULTS = {
+    16, 16, 0, 0, ENEMY_TYPE_5, 1, &enemy_0005, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 4, false
+};
+
+static const EnemyDefaults ENEMY6_DEFAULTS = {
+    16, 16, 0, 0, ENEMY_TYPE_6, 1, &enemy_0006, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 4, false
+};
+
+static const EnemyDefaults ENEMY7_DEFAULTS = {
+    16, 16, 0, 0, ENEMY_TYPE_7, 1, &enemy_0007, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 2, false
+};
+
 static const EnemyDefaults ENEMY9_DEFAULTS = {
     32, 32, 0, 0, ENEMY_TYPE_9, 5, &enemy_0009, &enemy_bullet_001, &EXPLOSION2_DEFAULTS, 60, 3, true
 };
 
+static const EnemyDefaults ENEMY_TELEPORT_SMALL_DEFAULTS = {
+    16, 16, 0, 0, ENEMY_TYPE_TELEPORT_SMALL, 1, &teleport_small, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 4, true
+};
 static void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
     e->x = x;
     e->y = y;
@@ -125,7 +140,11 @@ static void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
         case ENEMY_TYPE_2: d = &ENEMY2_DEFAULTS; break;
         case ENEMY_TYPE_3: d = &ENEMY3_DEFAULTS; break;
         case ENEMY_TYPE_4: d = &ENEMY4_DEFAULTS; break;
+        case ENEMY_TYPE_5: d = &ENEMY5_DEFAULTS; break;
+        case ENEMY_TYPE_6: d = &ENEMY6_DEFAULTS; break;
+        case ENEMY_TYPE_7: d = &ENEMY7_DEFAULTS; break;
         case ENEMY_TYPE_9: d = &ENEMY9_DEFAULTS; break;
+        case ENEMY_TYPE_TELEPORT_SMALL: d = &ENEMY_TELEPORT_SMALL_DEFAULTS; break;
         default: return;
     }
 
@@ -343,7 +362,19 @@ void ENEMY_update() {
                     enemy->accentColorIndex = 0;
                 }
 
-                return;
+                continue;
+
+            case ENEMY_TYPE_TELEPORT_SMALL:
+                enemy->spriteIndex++;
+
+                if (enemy->spriteIndex >= enemy->max_frames) {
+                    ENEMY_deactivate(enemy);
+                    continue;
+                
+                }
+                
+                SPR_setFrame(enemy->sprite, enemy->spriteIndex);                                
+                break;
 
             default:
                 enemy->spriteIndex++;
@@ -353,9 +384,11 @@ void ENEMY_update() {
                 break;
         }
 
-        SPR_setFrame(enemy->sprite, enemy->spriteIndex);
-        SPR_setPosition(enemy->sprite, enemy->x, enemy->y);
-        SPR_setAlwaysOnTop(enemy->sprite);
+        if (enemy->type != ENEMY_TYPE_8) {
+            SPR_setFrame(enemy->sprite, enemy->spriteIndex);
+            SPR_setPosition(enemy->sprite, enemy->x, enemy->y);
+            SPR_setAlwaysOnTop(enemy->sprite); // pode ser q o cara tenha q ficar abaixo de algum foreground, mas por enquanto vamos deixar assim
+        }
     }
 }
 

@@ -49,4 +49,6 @@ SPRITE enemy_bullet_001 "sprites/enemies/weapons/bullet_0001.png" 1 1 FAST 4
 
 SPRITE stage1_explosions "sprites/misc/stage1_explosions.png" 2 2 FAST 0
 
+SPRITE teleport_small "sprites/enemies/anim/anim-teleport-small.png" 2 2 BEST 4
+
 IMAGE custom_font "fonts/font_default.png" BEST

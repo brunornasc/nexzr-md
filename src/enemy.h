@@ -15,6 +15,7 @@ typedef enum {
     ENEMY_TYPE_7,
     ENEMY_TYPE_8,
     ENEMY_TYPE_9,
+    ENEMY_TYPE_TELEPORT_SMALL,
     MAX_ENEMY_TYPES
 } EnemyType;
 

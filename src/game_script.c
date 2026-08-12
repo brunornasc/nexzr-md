@@ -78,6 +78,12 @@ void SCRIPT_process(EnemySlot* slots, u8 numSlots, const ScriptItem* table, u16 
                 if (slot->enemy && slot->enemy->active && slot->customActions[1])
                     slot->customActions[1](slot->enemy);
                 break;
+            
+            case ACTION_TELEPORT_SMALL:
+            // deve carregar a animação teleport_small e depois que a animação terminar criar o inimigo no slot e no x, y da tela
+
+
+            break;
         }
     }
 }
@@ -94,7 +100,12 @@ void SCRIPT_updateShooting(EnemySlot* slots, u8 numSlots) {
         if (slot->shootInterval == 0) continue;
 
         if (slot->shootTimer == 0) {
-            BULLET_enemyShoot_slasherDirection(slot->enemy, &player, slot->shootSpeed);
+            if (slot->enemy->type == ENEMY_TYPE_3) {
+                BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x + (slot->enemy->width >> 2), slot->enemy->y + slot->enemy->height + 1, 0, slot->shootSpeed << 8);
+            }
+            else {
+                BULLET_enemyShoot_slasherDirection(slot->enemy, &player, slot->shootSpeed);
+            }
             slot->shootTimer = slot->shootInterval;
         } else {
             slot->shootTimer--;

@@ -36,6 +36,7 @@ extern const SpriteDefinition enemy_explosion;
 extern const SpriteDefinition enemy_explosion_big;
 extern const SpriteDefinition enemy_bullet_001;
 extern const SpriteDefinition stage1_explosions;
+extern const SpriteDefinition teleport_small;
 extern const Image custom_font;
 
 #endif // _RES_RESOURCES_H_

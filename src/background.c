@@ -280,7 +280,7 @@ void BACKGROUND_LASERS_update() {
             l->colorIndex = laserColors[random() % 3];
 
             u32 tile[8]; createLaserTile(l->angle, l->colorIndex, tile);
-            VDP_loadTileData(tile, l->tileVramIndex + l->angle, 1, DMA);
+            VDP_loadTileData(tile, l->tileVramIndex + l->angle, 1, CPU);
 
             l->timer = 1;
         }
