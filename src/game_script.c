@@ -100,15 +100,20 @@ void SCRIPT_updateShooting(EnemySlot* slots, u8 numSlots) {
         if (slot->shootInterval == 0) continue;
 
         if (slot->shootTimer == 0) {
-            if (slot->enemy->type == ENEMY_TYPE_3) {
+            if (slot->enemy->type == ENEMY_TYPE_3) { // ENEMY_TYPE_3 so atira pra frente
                 BULLET_enemyShoot(slot->enemy->bulletSprite, slot->enemy->x + (slot->enemy->width >> 2), slot->enemy->y + slot->enemy->height + 1, 0, slot->shootSpeed << 8);
+                
             }
             else {
                 BULLET_enemyShoot_slasherDirection(slot->enemy, &player, slot->shootSpeed);
+
             }
+
             slot->shootTimer = slot->shootInterval;
+
         } else {
             slot->shootTimer--;
+
         }
     }
 }

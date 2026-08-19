@@ -123,7 +123,7 @@ static const EnemyDefaults ENEMY9_DEFAULTS = {
 };
 
 static const EnemyDefaults ENEMY_TELEPORT_SMALL_DEFAULTS = {
-    16, 16, 0, 0, ENEMY_TYPE_TELEPORT_SMALL, 1, &teleport_small, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 4, true
+    16, 16, 0, 0, ENEMY_TYPE_TELEPORT_SMALL, 0, &teleport_small, &enemy_bullet_001, &EXPLOSION1_DEFAULTS, 60, 4, true
 };
 static void ENEMYFACTORY_initEnemy(Enemy *e, EnemyType type, s16 x, s16 y) {
     e->x = x;
@@ -411,6 +411,7 @@ void ENEMY_setArcedMovement(Enemy* enemy, s16 vx, s16 vy, s16 angle, s16 velocit
     enemy->angle = angle;
 }
 
+// ate funciona mas fica lento
 void ENEMY_setMoveToPlayer(Enemy* enemy, s16 velocity) {
     s16 dx = player.x - enemy->x;
     s16 dy = player.y - enemy->y;
